@@ -4698,6 +4698,8 @@ class TechnicalOfficeEngine:
                 "error": "شاخص ماهانهٔ خرداد ۱۴۰۵ وارد نشده — موتور برآورد "
                          "به‌هنگام متوقف شد.",
                 "io_q": io_q, "io_month": _io_month, "it_q": None,
+                "it_status": "نامشخص",
+                "prov": None, "prov_manual": False, "prov_trace": {},
                 "index_method_resolved": {"method": _chain,
                                           "source": _chain_src},
                 "base_amount": A + setup, "work_base": A, "chain": chain,
@@ -4794,6 +4796,9 @@ class TechnicalOfficeEngine:
                 "error": "ضریب موقت ۱۴۰۵Q1 قابل محاسبه نیست (CPI ناقص) — "
                          "موتور برآورد به‌هنگام متوقف شد.",
                 "io_q": io_q, "io_month": _io_month, "it_q": it_q,
+                "it_status": "موقت" if self._quarter_is_provisional(it_q) else "قطعی",
+                "prov": prov, "prov_manual": bool(_prov_man),
+                "prov_trace": _prov_tr,
                 "index_method_resolved": {"method": _chain,
                                           "source": _chain_src},
                 "base_amount": A + setup, "work_base": A, "chain": chain,
@@ -5004,6 +5009,9 @@ class TechnicalOfficeEngine:
             "mode": "برآورد به‌هنگام",
             "formula": "A_new = Σ_c A_c × It_c/Io_c",
             "io_q": io_q, "io_month": _io_month, "it_q": it_q,
+            "it_status": "موقت" if self._quarter_is_provisional(it_q) else "قطعی",
+            "prov": prov, "prov_manual": bool(_prov_man),
+            "prov_trace": _prov_tr,
             "index_method_resolved": {"method": _chain,
                                       "source": _chain_src},
             "base_amount": A + setup + _new_base_amt, "work_base": A, "chain": chain,
@@ -5913,6 +5921,22 @@ class ExcelExporter:
             row = self._row(ws, row, ["دورهٔ انجام کار (It)",
                                       _quarter_label(_baravord.get("it_q")), "", "", "", "", "", ""],
                                      [F["label"], F["label"]] + [F["cell"]] * 6)
+            # ══ فاز E-8 §۳.۱: برچسبِ موقت/قطعی + ضریبِ موقت روی هر خروجی ══
+            row = self._row(ws, row, ["وضعیت دورهٔ It",
+                                      _baravord.get("it_status") or "—",
+                                      "", "", "", "", "", ""],
+                                     [F["label"], F["label"]] + [F["cell"]] * 6)
+            _prov_v = _baravord.get("prov")
+            if _prov_v is not None and _baravord.get("it_status") == "موقت":
+                _pt = _baravord.get("prov_trace") or {}
+                row = self._row(ws, row,
+                                ["ضریب موقت (۱۴۰۵Q1)", fa_float(_prov_v, 4),
+                                 ("دستی — نیازمند تأیید" if _baravord.get("prov_manual")
+                                  else "محاسبه از CPI + m=%s" % fa(_pt.get("m")))
+                                 + " — موقت = این ضریب × آخرین شاخص قطعی (۱۴۰۴Q4)",
+                                 "", "", "", "", ""],
+                                [F["label"], F["money"], F["label"]]
+                                + [F["cell"]] * 5)
             row += 1
             row = self._row(ws, row, ["زنجیرهٔ مبلغ پایه (A) — مبالغ به ریال", "", "", "", "", "", "", ""],
                                      [F["chapter"]] * 8)
@@ -9677,9 +9701,16 @@ def render_tab_statement():
             _final_amt,
             money_to_words(_final_amt), cur, rounding=False),
             unsafe_allow_html=True)
-        st.caption("فرمول: %s | Io: %s | It: %s"
-                   % (_e.get("formula"), _io_label(_e),
-                      _quarter_label(_e.get("it_q"))))
+        _cap = "فرمول: %s | Io: %s | It: %s" % (
+            _e.get("formula"), _io_label(_e), _quarter_label(_e.get("it_q")))
+        # ══ فاز E-8 §۳.۱: وضعیت موقت/قطعی + ضریبِ موقتِ برآورد ══
+        if _e.get("it_status"):
+            _cap += " (%s)" % _e["it_status"]
+        if _e.get("prov") is not None and _e.get("it_status") == "موقت":
+            _cap += " | ضریب موقت ۱۴۰۵Q1: %s%s" % (
+                fa_float(_e["prov"], 4),
+                " (دستی)" if _e.get("prov_manual") else "")
+        st.caption(_cap)
         _sp = _e.get("split") or []
         if len(_sp) > 1:
             st.caption("تقسیم کارکرد بین سه‌ماهه‌ها: %s"

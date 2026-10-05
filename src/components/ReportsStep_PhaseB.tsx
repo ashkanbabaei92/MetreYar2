@@ -286,6 +286,17 @@ function BaravordCard({ b }: { b: BaravordResult }) {
           {b.incomplete && <Badge tone="rose">ناقص</Badge>}
           <Badge tone="zinc">Io = {ioLabel(b)}</Badge>
           <Badge tone="zinc">It = {faDigits(String(b.it_q ?? "—"))}</Badge>
+          {b.it_status && (
+            <Badge tone={b.it_status === "موقت" ? "gold" : "emerald"}>
+              {b.it_status}
+            </Badge>
+          )}
+          {b.prov !== null && b.prov !== undefined && b.it_status === "موقت" && (
+            <Badge tone="gold">
+              ضریب موقت ۱۴۰۵Q1 = {faDigits(b.prov.toFixed(4))}
+              {b.prov_manual ? " (دستی)" : ""}
+            </Badge>
+          )}
         </div>
       </div>
       {b.index_method_resolved && (

@@ -746,6 +746,11 @@ export interface BaravordResult {
   io_q: string | null;
   io_month: string | null;
   it_q: string | null;
+  /** فاز E-8 §۳.۱ — برچسب موقت/قطعیِ دورهٔ It + ضریبِ موقت */
+  it_status: string;
+  prov: number | null;
+  prov_manual: boolean;
+  prov_trace: Record<string, unknown>;
   index_method_resolved: {
     // فاز E-6 Part C گام ۶ (بندهای ۲-۱/۲-۲)
     method: "گروهی" | "رشته‌ای";

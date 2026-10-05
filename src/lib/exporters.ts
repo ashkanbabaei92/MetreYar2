@@ -674,6 +674,17 @@ export function exportWorkbook(
     b.push(["فرمول برآورد به‌هنگام", baravord.formula, "", "", "", "", "", ""]);
     b.push(["دورهٔ مبنا (Io)", ioLabel(baravord), "", "", "", "", "", ""]);
     b.push(["دورهٔ انجام کار (It)", quarterLabel(baravord.it_q), "", "", "", "", "", ""]);
+    // ══ فاز E-8 §۳.۱: برچسبِ موقت/قطعی + ضریبِ موقت روی هر خروجی ══
+    b.push(["وضعیت دورهٔ It", baravord.it_status ?? "—", "", "", "", "", "", ""]);
+    if (baravord.prov !== null && baravord.prov !== undefined
+        && baravord.it_status === "موقت") {
+      const pt = baravord.prov_trace ?? {};
+      b.push(["ضریب موقت (۱۴۰۵Q1)", numCell(baravord.prov, 4),
+              (baravord.prov_manual ? "دستی — نیازمند تأیید"
+                                    : `محاسبه از CPI + m=${faDigits(pt.m as number)}`)
+              + " — موقت = این ضریب × آخرین شاخص قطعی (۱۴۰۴Q4)",
+              "", "", "", "", ""]);
+    }
     b.push([]);
     b.push(["زنجیرهٔ مبلغ پایه (A) — مبالغ به ریال", "", "", "", "", "", "", ""]);
     for (const c2 of baravord.chain) {
