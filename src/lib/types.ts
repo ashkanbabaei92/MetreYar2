@@ -677,6 +677,9 @@ export interface AdjSetupRow {
 /** ورودی موتورها — از نتیجهٔ زنجیرهٔ مالی اصلی ساخته می‌شود */
 export interface AdjustmentCtx {
   chapter_amounts: Record<string, number>;
+  /** فاز E-9 §۳.۳ — بند ۵: مبلغِ ردیف‌های «مترمکعب کیلومتر» که از فصل‌های
+   * غیر از فصل حمل به فصل ۲۸ منتقل شده‌اند (۰ اگر چنین ردیفی نیست). */
+  haul_moved_amount?: number;
   floors_amount: number;
   base_total: number;
   site_setup: number;

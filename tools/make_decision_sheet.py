@@ -12,6 +12,15 @@
 """
 import os
 
+
+# خروجیِ استاندارد همیشه UTF-8 باشد — حتی وقتی کدپیجِ کنسول cp1252 است
+# (در غیر این صورت printِ متنِ فارسی با UnicodeEncodeError می‌ایستد).
+try:
+    sys.stdout.reconfigure(encoding="utf-8")
+    sys.stderr.reconfigure(encoding="utf-8")
+except (AttributeError, OSError):
+    pass
+
 ROOT = os.path.join(os.path.dirname(__file__), "..")
 
 # ── پروژهٔ مرجع (برای اعداد) ──

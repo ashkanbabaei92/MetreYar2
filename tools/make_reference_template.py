@@ -18,6 +18,15 @@ from openpyxl import Workbook
 from openpyxl.styles import Alignment, Border, Font, PatternFill, Side
 from openpyxl.utils import get_column_letter
 
+
+# خروجیِ استاندارد همیشه UTF-8 باشد — حتی وقتی کدپیجِ کنسول cp1252 است
+# (در غیر این صورت printِ متنِ فارسی با UnicodeEncodeError می‌ایستد).
+try:
+    sys.stdout.reconfigure(encoding="utf-8")
+    sys.stderr.reconfigure(encoding="utf-8")
+except (AttributeError, OSError):
+    pass
+
 ROOT = os.path.join(os.path.dirname(__file__), "..")
 OUT = os.path.join(ROOT, "templates", "reference_statement_template.xlsx")
 

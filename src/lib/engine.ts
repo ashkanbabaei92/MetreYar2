@@ -32,7 +32,7 @@ import type { AuditKind } from "./types";
 import { IndexTable } from "./indices";
 import { computeFloorsCoef, computeRegionalCoef, leanFootprint, faFloat } from "./floors";
 import { jalaliNowStr } from "./farsi";
-import { runAdjustment } from "./adjustment";
+import { runAdjustment, haulTargetChapter, isHaulUnit } from "./adjustment";
 import { byCode, searchFehrest } from "./matching";
 import { toQuantityRecords, structuralGroup, rebarListGroup, rebarListMark } from "./revitParser";
 import { chapterTitle } from "../data/fehrest";
@@ -2114,14 +2114,25 @@ if (settings.surchargeThinConcrete) {
   // ۸) موتورهای فاز B: دو موتور مجزا («تعدیل پیمان» و «برآورد به‌هنگام»).
   // هر دو می‌توانند همزمان فعال باشند؛ ورودی، فرمول و خروجی هر کدام
   // جداست و روی زنجیرهٔ مالی بالا اثری ندارد (قاعدهٔ طلایی ۵).
+  // فاز E-9 §۳.۳ — بند ۵ بخشنامهٔ ۱۵۵۲۳۳: مبلغِ ردیف‌های دارایِ واحدِ
+  // «مترمکعب کیلومتر» در فصل‌های غیر از فصل حمل، به فصل ۲۸ منتقل می‌شود
+  // تا با شاخص‌های فصل حمل تعدیل شوند.
+  const haulCh = haulTargetChapter();
+  let haulMoved = 0;
   const chapAmt: Record<string, number> = {};
   for (const l of lines) {
-    chapAmt[l.chapter] = (chapAmt[l.chapter] ?? 0) + (l.totalIndexed ?? 0);
+    let ch = l.chapter;
+    if (ch !== haulCh && isHaulUnit(l.unit)) {
+      ch = haulCh;
+      haulMoved += l.totalIndexed ?? 0;
+    }
+    chapAmt[ch] = (chapAmt[ch] ?? 0) + (l.totalIndexed ?? 0);
   }
   const adjustment = runAdjustment(
     settings,
     {
       chapter_amounts: chapAmt,
+      haul_moved_amount: haulMoved,
       floors_amount: floorsAmount,
       base_total: baseTotal,
       site_setup: siteSetup,

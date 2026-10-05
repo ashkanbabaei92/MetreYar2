@@ -152,6 +152,103 @@ export function quarterIsProvisional(quarter: string | null | undefined): boolea
   return Number.isFinite(y) && y >= 1405;
 }
 
+// ═══════ فاز E-9 §۳.۶ — جانشانیِ خودکارِ موقت→قطعی ═══════
+// بند ۳ بخشنامهٔ ۱۴۰۵/۱۴۴۳۷۳: کارکردِ ۱۴۰۵ علی‌الحساب با «ضریب موقت ×
+// ۱۴۰۴Q4» است. هنگامی که شاخصِ قطعیِ یک سه‌ماههٔ ۱۴۰۵ اعلام و در
+// config/index_bulletins.json (بخشِ definitive_1405 با announced=true) وارد
+// شد، موتورها خودبه‌خود از آن استفاده می‌کنند.
+
+/** بخشِ شاخص‌های قطعیِ ۱۴۰۵ config/index_bulletins.json. */
+export function definitive1405Cfg(): Bulletins {
+  return (CFG["definitive_1405"] as Bulletins) ?? {};
+}
+
+/** آیا شاخصِ قطعیِ این سه‌ماهه اعلام *و وارد* شده؟ */
+export function quarterHasDefinitive(
+  quarter: string | null | undefined,
+): boolean {
+  const qs = (definitive1405Cfg()["quarters"] as Bulletins) ?? {};
+  const q = (qs[String(quarter ?? "")] as Bulletins) ?? null;
+  if (!q || q["announced"] !== true) return false;
+  const cfg = definitive1405Cfg();
+  // توجه: [] در JStruthy است (برخلافِ Python) ⇒ باید طول را بررسی کنیم
+  // تا با app.py (bool(d or c)) همگرا باشد (قاعدهٔ طلایی: حدس زده نمی‌شود).
+  const d = (cfg["disciplines"] as any[]) ?? [];
+  const c = (cfg["chapters_abnieh"] as any[]) ?? [];
+  return d.length > 0 || c.length > 0;
+}
+
+/** کلیدِ فیلدِ یک سه‌ماهه در جداولِ definitive_1405 (مثلاً q1_1405). */
+export function definitiveField(
+  quarter: string | null | undefined,
+): string | null {
+  const n = Number(String(quarter ?? "").split("Q")[1]);
+  if (!Number.isFinite(n)) return null;
+  return `q${n}_1405`;
+}
+
+/** شاخصِ قطعیِ یک فصل برای سه‌ماهه‌های ۱۴۰۵. → (مقدار, صفحه). */
+export function definitiveChapterIndex(
+  chapter: string | number,
+  quarter: string | null | undefined,
+): [number, string | number | null] | [null, null] {
+  const field = definitiveField(quarter);
+  if (!field) return [null, null];
+  const code = String(chapter).trim().padStart(2, "0");
+  for (const r of (definitive1405Cfg()["chapters_abnieh"] as any[]) ?? []) {
+    if (String(r["chapter"]).trim().padStart(2, "0") === code) {
+      const v = r[field];
+      return typeof v === "number" ? [v, r["page"] ?? null] : [null, null];
+    }
+  }
+  return [null, null];
+}
+
+/** شاخصِ قطعیِ یک رشته برای سه‌ماهه‌های ۱۴۰۵. → (مقدار, صفحه). */
+export function definitiveDisciplineIndex(
+  quarter: string | null | undefined,
+  discipline = "ابنیه",
+): [number, string | number | null] | [null, null] {
+  const field = definitiveField(quarter);
+  if (!field) return [null, null];
+  for (const r of (definitive1405Cfg()["disciplines"] as any[]) ?? []) {
+    if (r["name"] === discipline) {
+      const v = r[field];
+      return typeof v === "number" ? [v, r["page"] ?? null] : [null, null];
+    }
+  }
+  return [null, null];
+}
+
+// ═══════ فاز E-9 §۳.۳ — بند ۵: فصلِ حملِ ردیف‌های مترمکعب‌کیلومتر ═══════
+// بخشنامهٔ ۱۵۵۲۳۳، پیوست ۳، بند ۵ (صفحهٔ ۲): ردیف‌های پایه‌ای با واحدِ
+// «مترمکعب کیلومتر» که حملِ آن‌ها در فصل‌های غیر از فصل حمل منظور شده،
+// با شاخص‌های فصل حمل همان رشته تعدیل می‌شوند.
+
+/** تنظیماتِ بند ۵ از config/index_bulletins.json (clause5_haul). */
+export function haulClause5(): Bulletins {
+  return (CFG["clause5_haul"] as Bulletins) ?? {};
+}
+
+/** کدِ فصلِ حمل (پیش‌فرض ۲۸). */
+export function haulTargetChapter(): string {
+  return String(haulClause5()["haul_chapter"] ?? "28");
+}
+
+/** آیا واحدِ این ردیف، واحدِ حملِ «مترمکعب کیلومتر» است (بند ۵)؟ */
+export function isHaulUnit(unit: string | null | undefined): boolean {
+  const cfg = haulClause5();
+  if (!cfg || cfg["enabled"] !== true) return false;
+  const norm = (s: string) =>
+    s.replace(/[ ‌\-ـ_]/g, "");
+  const u = norm(String(unit ?? ""));
+  for (const pat of (cfg["haul_units"] as string[]) ?? []) {
+    const p = norm(String(pat ?? ""));
+    if (p && u.includes(p)) return true;
+  }
+  return false;
+}
+
 const PERIOD_LABELS: Record<string, string> = {
   base: "اسفند ۱۴۰۳ (مبنا)",
   q1: "سه‌ماههٔ اول ۱۴۰۴",
@@ -188,7 +285,7 @@ export function jalaliLeap(y: number): boolean {
 
 // ── کمکّی‌های تاریخ شمسی و تقسیم کارکرد بین سه‌ماهه‌ها ──
 
-import { jalaliToGregorian } from "./farsi";
+import { jalaliToGregorian, fmtMoneyVal } from "./farsi";
 
 /** تبدیل تاریخ شمسی به میلادی — از farsi.ts (جستجوی دودویی روی g2j —
  * ایراد ۱۳). دوباره صادر شده تا یک نقطهٔ ورود واحد برای مصرف‌کنندگانِ
@@ -474,14 +571,22 @@ export function quarterIndex(
 ): [number | null, string] {
   const [v] = chapterIndexQ(chapter, quarter);
   if (v !== null) return [v, "قطعی"];
-  if (quarterIsProvisional(quarter) && provisionalCoef) {
-    const [v2] = chapterIndex(chapter, "q4");
-    if (v2 !== null) return [v2 * provisionalCoef, "موقت"];
+  // فاز E-9 §۳.۶: جانشانیِ خودکارِ موقت→قطعی
+  if (quarterIsProvisional(quarter)) {
+    if (quarterHasDefinitive(quarter)) {
+      const [dv] = definitiveChapterIndex(chapter, quarter);
+      if (dv !== null) return [dv, "قطعی"];
+    }
+    if (provisionalCoef) {
+      const [v2] = chapterIndex(chapter, "q4");
+      if (v2 !== null) return [v2 * provisionalCoef, "موقت"];
+    }
   }
   return [null, "ناموجود"];
 }
 
-/** شاخص رشته در یک سه‌ماهه (تجهیز و ردیف‌های بدون شاخص فصل — بند ۴). */
+/** شاخص رشته در یک سه‌ماهه (تجهیز و ردیف‌های بدون شاخص فصل — بند ۴).
+ * فاز E-9 §۳.۶: جانشانیِ خودکارِ موقت→قطعی (مانند quarterIndex). */
 export function quarterDiscipline(
   quarter: string,
   provisionalCoef: number | null,
@@ -493,9 +598,15 @@ export function quarterDiscipline(
     if (v !== null) return [v, "قطعی"];
     return [null, "ناموجود"];
   }
-  if (quarterIsProvisional(quarter) && provisionalCoef) {
-    const [v] = indexValue("q4", discipline);
-    if (v !== null) return [v * provisionalCoef, "موقت"];
+  if (quarterIsProvisional(quarter)) {
+    if (quarterHasDefinitive(quarter)) {
+      const [dv] = definitiveDisciplineIndex(quarter, discipline);
+      if (dv !== null) return [dv, "قطعی"];
+    }
+    if (provisionalCoef) {
+      const [v] = indexValue("q4", discipline);
+      if (v !== null) return [v * provisionalCoef, "موقت"];
+    }
   }
   return [null, "ناموجود"];
 }
@@ -1397,6 +1508,18 @@ export function tadilEngine(
   const chap: Record<string, number> = {};
   for (const [c, v] of Object.entries(ctx.chapter_amounts ?? {})) {
     chap[String(c)] = Number(v) * applied;
+  }
+  // فاز E-9 §۳.۳ — بند ۵: یادداشتِ مبلغِ منتقل‌شده به فصل حمل
+  const haulMoved = Number(ctx.haul_moved_amount ?? 0);
+  if (haulMoved > 0) {
+    warns.push({
+      level: "اطلاع",
+      category: "موتور تعدیل",
+      item: "clause5_haul",
+      message: `مبلغ ${fmtMoneyVal(haulMoved)} از ردیف‌های «مترمکعب کیلومترِ» فصل‌های غیر از فصل حمل به فصل ۲۸ منتقل شد و با شاخص‌های فصل حمل تعدیل می‌شود (بند ۵ بخشنامهٔ ۱۵۵۲۳۳).`,
+      action: "تطبیقِ فهرستِ ردیف‌های حمل را با صورت‌وضعیت بررسی کنید.",
+      ref: "بخشنامهٔ ۱۵۵۲۳۳، پیوست ۳، بند ۵",
+    });
   }
 
   // ── دورهٔ مبنا (Io) — بخشنامهٔ ۲۰۸۰، بندهای ۱-۶-۱ و ۱-۶-۲ ──
@@ -2345,6 +2468,18 @@ export function baravordEngine(
   const chap: Record<string, number> = {};
   for (const [c, v] of Object.entries(ctx.chapter_amounts ?? {})) {
     chap[String(c)] = Number(v) * applied;
+  }
+  // فاز E-9 §۳.۳ — بند ۵: یادداشتِ مبلغِ منتقل‌شده به فصل حمل
+  const bHaulMoved = Number(ctx.haul_moved_amount ?? 0);
+  if (bHaulMoved > 0) {
+    warns.push({
+      level: "اطلاع",
+      category: "موتور برآورد به‌هنگام",
+      item: "clause5_haul",
+      message: `مبلغ ${fmtMoneyVal(bHaulMoved)} از ردیف‌های «مترمکعب کیلومترِ» فصل‌های غیر از فصل حمل به فصل ۲۸ منتقل شد و با شاخص‌های فصل حمل به‌هنگام می‌شود (بند ۵ بخشنامهٔ ۱۵۵۲۳۳).`,
+      action: "تطبیقِ فهرستِ ردیف‌های حمل را با صورت‌وضعیت بررسی کنید.",
+      ref: "بخشنامهٔ ۱۵۵۲۳۳، پیوست ۳، بند ۵",
+    });
   }
   const ioQ = PERIOD_QUARTERS[s.baravordIoPeriod ?? "base"] ?? null;
   // ── بخشنامهٔ ۱۴۴۳۷۴: مهلت تسلیم در تابستان ۱۴۰۵ ⇒ Io ماهانه ──

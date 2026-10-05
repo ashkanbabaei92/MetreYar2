@@ -21,6 +21,15 @@ import os
 import re
 import sys
 
+# خروجیِ استاندارد همیشه UTF-8 باشد — حتی وقتی کدپیجِ کنسول cp1252 است
+# (در غیر این صورت printِ متنِ فارسی با UnicodeEncodeError می‌ایستد و
+# آزمونِ T118 به‌اشتباه fail می‌شد).
+try:
+    sys.stdout.reconfigure(encoding="utf-8")
+    sys.stderr.reconfigure(encoding="utf-8")
+except (AttributeError, OSError):
+    pass
+
 ROOT = os.path.normpath(os.path.join(os.path.dirname(__file__), ".."))
 
 # مستنداتی که ممیزی می‌شوند

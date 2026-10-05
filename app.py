@@ -2921,11 +2921,21 @@ class TechnicalOfficeEngine:
         # هر دو می‌توانند همزمان فعال باشند؛ ورودی، فرمول و خروجی هر کدام
         # جداست و روی زنجیرهٔ مالی بالا اثری ندارد.
         _chap_amt = {}
+        # فاز E-9 §۳.۳ — بند ۵ بخشنامهٔ ۱۵۵۲۳۳: مبلغِ ردیف‌های دارایِ واحدِ
+        # «مترمکعب کیلومتر» در فصل‌های غیر از فصل حمل، به فصل ۲۸ منتقل
+        # می‌شود تا با شاخص‌های فصل حمل تعدیل شوند.
+        _haul_ch = self._haul_target_chapter()
+        _haul_moved = 0.0
         for _l in lines:
-            _chap_amt[_l["chapter"]] = _chap_amt.get(_l["chapter"], 0.0) \
+            _ch = _l["chapter"]
+            if _ch != _haul_ch and self._is_haul_unit(_l.get("unit")):
+                _ch = _haul_ch
+                _haul_moved += (_l.get("total_indexed") or 0.0)
+            _chap_amt[_ch] = _chap_amt.get(_ch, 0.0) \
                 + (_l.get("total_indexed") or 0.0)
         adjustment = self._adjustment({
             "chapter_amounts": _chap_amt,
+            "haul_moved_amount": _haul_moved,
             "floors_amount": floors_amount,
             "base_total": base_total,
             "site_setup": s["site_setup_amount"],
@@ -3098,6 +3108,99 @@ class TechnicalOfficeEngine:
             return int(str(quarter).split("Q")[0]) >= 1405
         except (ValueError, IndexError, AttributeError):
             return False
+
+    # ═══════ فاز E-9 §۳.۶ — جانشانیِ خودکارِ موقت→قطعی ═══════
+    # بند ۳ بخشنامهٔ ۱۴۰۵/۱۴۴۳۷۳: کارکردِ ۱۴۰۵ علی‌الحساب با «ضریب موقت ×
+    # ۱۴۰۴Q4» است. هنگامی که شاخصِ قطعیِ یک سه‌ماههٔ ۱۴۰۵ اعلام و در
+    # config/index_bulletins.json (بخشِ definitive_1405 با announced=true)
+    # وارد شد، موتورها خودبه‌خود از آن استفاده می‌کنند؛ نیازی به تغییرِ
+    # هیچ ورودیِ دیگری نیست.
+
+    @classmethod
+    def _definitive_1405_cfg(cls):
+        """بخشِ شاخص‌های قطعیِ ۱۴۰۵ config/index_bulletins.json."""
+        return (INDEX_BULLETINS or {}).get("definitive_1405") or {}
+
+    @classmethod
+    def _quarter_has_definitive(cls, quarter):
+        """آیا شاخصِ قطعیِ این سه‌ماهه اعلام *و وارد* شده؟
+
+        فقط announced=true کافی نیست؛ باید حداقل یک ردیفِ مقدار هم وارد
+        شده باشد (قاعدهٔ طلایی: هیچ عددی حدس زده نمی‌شود).
+        """
+        qs = cls._definitive_1405_cfg().get("quarters") or {}
+        q = qs.get(str(quarter))
+        if not q or q.get("announced") is not True:
+            return False
+        cfg = cls._definitive_1405_cfg()
+        return bool(cfg.get("disciplines") or cfg.get("chapters_abnieh"))
+
+    @staticmethod
+    def _definitive_field(quarter):
+        """کلیدِ فیلدِ یک سه‌ماهه در جداولِ definitive_1405 (مثلاً q1_1405)."""
+        try:
+            return "q%d_1405" % int(str(quarter).split("Q")[1])
+        except (ValueError, IndexError):
+            return None
+
+    @classmethod
+    def _definitive_chapter_index(cls, chapter, quarter):
+        """شاخصِ قطعیِ یک فصل برای سه‌ماهه‌های ۱۴۰۵. → (مقدار, صفحه)."""
+        field = cls._definitive_field(quarter)
+        if not field:
+            return None, None
+        _code = str(chapter).strip().zfill(2)
+        for r in cls._definitive_1405_cfg().get("chapters_abnieh") or []:
+            if str(r.get("chapter")).strip().zfill(2) == _code:
+                v = r.get(field)
+                return (float(v), r.get("page")) \
+                    if isinstance(v, (int, float)) else (None, None)
+        return None, None
+
+    @classmethod
+    def _definitive_discipline_index(cls, quarter, discipline="ابنیه"):
+        """شاخصِ قطعیِ یک رشته برای سه‌ماهه‌های ۱۴۰۵. → (مقدار, صفحه)."""
+        field = cls._definitive_field(quarter)
+        if not field:
+            return None, None
+        for r in cls._definitive_1405_cfg().get("disciplines") or []:
+            if r.get("name") == discipline:
+                v = r.get(field)
+                return (float(v), r.get("page")) \
+                    if isinstance(v, (int, float)) else (None, None)
+        return None, None
+
+    # ═══════ فاز E-9 §۳.۳ — بند ۵: فصلِ حملِ ردیف‌های مترمکعب‌کیلومتر ═══════
+    # بخشنامهٔ ۱۵۵۲۳۳، پیوست ۳، بند ۵ (صفحهٔ ۲): ردیف‌های پایه‌ای با واحدِ
+    # «مترمکعب کیلومتر» که حملِ آن‌ها در فصل‌های غیر از فصل حمل منظور شده،
+    # با شاخص‌های فصل حمل همان رشته تعدیل می‌شوند. پیاده‌سازی: مبلغِ این
+    # ردیف‌ها هنگامِ تجمیعِ chapter_amounts به فصل ۲۸ منتقل می‌شود، در نتیجه
+    # هم Io و هم It از فصل ۲۸ خوانده می‌شوند.
+
+    @classmethod
+    def _haul_clause5(cls):
+        """تنظیماتِ بند ۵ از config/index_bulletins.json (clause5_haul)."""
+        return (INDEX_BULLETINS or {}).get("clause5_haul") or {}
+
+    @classmethod
+    def _haul_target_chapter(cls):
+        """کدِ فصلِ حمل (پیش‌فرض ۲۸)."""
+        return str((cls._haul_clause5() or {}).get("haul_chapter") or "28")
+
+    @classmethod
+    def _is_haul_unit(cls, unit):
+        """آیا واحدِ این ردیف، واحدِ حملِ «مترمکعب کیلومتر» است (بند ۵)؟"""
+        cfg = cls._haul_clause5()
+        if not cfg or cfg.get("enabled") is not True:
+            return False
+        _norm = str(unit or "").replace(" ", "").replace("‌", "") \
+            .replace("-", "").replace("ـ", "").replace("_", "")
+        for pat in cfg.get("haul_units") or []:
+            p = str(pat).replace(" ", "").replace("‌", "") \
+                .replace("-", "").replace("ـ", "").replace("_", "")
+            if p and p in _norm:
+                return True
+        return False
 
     @classmethod
     def _monthly_cfg(cls):
@@ -3476,30 +3579,46 @@ class TechnicalOfficeEngine:
         """شاخص یک فصل در یک سه‌ماهه؛ سه‌ماهه‌های ۱۴۰۵ به بعد بدون شاخص قطعی
         با «ضریب موقت × قطعی ۱۴۰۴Q4» (بندهای ۲ و ۳ بخشنامهٔ ۱۴۴۳۷۳).
 
+        فاز E-9 §۳.۶: اگر شاخصِ قطعیِ سه‌ماهه اعلام شده باشد (definitive_1405)
+        خودبه‌خود جایگزینِ ضریبِ موقت می‌شود.
+
         خروجی: (مقدار, وضعیت). وضعیت: «قطعی» / «موقت» / «ناموجود».
         """
         v, _pg = self._chapter_index_q(chapter, quarter)
         if v is not None:
             return v, "قطعی"
-        if self._quarter_is_provisional(quarter) and provisional_coef:
-            v, _pg = self._chapter_index(chapter, "q4")
-            if v is not None:
-                return v * float(provisional_coef), "موقت"
+        if self._quarter_is_provisional(quarter):
+            if self._quarter_has_definitive(quarter):
+                dv, _dpg = self._definitive_chapter_index(chapter, quarter)
+                if dv is not None:
+                    return dv, "قطعی"
+            if provisional_coef:
+                v, _pg = self._chapter_index(chapter, "q4")
+                if v is not None:
+                    return v * float(provisional_coef), "موقت"
         return None, "ناموجود"
 
     def _quarter_discipline(self, quarter, provisional_coef, discipline="ابنیه"):
         """شاخص رشته در یک سه‌ماهه (تجهیز، ردیف‌های بدون شاخص فصل — بند ۴،
-        و مسیر رشته‌ایِ بند ۲-۱)."""
+        و مسیر رشته‌ایِ بند ۲-۱).
+
+        فاز E-9 §۳.۶: جانشانیِ خودکارِ موقت→قطعی (مانند _quarter_index).
+        """
         pk = self._QUARTER_PERIOD.get(quarter or "")
         if pk:
             v, _pg = self._index_value(pk, discipline)
             if v is not None:
                 return v, "قطعی"
             return None, "ناموجود"
-        if self._quarter_is_provisional(quarter) and provisional_coef:
-            v, _pg = self._index_value("q4", discipline)
-            if v is not None:
-                return v * float(provisional_coef), "موقت"
+        if self._quarter_is_provisional(quarter):
+            if self._quarter_has_definitive(quarter):
+                dv, _dpg = self._definitive_discipline_index(quarter, discipline)
+                if dv is not None:
+                    return dv, "قطعی"
+            if provisional_coef:
+                v, _pg = self._index_value("q4", discipline)
+                if v is not None:
+                    return v * float(provisional_coef), "موقت"
         return None, "ناموجود"
 
     def _provisional_coef_1405q1(self, discipline="ابنیه", chapter=None):
@@ -3892,6 +4011,18 @@ class TechnicalOfficeEngine:
         # مبالغ فصل‌ها در همان ضریبِ A ضرب می‌شوند تا Σ A_c = A برقرار شود.
         chap = {str(c): float(v) * applied
                 for c, v in (ctx.get("chapter_amounts") or {}).items()}
+        # فاز E-9 §۳.۳ — بند ۵: یادداشتِ مبلغِ منتقل‌شده به فصل حمل
+        _haul_moved = float(ctx.get("haul_moved_amount") or 0.0)
+        if _haul_moved > 0.0:
+            warns.append({
+                "level": "اطلاع", "category": "موتور تعدیل",
+                "item": "clause5_haul",
+                "message": ("مبلغ %s از ردیف‌های «مترمکعب کیلومترِ» فصل‌های "
+                            "غیر از فصل حمل به فصل ۲۸ منتقل شد و با شاخص‌های "
+                            "فصل حمل تعدیل می‌شود (بند ۵ بخشنامهٔ ۱۵۵۲۳۳)."
+                            % fmt_money(_haul_moved)),
+                "action": "تطبیقِ فهرستِ ردیف‌های حمل را با صورت‌وضعیت بررسی کنید.",
+                "ref": "بخشنامهٔ ۱۵۵۲۳۳، پیوست ۳، بند ۵"})
 
         # ── فاز E-6 Part C گام ۷ (حرف c): سقفِ قیمت قابل قبول — نامه-۶ ──
         # «در کارهایی که شاخص مبنایشان طبق ۱-۶-۱ یکم است، سقف قیمت قابل
@@ -4673,6 +4804,18 @@ class TechnicalOfficeEngine:
         # مبالغ فصل‌ها در همان ضریبِ A ضرب می‌شوند تا Σ A_c = A برقرار شود.
         chap = {str(c): float(v) * applied
                 for c, v in (ctx.get("chapter_amounts") or {}).items()}
+        # فاز E-9 §۳.۳ — بند ۵: یادداشتِ مبلغِ منتقل‌شده به فصل حمل
+        _haul_moved = float(ctx.get("haul_moved_amount") or 0.0)
+        if _haul_moved > 0.0:
+            warns.append({
+                "level": "اطلاع", "category": "موتور برآورد به‌هنگام",
+                "item": "clause5_haul",
+                "message": ("مبلغ %s از ردیف‌های «مترمکعب کیلومترِ» فصل‌های "
+                            "غیر از فصل حمل به فصل ۲۸ منتقل شد و با شاخص‌های "
+                            "فصل حمل به‌هنگام می‌شود (بند ۵ بخشنامهٔ ۱۵۵۲۳۳)."
+                            % fmt_money(_haul_moved)),
+                "action": "تطبیقِ فهرستِ ردیف‌های حمل را با صورت‌وضعیت بررسی کنید.",
+                "ref": "بخشنامهٔ ۱۵۵۲۳۳، پیوست ۳، بند ۵"})
         io_q = self._PERIOD_QUARTERS.get(s.get("baravord_io_period") or "base")
         # ── بخشنامهٔ ۱۴۴۳۷۴: مهلت تسلیم در تابستان ۱۴۰۵ ⇒ Io ماهانه ──
         _bd = (s.get("proposal_deadline") or "").strip()
