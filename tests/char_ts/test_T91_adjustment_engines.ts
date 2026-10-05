@@ -1021,8 +1021,8 @@ describe("T91 شیت‌های Excel موتورها", () => {
     const wb = exportWb(res, on(XLS_EXTRA));
     const strs = allStrings(wb);
     expect(strs).toContain("شاخص It هر فصل در هر سه‌ماههٔ کارکرد (ستون زرد = موقت)");
-    expect(strs.some((s) => s.includes("جمع تعدیل (شامل علی‌الحساب)"))).toBe(true);
-    expect(strs.some((s) => s.includes("مبلغ نهایی (A + جمع تعدیل)"))).toBe(true);
+    expect(strs.some((s) => s.includes("جمع تعدیل (شامل علی‌الحساب، ریال)"))).toBe(true);
+    expect(strs.some((s) => s.includes("مبلغ نهایی (A + جمع تعدیل، ریال)"))).toBe(true);
   }, 120000);
 
   it("شیت برآورد: ردیف جمع کل به‌هنگام‌شده", () => {
@@ -1038,8 +1038,8 @@ describe("T91 شیت‌های Excel موتورها", () => {
     expect(wb.SheetNames).toContain("بخش قطعی و علی‌الحساب");
     const strs = allStrings(wb);
     expect(strs.some((s) => s.includes("مابه‌التفاوت موقت و قطعی"))).toBe(false);
-    expect(strs.some((s) => s.includes("بخش قطعی (شاخص‌های قطعی ۱۴۰۴)"))).toBe(true);
-    expect(strs.some((s) => s.includes("بخش علی‌الحساب (شاخص موقت ۱۴۰۵Q1)"))).toBe(true);
+    expect(strs.some((s) => s.includes("بخش قطعی (شاخص‌های قطعی ۱۴۰۴، ریال)"))).toBe(true);
+    expect(strs.some((s) => s.includes("بخش علی‌الحساب (شاخص موقت ۱۴۰۵Q1، ریال)"))).toBe(true);
   }, 120000);
 
   it("رجیستری مقادیر منتظر تأیید: شاخص فصول ابنیه", () => {

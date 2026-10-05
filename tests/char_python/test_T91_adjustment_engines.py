@@ -897,4 +897,4 @@ def test_T91_excel_sheet_renamed_and_has_sections():
     assert "مابه‌التفاوت موقت و قطعی" not in wb
     shared = zipfile.ZipFile(io.BytesIO(data)).read(
         "xl/sharedStrings.xml").decode("utf-8")
-    assert "جمع تعدیل (شامل علی‌الحساب)" in shared
+    assert "جمع تعدیل (شامل علی‌الحساب، ریال)" in shared

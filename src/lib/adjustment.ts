@@ -1009,7 +1009,7 @@ export const PENDING_INTERPRETATIONS: PendingInterpretation[] = [
       "مبلغ برآورد بر اساس قیمت‌های پایه = base_total (بدون ضرایب)، نه grand_total.",
     alternative: "grand_total (شاملِ ضرایب).",
     effect:
-      "در سناریوی مرجع سقف ۱۱e۹ به‌جای ۱۳٫۵۲e۹ — تفاوت ۲٫۵ میلیارد تومان.",
+      "در سناریوی مرجع سقف ۱۱e۹ به‌جای ۱۳٫۵۲e۹ — تفاوت ۲٫۵۲ میلیارد ریال.",
   },
 ];
 

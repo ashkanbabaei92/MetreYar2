@@ -291,7 +291,7 @@ export function exportWorkbook(
   // ── برگه ۲: صورت‌وضعیت / خلاصه‌متره ──
   const boq: Cell[][] = [
     ...headerBlock(meta),
-    ["ردیف", "کد فهرست‌بها", "شرح آیتم", "فصل", "واحد", "مقدار", "بهای واحد", "بهای کل (پایه)", "ضریب تعدیل", "بهای کل (به‌هنگام)", "روش تطبیق", "اطمینان٪", "ارجاع بها", "بهای فهرست", "بهای دستی", "اختلاف ٪", "وضعیت"],
+    ["ردیف", "کد فهرست‌بها", "شرح آیتم", "فصل", "واحد", "مقدار", "بهای واحد (ریال)", "بهای کل (پایه، ریال)", "ضریب تعدیل", "بهای کل (به‌هنگام، ریال)", "روش تطبیق", "اطمینان٪", "ارجاع بها", "بهای فهرست (ریال)", "بهای دستی (ریال)", "اختلاف ٪", "وضعیت"],
   ];
   const boqMerges: XLSX.Range[] = [];
   let currentCh: string | null = null;
@@ -553,13 +553,13 @@ export function exportWorkbook(
               : sp.length === 1 ? quarterLabel(sp[0][0]) : "—",
             "تقسیم کارکرد بین سه‌ماهه‌ها (بر اساس روزها)", "", "", "", "", ""]);
     t.push([]);
-    t.push(["زنجیرهٔ مبلغ پایه (A)", "", "", "", "", "", "", ""]);
+    t.push(["زنجیرهٔ مبلغ پایه (A) — مبالغ به ریال", "", "", "", "", "", "", ""]);
     for (const c2 of tadil.chain) {
       t.push([c2[0], moneyCell(c2[1]), c2[2], "", "", "", "", ""]);
     }
     t.push([]);
-    t.push(["فصل", "عنوان فصل", "مبلغ پایه (A_c)", "شاخص Io", "شاخص It",
-            "نسبت It/Io", "مبلغ تعدیل (ΔP_c)", "وضعیت و منبع"]);
+    t.push(["فصل", "عنوان فصل", "مبلغ پایه (A_c، ریال)", "شاخص Io", "شاخص It",
+            "نسبت It/Io", "مبلغ تعدیل (ΔP_c، ریال)", "وضعیت و منبع"]);
     for (const r of tadil.chapters) {
       t.push([r.chapter, r.title, moneyCell(r.amount),
               numCell(r.io, 1), r.it !== null ? numCell(r.it, 1) : "—",
@@ -621,29 +621,29 @@ export function exportWorkbook(
       t.push([]);
     }
     if (!tadil.incomplete) {
-      t.push(["جمع تعدیل (شامل علی‌الحساب)",
+      t.push(["جمع تعدیل (شامل علی‌الحساب، ریال)",
               `k × Σ_c (It_c/Io_c − 1) × A_c = ${Math.round(tadil.delta_p).toLocaleString("en-US")}`,
               `ضریب k = ${tadil.coef.toFixed(2)}`, "", "", "", "", ""]);
       const [, dpDef, dpProv] = splitRounded(tadil.delta_p, tadil.delta_p_definitive, 0);
       if (Math.abs(dpProv) >= 1) {
-        t.push(["بخش قطعی (شاخص‌های قطعی ۱۴۰۴)", moneyCell(dpDef),
+        t.push(["بخش قطعی (شاخص‌های قطعی ۱۴۰۴، ریال)", moneyCell(dpDef),
                 "مجموع با شاخص‌های قطعی ۱۴۰۴", "", "", "", "", ""]);
-        t.push(["بخش علی‌الحساب (شاخص موقت ۱۴۰۵Q1)", moneyCell(dpProv),
+        t.push(["بخش علی‌الحساب (شاخص موقت ۱۴۰۵Q1، ریال)", moneyCell(dpProv),
                 "علی‌الحساب = ضریب موقت × قطعی ۱۴۰۴Q4", "", "", "", "", ""]);
       }
       // ── فاز E-6: مابه‌التفاوت تبصرهٔ ۲ (بند ۸-۴) ──
       if (Math.abs(tadil.k_diff) >= 0.01) {
-        t.push(["مابه‌التفاوت k = ۰٫۹۵ → ۱ (تبصرهٔ ۲ — همراه قطعی، بند ۸-۴)",
+        t.push(["مابه‌التفاوت k = ۰٫۹۵ → ۱ (تبصرهٔ ۲ — همراه قطعی، بند ۸-۴، ریال)",
                 moneyCell(tadil.k_diff),
                 "همزمان با صورت‌وضعیت قطعی پرداخت می‌شود", "", "", "", "", ""]);
       }
       // ── فاز E-6 Part C گام ۴: کسر ۵٪ فسخ با قصور (بند ۷) ──
       if (Math.abs(tadil.deduction_fault) >= 0.01) {
-        t.push(["کسر ۵٪ — فسخ با قصور پیمانکار (بند ۷)",
+        t.push(["کسر ۵٪ — فسخ با قصور پیمانکار (بند ۷، ریال)",
                 moneyCell(-tadil.deduction_fault),
                 "۵٪ از مبلغ تعدیل کسر می‌شود", "", "", "", "", ""]);
       }
-      t.push(["مبلغ نهایی (A + جمع تعدیل)", moneyCell(tadil.result_amount),
+      t.push(["مبلغ نهایی (A + جمع تعدیل، ریال)", moneyCell(tadil.result_amount),
               `وضعیت: ${tadil.draft ? "پیش‌نویس" : "تأییدشده"}`, "", "", "", "", ""]);
       const p = tadil.params;
       t.push(["شرط تأخیر", tadil.delay_mode,
@@ -675,13 +675,13 @@ export function exportWorkbook(
     b.push(["دورهٔ مبنا (Io)", ioLabel(baravord), "", "", "", "", "", ""]);
     b.push(["دورهٔ انجام کار (It)", quarterLabel(baravord.it_q), "", "", "", "", "", ""]);
     b.push([]);
-    b.push(["زنجیرهٔ مبلغ پایه (A)", "", "", "", "", "", "", ""]);
+    b.push(["زنجیرهٔ مبلغ پایه (A) — مبالغ به ریال", "", "", "", "", "", "", ""]);
     for (const c2 of baravord.chain) {
       b.push([c2[0], moneyCell(c2[1]), c2[2], "", "", "", "", ""]);
     }
     b.push([]);
-    b.push(["فصل", "عنوان فصل", "مبلغ پایه (A_c)", "شاخص Io", "شاخص It",
-            "نسبت It/Io", "مبلغ به‌هنگام‌شده", "وضعیت و منبع"]);
+    b.push(["فصل", "عنوان فصل", "مبلغ پایه (A_c، ریال)", "شاخص Io", "شاخص It",
+            "نسبت It/Io", "مبلغ به‌هنگام‌شده (ریال)", "وضعیت و منبع"]);
     for (const r of baravord.chapters) {
       b.push([r.chapter, r.title, moneyCell(r.amount),
               numCell(r.io, 1), r.it !== null ? numCell(r.it, 1) : "—",
@@ -704,7 +704,7 @@ export function exportWorkbook(
     }
     b.push([]);
     if (!baravord.incomplete) {
-      b.push(["برآورد به‌هنگام‌شده",
+      b.push(["برآورد به‌هنگام‌شده (ریال)",
               `A_new = Σ_c A_c × It_c/Io_c = ${Math.round(baravord.result_amount).toLocaleString("en-US")}`,
               `وضعیت: ${baravord.draft ? "پیش‌نویس" : "تأییدشده"}`, "", "", "", "", ""]);
       b.push(["جمع کل به‌هنگام‌شده (قیمت پیمان)", moneyCell(baravord.grand_updated),
@@ -724,8 +724,9 @@ export function exportWorkbook(
     if (!hasProv) {
       d.push(["در این محاسبه بخش علی‌الحساب وجود ندارد — دورهٔ انجام کار داخل سه‌ماهه‌های قطعی ۱۴۰۴ است یا ضریب موقت ۱۴۰۵Q1 وارد نشده است.", "", "", "", "", "", ""]);
     }
-    d.push(["فصل", "عنوان فصل", "مبلغ پایه (A_c)", "بخش قطعی", "بخش علی‌الحساب",
-            "جمع تعدیل (شامل علی‌الحساب)", "توضیح"]);
+    d.push(["فصل", "عنوان فصل", "مبلغ پایه (A_c، ریال)", "بخش قطعی (ریال)",
+            "بخش علی‌الحساب (ریال)",
+            "جمع تعدیل (شامل علی‌الحساب، ریال)", "توضیح"]);
     let td = 0;
     let tp = 0;
     for (const r of tadil.chapters) {

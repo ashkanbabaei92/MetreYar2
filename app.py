@@ -5364,9 +5364,9 @@ class ExcelExporter:
         row = self._header_block(ws, F, meta, 17)
         row = self._row(ws, row,
                         ["ردیف", "کد فهرست‌بها", "شرح آیتم", "فصل", "واحد", "مقدار",
-                         "بهای واحد", "بهای کل (پایه)", "ضریب تعدیل",
-                         "بهای کل (به‌هنگام)", "روش تطبیق", "اطمینان٪", "ارجاع بها",
-                         "بهای فهرست", "بهای دستی", "اختلاف ٪", "وضعیت"],
+                         "بهای واحد (ریال)", "بهای کل (پایه، ریال)", "ضریب تعدیل",
+                         "بهای کل (به‌هنگام، ریال)", "روش تطبیق", "اطمینان٪", "ارجاع بها",
+                         "بهای فهرست (ریال)", "بهای دستی (ریال)", "اختلاف ٪", "وضعیت"],
                         [F["thead"]] * 17)
         current_ch = None
         line_rows = []
@@ -5483,8 +5483,8 @@ class ExcelExporter:
         # واقعی برای محاسبات Excel (مرتب‌سازی/تفاضل تاریخ). ستون‌های I و J.
         ws.set_column(8, 9, 12, F["date_iso"], {"hidden": True})
         row = self._header_block(ws, F, meta, 10)
-        row = self._row(ws, row, ["شماره صورت‌وضعیت", "نوع", "دوره از", "دوره تا", "ناخالص تجمعی",
-                                  "کسورات تجمعی", "خالص تجمعی", "کارکرد این دوره",
+        row = self._row(ws, row, ["شماره صورت‌وضعیت", "نوع", "دوره از", "دوره تا", "ناخالص تجمعی (ریال)",
+                                  "کسورات تجمعی (ریال)", "خالص تجمعی (ریال)", "کارکرد این دوره (ریال)",
                                   "دوره از (میلادی)", "دوره تا (میلادی)"], [F["thead"]] * 10)
         prev = None
         for h in history:
@@ -5710,14 +5710,14 @@ class ExcelExporter:
                                       "", "", "", "", ""],
                                      [F["label"], F["label"], F["label"]] + [F["cell"]] * 5)
             row += 1
-            row = self._row(ws, row, ["زنجیرهٔ مبلغ پایه (A)", "", "", "", "", "", "", ""],
+            row = self._row(ws, row, ["زنجیرهٔ مبلغ پایه (A) — مبالغ به ریال", "", "", "", "", "", "", ""],
                                      [F["chapter"]] * 8)
             for _lbl, _amt, _note in (_tadil.get("chain") or []):
                 row = self._row(ws, row, [_lbl, fa_float(_amt, 0), _note, "", "", "", "", ""],
                                          [F["label"], F["money"], F["label"]] + [F["cell"]] * 5)
             row += 1
-            row = self._row(ws, row, ["فصل", "عنوان فصل", "مبلغ پایه (A_c)", "شاخص Io",
-                                      "شاخص It", "نسبت It/Io", "مبلغ تعدیل (ΔP_c)",
+            row = self._row(ws, row, ["فصل", "عنوان فصل", "مبلغ پایه (A_c، ریال)", "شاخص Io",
+                                      "شاخص It", "نسبت It/Io", "مبلغ تعدیل (ΔP_c، ریال)",
                                       "وضعیت و منبع"], [F["thead"]] * 8)
             for _r in _tadil.get("chapters") or []:
                 row = self._row(ws, row,
@@ -5821,7 +5821,7 @@ class ExcelExporter:
                              F["warn_y"], F["cell"]])
                 row += 1
             if not _tadil.get("incomplete"):
-                row = self._row(ws, row, ["جمع تعدیل (شامل علی‌الحساب)",
+                row = self._row(ws, row, ["جمع تعدیل (شامل علی‌الحساب، ریال)",
                                           "k × Σ_c (It_c/Io_c − 1) × A_c = "
                                           + fa_float(_tadil.get("delta_p") or 0, 0),
                                           "ضریب k = " + fa_float(_tadil.get("coef") or 0, 2),
@@ -5831,29 +5831,39 @@ class ExcelExporter:
                     _tadil.get("delta_p") or 0.0,
                     _tadil.get("delta_p_definitive") or 0.0)
                 if abs(_dp_prov) >= 0.01:
-                    row = self._row(ws, row, ["بخش قطعی (شاخص‌های قطعی ۱۴۰۴)",
+                    row = self._row(ws, row, ["بخش قطعی (شاخص‌های قطعی ۱۴۰۴، ریال)",
                                               fa_float(_dp_def, 0),
                                               "مجموع با شاخص‌های قطعی ۱۴۰۴",
                                               "", "", "", "", ""],
                                              [F["label"], F["money"], F["label"]]
                                              + [F["cell"]] * 5)
-                    row = self._row(ws, row, ["بخش علی‌الحساب (شاخص موقت ۱۴۰۵ — بند ۳)",
+                    row = self._row(ws, row, ["بخش علی‌الحساب (شاخص موقت ۱۴۰۵Q1، ریال)",
                                               fa_float(_dp_prov, 0),
                                               "علی‌الحساب = ضریب موقت × قطعی ۱۴۰۴Q4",
                                               "", "", "", "", ""],
                                              [F["label"], F["money"], F["warn_y"]]
                                              + [F["cell"]] * 5)
+                # ── فاز E-6: مابه‌التفاوت تبصرهٔ ۲ (بند ۸-۴) ──
+                if abs(_tadil.get("k_diff") or 0) >= 0.01:
+                    row = self._row(
+                        ws, row,
+                        ["مابه‌التفاوت k = ۰٫۹۵ → ۱ (تبصرهٔ ۲ — همراه قطعی، بند ۸-۴، ریال)",
+                         fa_float(_tadil.get("k_diff") or 0, 0),
+                         "همزمان با صورت‌وضعیت قطعی پرداخت می‌شود",
+                         "", "", "", "", ""],
+                        [F["label"], F["money"], F["warn_y"]]
+                        + [F["cell"]] * 5)
                 # ── فاز E-6 Part C گام ۴: کسر ۵٪ فسخ با قصور (بند ۷) ──
                 if abs(_tadil.get("deduction_fault") or 0) >= 0.01:
                     row = self._row(
                         ws, row,
-                        ["کسر ۵٪ — فسخ با قصور پیمانکار (بند ۷)",
+                        ["کسر ۵٪ — فسخ با قصور پیمانکار (بند ۷، ریال)",
                          fa_float(-(_tadil.get("deduction_fault") or 0), 0),
                          "۵٪ از مبلغ تعدیل کسر می‌شود",
                          "", "", "", "", ""],
                         [F["label"], F["money"], F["warn_y"]]
                         + [F["cell"]] * 5)
-                row = self._row(ws, row, ["مبلغ نهایی (A + جمع تعدیل)",
+                row = self._row(ws, row, ["مبلغ نهایی (A + جمع تعدیل، ریال)",
                                           fa_float(_tadil.get("result_amount") or 0, 0),
                                           "وضعیت: " + ("پیش‌نویس" if _tadil.get("draft")
                                                        else "تأییدشده"),
@@ -5904,14 +5914,14 @@ class ExcelExporter:
                                       _quarter_label(_baravord.get("it_q")), "", "", "", "", "", ""],
                                      [F["label"], F["label"]] + [F["cell"]] * 6)
             row += 1
-            row = self._row(ws, row, ["زنجیرهٔ مبلغ پایه (A)", "", "", "", "", "", "", ""],
+            row = self._row(ws, row, ["زنجیرهٔ مبلغ پایه (A) — مبالغ به ریال", "", "", "", "", "", "", ""],
                                      [F["chapter"]] * 8)
             for _lbl, _amt, _note in (_baravord.get("chain") or []):
                 row = self._row(ws, row, [_lbl, fa_float(_amt, 0), _note, "", "", "", "", ""],
                                          [F["label"], F["money"], F["label"]] + [F["cell"]] * 5)
             row += 1
-            row = self._row(ws, row, ["فصل", "عنوان فصل", "مبلغ پایه (A_c)", "شاخص Io",
-                                      "شاخص It", "نسبت It/Io", "مبلغ به‌هنگام‌شده",
+            row = self._row(ws, row, ["فصل", "عنوان فصل", "مبلغ پایه (A_c، ریال)", "شاخص Io",
+                                      "شاخص It", "نسبت It/Io", "مبلغ به‌هنگام‌شده (ریال)",
                                       "وضعیت و منبع"], [F["thead"]] * 8)
             for _r in _baravord.get("chapters") or []:
                 row = self._row(ws, row,
@@ -5948,7 +5958,7 @@ class ExcelExporter:
                                  F["money_b"], F["warn_y"]])
             row += 1
             if not _baravord.get("incomplete"):
-                row = self._row(ws, row, ["برآورد به‌هنگام‌شده",
+                row = self._row(ws, row, ["برآورد به‌هنگام‌شده (ریال)",
                                           "A_new = Σ_c A_c × It_c/Io_c = "
                                           + fa_float(_baravord.get("result_amount") or 0, 0),
                                           "وضعیت: " + ("پیش‌نویس" if _baravord.get("draft")
@@ -5994,9 +6004,9 @@ class ExcelExporter:
                                           "یا ضریب موقت ۱۴۰۵Q1 وارد نشده است."]
                                           + [""] * 6, [F["label"]] * 7)
 
-            row = self._row(ws, row, ["فصل", "عنوان فصل", "مبلغ پایه (A_c)",
-                                       "بخش قطعی", "بخش علی‌الحساب",
-                                       "جمع تعدیل (شامل علی‌الحساب)", "توضیح"],
+            row = self._row(ws, row, ["فصل", "عنوان فصل", "مبلغ پایه (A_c، ریال)",
+                                       "بخش قطعی (ریال)", "بخش علی‌الحساب (ریال)",
+                                       "جمع تعدیل (شامل علی‌الحساب، ریال)", "توضیح"],
                                       [F["thead"]] * 7)
 
             _td = 0.0
@@ -7038,7 +7048,7 @@ PENDING_INTERPRETATIONS = [
      "مبلغ برآورد بر اساس قیمت‌های پایه = base_total (بدون ضرایب)، نه "
      "grand_total.",
      "grand_total (شاملِ ضرایب).",
-     "در سناریوی مرجع سقف ۱۱e۹ به‌جای ۱۳٫۵۲e۹ — تفاوت ۲٫۵ میلیارد تومان."),
+     "در سناریوی مرجع سقف ۱۱e۹ به‌جای ۱۳٫۵۲e۹ — تفاوت ۲٫۵۲ میلیارد ریال."),
 ]
 
 # ── فاز E-6 Part C گام ۶ (حرف b): مسیر شاخص — بندهای ۲-۱/۲-۲ ──

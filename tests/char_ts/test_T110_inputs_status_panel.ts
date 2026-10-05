@@ -76,7 +76,7 @@ describe("T110 — پنلِ وضعیت ورودی‌ها (گام ۱۲)", () => {
     const e = ceil[0];
     expect(e.implemented).toContain("base_total");
     expect(e.alternative).toContain("grand_total");
-    expect(e.effect).toContain("۲٫۵ میلیارد");
+    expect(e.effect).toContain("۲٫۵۲ میلیارد ریال");
   });
 
   // ── ۴) شیتِ Excel «مقادیر منتظر تأیید» جدول را در بر دارد ──

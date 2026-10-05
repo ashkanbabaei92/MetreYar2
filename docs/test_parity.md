@@ -3,8 +3,8 @@
 تاریخ: ۱۴۰۵/۰۷/۱۴ (تحویلِ Parts C/D/E فاز E-6). منبعِ اعداد: خروجیِ رسمیِ
 خودِ runnerها (`pytest --collect-only -q` و خروجیِ per-fileِ vitest).
 
-- **Python:** ۷۵۶ test در ۶۳ فایل (۷۵۵ passed + ۱ xfailed از T111).
-- **TypeScript:** ۷۳۰ test در ۶۲ فایل (۷۲۹ passed + ۱ expected fail از T111).
+- **Python:** ۷۶۸ test در ۶۵ فایل (۷۶۷ passed + ۱ xfailed از T111).
+- **TypeScript:** ۷۴۲ test در ۶۴ فایل (۷۴۱ passed + ۱ expected fail از T111).
 - **Δ = +۲۶ (py بیشتر).**
 
 قاعده: پاریتی روی **سناریوها و اعدادِ مرجع** سنجیده می‌شود، نه روی
@@ -85,7 +85,9 @@
 | test_number_batch | ۱ | ۰ | +۱ | — | فقط py: batch عدد |
 | test_T111_issues_15_18 | ۴ (۳+xfail) | ۴ (۳+xfail) | ۰ | ✅ | Issues ۱۵–۱۸: جایگاهِ xfail تا رسیدنِ سند |
 | test_T112_quality_parity | ۶ | ۶ | ۰ | ✅ | Part E شکاف ۷: پاریتیِ معیارهای quality + زنجیرهٔ مالی + mapping |
-| **جمع** | **۷۵۶** | **۷۳۰** | **+۲۶** | | |
+| test_T113_baravord_reference_numbers | ۵ | ۵ | ۰ | ✅ | فاز E-۷ بخش ۱: قفلِ دو عددِ برآورد (۴۵.۴۴ / ۵۲.۳۹ میلیارد ریال) |
+| test_T114_excel_currency_units | ۷ | ۷ | ۰ | ✅ | فاز E-۷ بخش ۲: برچسبِ «ریال» روی ستون‌های پولی + تابعِ نمایش |
+| **جمع** | **۷۶۸** | **۷۴۲** | **+۲۶** | | |
 
 ## نتیجه
 

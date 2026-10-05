@@ -167,11 +167,18 @@ export interface MoneyFormatOpts {
 }
 
 export function fmtMoneyVal(rial: number, opts: MoneyFormatOpts = {}): string {
-  const { currency = "rial", rounding = false, withUnit = true } = opts;
+  // پیش‌فرضِ rounding = true — همگام با fmt_money در app.py (هر دو موتور
+  // ریال محاسبه می‌شوند؛ این فقط تابعِ نمایش است و هرگز روی اعداد اثر
+  // ندارد). آزمون: T114.
+  const { currency = "rial", rounding = true, withUnit = true } = opts;
   let v = rounding ? Math.round(rial / 1000) * 1000 : Math.round(rial);
   let out: string;
   if (currency === "toman") {
-    out = (v / 10).toLocaleString("en-US", { maximumFractionDigits: 1 });
+    // همگام با fmt_money در app.py: تومان همیشه ۱ رقم اعشار (مثلاً ۱۰۰٫۰).
+    out = (v / 10).toLocaleString("en-US", {
+      minimumFractionDigits: 1,
+      maximumFractionDigits: 1,
+    });
   } else {
     out = v.toLocaleString("en-US", { maximumFractionDigits: 0 });
   }

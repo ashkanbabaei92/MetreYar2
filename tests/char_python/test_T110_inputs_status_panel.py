@@ -75,7 +75,7 @@ def test_T110_ceiling_entry_has_numeric_effect():
     assert len(ceil) == 1
     _no, _s, impl, alt, eff = ceil[0]
     assert "base_total" in impl and "grand_total" in alt
-    assert "۲٫۵ میلیارد" in eff
+    assert "۲٫۵۲ میلیارد ریال" in eff
 
 
 # ── ۴) شیتِ Excel «مقادیر منتظر تأیید» جدول را در بر دارد ──
