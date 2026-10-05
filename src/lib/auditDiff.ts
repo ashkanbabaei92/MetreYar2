@@ -52,7 +52,7 @@ export const SETTING_LABELS: Record<string, string> = {
   disciplineIndexManual: "شاخص دستی رشته",
   provisionalCoef1405q1: "ضریب موقت ۱۴۰۵Q1",
   tadilCoef: "ضریب k تعدیل",
-  completedWithinTerm: "اتمام کار در مدت پیمان (تبصرهٔ ۲)",
+  completedWithinTerm: "وضعیت اتمام کار در مدت پیمان (الزامی — تبصرهٔ ۲)",
   coefRounding2080: "گردکردن ضریب تعدیل (بند ۸-۲)",
   baseIndexMethod: "روش شاخص مبنا (بند ۱-۶)",
   finalOfferDate: "تاریخ پیشنهاد نهایی (ترک تشریفات)",

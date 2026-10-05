@@ -51,9 +51,9 @@ NEW_ITEM_1E9 = dict(new_item_amount=1e9, new_item_base_period="1404Q1")
 #       data = نیازمند دادهٔ خارجی؛ special = محاسبهٔ ویژه
 SCENARIOS = [
     {"id": "D-01", "kind": "setting",
-     "subject": "ضریب k: ۰٫۹۵ یا ۱",
-     "a": "۰٫۹۵ موقت → ۱ در قطعی (الان)",
-     "b": "۱ از همان ابتدا",
+     "subject": "ضریب k — دادهٔ ورودیِ الزامی",
+     "a": "نامشخص/خیر ⇒ ۰٫۹۵ (الان)",
+     "b": "«بله» ⇒ ۱ (تبصرهٔ ۲)",
      "flip": {"completed_within_term": True}},
     {"id": "D-02", "kind": "code",
      "subject": "گرانولاریتیِ گردکردن (هر سه‌ماهه یا کل)",
