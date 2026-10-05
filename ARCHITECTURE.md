@@ -344,7 +344,7 @@ src/
 
 ### وضعیت فعلی
 
-- **Python: ۷۶۷ passed + ۱ xfailed** (pytest) / ۶۵ فایل (شاملِ T113 و T114ِ فاز E-۷)
+- **Python: ۷۷۹ passed + ۱ xfailed** (pytest) / ۶۶ فایل (شاملِ T113، T114، T115ِ فاز E-۷)
 - **TypeScript: ۷۴۱ passed + ۱ expected fail / ۶۴ فایل** (vitest)
 - `tsc --noEmit` تمیز · `vite build` موفق
 - اجرای یکجا: `.\run_all_tests.ps1` (pytest + vitest + tsc + vite build + چاپ اعداد مرجع)
@@ -1288,11 +1288,11 @@ ts 729+1xf`، تگ `v0.9-e6`).
 
 | زبان | آزمون | فایل | نتیجه |
 |---|---|---|---|
-| Python | pytest | ۶۵ | **۷۶۷ passed + ۱ xfailed** (۷۶۸ collected) |
+| Python | pytest | ۶۶ | **۷۷۹ passed + ۱ xfailed** (۷۸۰ collected) |
 | TypeScript | vitest | ۶۴ | **۷۴۲** (۷۴۱ passed + ۱ expected fail) |
 | TypeScript | tsc `--noEmit` | — | clean |
 | TypeScript | vite build | — | clean |
 
-تفاوتِ ۷۶۸−۷۴۲ = ۲۶ به `parametrize` در پایتون برمی‌گردد (سناریوها یکسانند) —
-جزئیاتِ کامل در `docs/test_parity.md`.
+تفاوتِ ۷۸۰−۷۴۲ = ۳۸ به `parametrize` در پایتون و فایل‌های تک‌زبانه برمی‌گردد
+(سناریوهای اصلی یکسانند) — جزئیاتِ کامل در `docs/test_parity.md`.
 

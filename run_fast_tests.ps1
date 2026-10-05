@@ -26,7 +26,7 @@ function Step($name, $script) {
     Write-Host "=== $name" -ForegroundColor Cyan
     $out = & $script 2>&1 | Out-String
     $code = $LASTEXITCODE
-    $tail = ($out -split "`n" | Select-Object -Last 6) -join "`n"
+    $tail = ($out -split "`n" | Select-Object -Last 10) -join "`n"
     Write-Host $tail
     if ($code -ne 0) { Write-Host "  -> FAILED (exit $code)" -ForegroundColor Red }
     else             { Write-Host "  -> OK" -ForegroundColor Green }

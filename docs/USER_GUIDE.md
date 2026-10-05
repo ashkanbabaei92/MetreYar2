@@ -83,7 +83,19 @@
 - **وارد کردن مجدد**: شیتِ «قیمت‌های دستی» دوباره خوانده می‌شود
   (`parse_manual_entries_xlsx`).
 
-## ۷. اجرا
+## ۷. پروژهٔ نمونه و اعتبارسنجی
+
+- **پروژهٔ نمونه** (`examples/sample_project/`): پروفایل + Excelِ ازپیش‌تولیدشده
+  از یک پروژهٔ کاملاً ناشناس با اعدادِ پروژهٔ مرجع. دوباره تولید:
+  `python examples/sample_project/generate_sample.py`.
+- **اعتبارسنجیِ اعداد** (`tools/validate_against_reference.py`): موتور یا یک
+  فایل Excel را در برابر اعدادِ مرجع با تلرانسِ ۱ ریال بررسی می‌کند:
+  ```
+  python tools/validate_against_reference.py
+  python tools/validate_against_reference.py --xlsx examples/sample_project/sample_output.xlsx
+  ```
+
+## ۸. اجرا
 
 ```bash
 # پایتون (Streamlit)
@@ -92,6 +104,9 @@ streamlit run app.py
 # تایپ‌اسکریپت (React + Vite)
 npm run dev
 
-# گیتِ کامل
+# گیتِ کامل (~۳۵ دقیقه)
 powershell -File run_all_tests.ps1
+
+# گیتِ سریع (~۲٫۳ دقیقه — بدونِ آزمون‌های خطِ لولهٔ کامل)
+powershell -File run_fast_tests.ps1
 ```
