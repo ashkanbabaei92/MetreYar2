@@ -109,9 +109,12 @@ streamlit run app.py
 
 - `ACCEPTANCE.md` — چک‌لیست تحویل: ماتریس بندها، اعداد مرجع، ریشه‌یابی‌ها
 - `docs/PENDING_DECISIONS.md` — ۲۰ تصمیمِ باز + ۱۸ ایراد + سه تصمیم دارای اثر عددی
+- `docs/DECISION_SHEET.md` — برگهٔ تصمیم (فارسیِ ساده، مرتب بر اساسِ اثرِ ریالی) + نسخهٔ Word
+- `docs/DATA_REQUEST.md` — اسناد و داده‌های موردنیاز از شرکت برای بستنِ تصمیمات و اعتبارسنجی
 - `ARCHITECTURE.md` — معماری، schema تنظیمات، جریان‌های قرارداد
 - `docs/test_parity.md` — حسابرسی تست‌های py در برابر ts
 - `docs/sources/2080_summary.md` — متن وفادار بخشنامهٔ ۲۰۸۰
+- `templates/reference_statement_template.xlsx` — قالبِ صورت‌وضعیتِ مرجع برای پر کردن
 - `CHANGELOG.md` — تاریخچهٔ نسخه‌ها
 
 ---
@@ -157,8 +160,9 @@ streamlit run app.py
 ```
 
 A ready-made anonymous sample project (profile + generated Excel) is in
-`examples/sample_project/`; check it against the reference numbers with
-`python tools/validate_against_reference.py`.
+`examples/sample_project/` — its amounts are scaled by a fixed 0.8 factor for
+anonymization, so validate it with
+`python tools/validate_against_reference.py --xlsx examples/sample_project/sample_output.xlsx --scale 0.8`.
 
 **Quality:** 780 Python + 742 TypeScript tests; engines are bit-identical
 (test T112); every reference number is traceable to a PDF page or clause

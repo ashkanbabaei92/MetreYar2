@@ -87,14 +87,20 @@
 ## ۷. پروژهٔ نمونه و اعتبارسنجی
 
 - **پروژهٔ نمونه** (`examples/sample_project/`): پروفایل + Excelِ ازپیش‌تولیدشده
-  از یک پروژهٔ کاملاً ناشناس با اعدادِ پروژهٔ مرجع. دوباره تولید:
-  `python examples/sample_project/generate_sample.py`.
+  از یک پروژهٔ کاملاً ناشناس. مبالغ با **ضریبِ ثابتِ ۰٫۸** مقیاس شده‌اند تا
+  پروژهٔ واقعی قابلِ شناسایی نباشد (کمیت‌ها و ضرایب دست‌نخورده‌اند).
+  دوباره تولید: `python examples/sample_project/generate_sample.py`.
 - **اعتبارسنجیِ اعداد** (`tools/validate_against_reference.py`): موتور یا یک
-  فایل Excel را در برابر اعدادِ مرجع با تلرانسِ ۱ ریال بررسی می‌کند:
+  فایل Excel را در برابر اعدادِ مرجع با تلرانسِ ۱ ریال بررسی می‌کند. برای
+  پروژهٔ نمونه حتماً `--scale 0.8` بدهید:
   ```
   python tools/validate_against_reference.py
-  python tools/validate_against_reference.py --xlsx examples/sample_project/sample_output.xlsx
+  python tools/validate_against_reference.py --xlsx examples/sample_project/sample_output.xlsx --scale 0.8
   ```
+- **قالبِ صورت‌وضعیتِ مرجع** (`templates/reference_statement_template.xlsx`):
+  قالبی برای پر کردن توسط شرکت — راهنما در شیتِ اولِ همان فایل است.
+- **اسنادِ موردنیاز** (`docs/DATA_REQUEST.md`): فهرستِ داده‌هایی که برای
+  بستنِ تصمیماتِ باز (D-19/D-20 و ...) و اعتبارسنجیِ نهایی لازم است.
 
 ## ۸. اجرا
 

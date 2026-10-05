@@ -7,7 +7,10 @@
 #   sample_output.xlsx  — خروجی Excel شش‌برگه
 #
 # تمامِ مشخصاتِ شناسایی‌کننده (نام پروژه، کارفرما، پیمانکار) ناشناس‌اند.
-# اعدادِ خروجی دقیقاً همان اعدادِ خطِ لولهٔ پروژهٔ مرجع هستند (تست T113).
+# اعدادِ پولی هم با ضریبِ ثابتِ ANON_SCALE (۰٫۸) مقیاس شده‌اند تا پروژهٔ
+# واقعی از روی مبالغ قابلِ شناسایی نباشد. منطقِ موتور و ضرایب دست‌نخورده
+# است؛ برای بازبینی، tools/validate_against_reference.py --scale 0.8 را
+# روی sample_output.xlsx اجرا کنید.
 #
 # اجرا:  python examples/sample_project/generate_sample.py
 import json
@@ -33,6 +36,28 @@ from app import (DynamoMappingParser, ExcelExporter, RevitScheduleParser,
 OUT_DIR = os.path.dirname(os.path.abspath(__file__))
 REVIT_DIR = os.path.join(ROOT, "data", "export revit")
 DYNAMO_DIR = os.path.join(ROOT, "data", "dynamo")
+
+# ── ناشناس‌سازیِ اعداد (فاز E-8 §۶.۳) ──
+# پروژهٔ نمونه نباید قابلِ شناسایی باشد. به همین دلیل همهٔ قیمت‌های
+# واحدِ فهرست‌بها در این ضریبِ ثابت ضرب می‌شوند. کمیت‌ها (مساحت، وزن
+# میلگرد و ...) و ضرایب (It/Io، بالاسری، منطقه‌ای، پیشنهادی) دست‌نخورده
+# می‌مانند، پس همهٔ خروجی‌های پولی (base_total، grand_total، ΔP، برآورد)
+# دقیقاً ANON_SCALE برابر می‌شوند و نمونه از نظرِ منطقِ موتور کاملاً
+# هم‌سو و معتبر می‌ماند. مقدارِ ضریب در README و در
+# tools/validate_against_reference.py --scale مستند شده.
+ANON_SCALE = 0.8
+
+
+def scaled_fehrest_db():
+    """فهرست‌بهای پایه با قیمت‌های مقیاس‌شده (کپیِ عمیق؛ DB اصلی تغییر
+    نمی‌کند)."""
+    import copy
+    db = copy.deepcopy(_default_fehrest_db())
+    for row in db:
+        p = row.get("price")
+        if isinstance(p, (int, float)) and not isinstance(p, bool):
+            row["price"] = float(p) * ANON_SCALE
+    return db
 
 
 def build_tables():
@@ -94,9 +119,9 @@ def main():
     print("  %d جدول" % len(tables))
     print("ساختِ نگاشت Dynamo ...")
     map_df = build_map()
-    print("اجرای موتور دفتر فنی ...")
+    print("اجرای موتور دفتر فنی (با قیمت‌های مقیاس‌شده ×%s) ..." % ANON_SCALE)
     result = TechnicalOfficeEngine(
-        _default_fehrest_db(), sample_settings()).compute(tables, map_df)
+        scaled_fehrest_db(), sample_settings()).compute(tables, map_df)
 
     meta = sample_meta()
     settings = sample_settings()

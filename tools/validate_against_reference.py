@@ -161,14 +161,22 @@ def main(argv=None):
                    help="به‌جای اجرای موتور، این فایل Excel را بررسی کن")
     p.add_argument("--tolerance", type=float, default=DEFAULT_TOLERANCE,
                    help="تلرانس بر حسب ریال (پیش‌فرض: %.2f)" % DEFAULT_TOLERANCE)
+    p.add_argument("--scale", type=float, default=1.0,
+                   help="ضریبِ مقیاسِ اعدادِ مرجع — برای پروژهٔ نمونهٔ "
+                        "ناشناسِ examples/sample_project از ۰٫۸ استفاده "
+                        "شده است (پیش‌فرض: %.2f)" % 1.0)
     args = p.parse_args(argv)
+
+    expected = {k: v * args.scale for k, v in EXPECTED.items()}
 
     if args.xlsx:
         if not os.path.isfile(args.xlsx):
             print("خطا: فایل پیدا نشد: %s" % args.xlsx)
             return 2
-        print("بررسیِ Excel: %s (تلرانس: %.2f ریال)" % (args.xlsx, args.tolerance))
-        issues = validate_xlsx(args.xlsx, tolerance=args.tolerance)
+        print("بررسیِ Excel: %s (تلرانس: %.2f ریال، مقیاس: %.2f)"
+              % (args.xlsx, args.tolerance, args.scale))
+        issues = validate_xlsx(args.xlsx, expected=expected,
+                               tolerance=args.tolerance)
     else:
         print("اجرای موتور روی پروژهٔ مرجع ...")
         actuals = run_engine()
@@ -176,7 +184,8 @@ def main(argv=None):
         print("  grand_total = %.2f" % actuals["grand_total"])
         print("  baravord_q4 = %.2f" % actuals["baravord_q4"])
         print("اعتبارسنجی (تلرانس: %.2f ریال) ..." % args.tolerance)
-        issues = validate_numbers(actuals, tolerance=args.tolerance)
+        issues = validate_numbers(actuals, expected=expected,
+                                  tolerance=args.tolerance)
 
     if issues:
         print("")
