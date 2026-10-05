@@ -19,6 +19,8 @@ import zipfile
 
 import pytest
 
+pytestmark = pytest.mark.slow
+
 sys.path.insert(0, os.path.join(os.path.dirname(__file__), "..", ".."))
 
 from app import (DynamoMappingParser, ExcelExporter, RevitScheduleParser,

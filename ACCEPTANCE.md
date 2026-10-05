@@ -2862,4 +2862,75 @@ T91 ادعا می‌کرد؛ T113 جزئیاتِ فصل را هم پوشش می�
 - `fmt_money`/`fmtMoneyVal`: واحدِ پیش‌فرض، تبدیلِ ÷۱۰، رندِ ۱۰۰۰، و
   حضورِ همیشگیِ واحد.
 
+## ۱۸-۱۲. فاز E-۷ بخش ۴ — بهینه‌سازی سرعت تست
+
+### ۱۸-۱۲-۱. پروفایل
+
+`pytest --durations=40 --durations-min=1.0` روی خطِ لولهٔ کامل:
+**۲۱۲۹٫۵۷s = ۳۵٫۵ دقیقه** (۷۶۸ آزمون). کندترین‌ها:
+
+| آزمون | زمان |
+|---|---|
+| `T98::test_T98_rounding_effect_is_small` | ۶۹٫۳s |
+| `T71::test_T72_strength_matrix_surcharge_rows` | ۳۵٫۶s |
+| `T81::test_T81_deductions_do_not_affect_grand_total` | ۲۵٫۸s |
+| ۲۷ آزمونِ دیگر (T67..T99، T113) | ۲۳–۲۶s |
+| ~۱۲ آزمون | ۱۲–۱۵s |
+
+**علت:** هر یک از این آزمون‌ها خطِ لولهٔ کاملِ پروژهٔ مرجع (۱۰ جدولِ Revit
++ نگاشتِ Dynamo + موتور) را اجرا می‌کند.
+
+### ۱۸-۱۲-۲. تقسیمِ کار: نشانگرِ `slow`
+
+۳۵ فایل (۳۱۶ آزمون) که `data/export revit` را بارگذاری می‌کنند در سطحِ
+ماژول با `pytestmark = pytest.mark.slow` علامت‌گذاری شدند. نشانگر در
+`pytest.ini` ثبت شده است. بقیهٔ ۳۰ فایل (۴۵۲ آزمون) سریع‌اند.
+
+فهرستِ کاملِ ۳۵ فایل: `test_contract_foundation_precedence`،
+`test_T53_e2e_pipeline`، `test_T54_mapping_dedup`، `test_T56_fehrest_unit_fix`،
+`test_T62_demo_dataset`، `test_T65_excel_formula_parity`،
+`test_T66_v2_comment_skip`، `test_T67`/`T68`/`T69` (surcharge)،
+`test_T70_technical_assumptions`، `test_T71_joist_floor_exclusion`،
+`test_T78_waste_removed`، `test_T79_joist_remnants`،
+`test_T80_ch8_surcharge_audit`، `test_T81_financial_chain`،
+`test_T82`..`test_T85` (index)ها، `test_T86_strength_map`،
+`test_T87_slab_formwork`، `test_T88_floors_coef`، `test_T89_regional_coef`،
+`test_T90_warnings_registry`، `test_T91_adjustment_engines` (۷۳ آزمون)،
+`test_T94_rebar_listoff`، `test_T97_e6_k_and_rounding`،
+`test_T97_e6_reference_numbers`، `test_T98_e6_dp_table`،
+`test_T99_e6_partc_inputs`، `test_T106_e6_new_work_excel`،
+`test_T110_inputs_status_panel`، `test_T113_baravord_reference_numbers`،
+`test_T114_excel_currency_units`.
+
+سمتِ TypeScript: `vitest.fast.config.ts` همان ۳۰ فایلی که همتای TS دارند
+را خارج می‌کند (۵ فایلِ کندِ پایتون همتای TS ندارند — فایل‌های تک‌زبانه).
+
+### ۱۸-۱۲-۳. `run_fast_tests.ps1`
+
+```
+1) pytest  -m "not slow"                    97.15s   451 passed + 1 xfailed
+2) vitest  --config vitest.fast.config.ts   32.83s
+3) tsc --noEmit                              ~8s
+                                     کل: 138.1s  ← هدف: < 180s  ✅
+```
+
+`run_all_tests.ps1` **تغییری نکرد** (رفتار همان است؛ فقط مستنداتِ سرِ فایل
+به‌روز شد). اجرای کامل هنوز همهٔ ۷۶۸+۷۴۲ آزمون را می‌دوند.
+
+### ۱۸-۱۲-۴. چرا کشِ fixture انجام نشد
+
+قاعده گفت: «کشِ fixture با scope=module/session فقط اگر تغییرِ حالتِ
+اشتراکی نباشد.» اندازه‌گیری مستقل روی خطِ لوله:
+
+```
+parse  (۱۰ فایل Revit + Dynamo)  =  0.073s   (۰٫۶٪)
+compute (TechnicalOfficeEngine)  = 11.959s   (۹۹٫۴٪)
+                                 کل  12.031s
+```
+
+بخشِ گران‌قیمت `compute()` است که به تنظیمات وابسته است و کششدنِ آن
+ناممکن. کش کردنِ ورودیِ تجزیه‌شده فقط ~۰٫۶٪ صرفه‌جویی دارد در حالی که
+خطرِ تغییرِ حالتِ اشتراکی (`compute` ممکن است جدول‌ها را تغییر دهد) را
+به‌همراه می‌آورد. **نتیجه: کش انجام نشد** — صرفه‌جویی ناچیز، ریسک واقعی.
+
 

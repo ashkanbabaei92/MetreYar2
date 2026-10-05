@@ -13,6 +13,8 @@ import sys
 
 import pytest
 
+pytestmark = pytest.mark.slow
+
 sys.path.insert(0, os.path.join(os.path.dirname(__file__), "..", ".."))
 
 from app import (CONCRETE_STRENGTH_CODES, JOIST_BLOCK_THICKNESS_CODES,

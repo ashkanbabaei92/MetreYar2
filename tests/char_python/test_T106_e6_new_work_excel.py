@@ -19,6 +19,8 @@ import os
 import openpyxl
 import pytest
 
+pytestmark = pytest.mark.slow
+
 from app import (DynamoMappingParser, ExcelExporter, RevitScheduleParser,
                  TechnicalOfficeEngine, _default_fehrest_db, default_settings,
                  fa_float)
