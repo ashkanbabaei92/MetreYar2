@@ -1,0 +1,491 @@
+{
+ "base": {
+  "tadil_enabled": true,
+  "tadil_approved": true,
+  "proposal_date": "۱۴۰۳/۱۲/۲۹",
+  "baravord_enabled": true,
+  "baravord_approved": true,
+  "work_period_start": "۱۴۰۴/۰۱/۰۱",
+  "work_period_end": "۱۴۰۵/۰۲/۱۵",
+  "provisional_coef_1405q1": 1.1530518586507572
+ },
+ "baseline_metrics": {
+  "base_total": 23218381337.011536,
+  "grand_total": 31391251567.6396,
+  "delta_p": 9984277408.21705,
+  "delta_p_definitive": 7761045209.936075,
+  "baravord": 45437742820.32315
+ },
+ "scenarios": [
+  {
+   "id": "D-01",
+   "kind": "setting",
+   "subject": "ضریب k: ۰٫۹۵ یا ۱",
+   "a": "۰٫۹۵ موقت → ۱ در قطعی (الان)",
+   "b": "۱ از همان ابتدا",
+   "flip": {
+    "completed_within_term": true
+   }
+  },
+  {
+   "id": "D-02",
+   "kind": "code",
+   "subject": "گرانولاریتیِ گردکردن (هر سه‌ماهه یا کل)",
+   "a": "هر سه‌ماهه جداگانه (الان)",
+   "b": "گردکردنِ کل"
+  },
+  {
+   "id": "D-03",
+   "kind": "setting",
+   "subject": "تفسیرِ گردکردن (بند ۸-۲)",
+   "a": "گردکردنِ روشن (الان)",
+   "b": "گردکردنِ خاموش",
+   "flip": {
+    "coef_rounding_2080": false
+   }
+  },
+  {
+   "id": "D-04",
+   "kind": "code",
+   "subject": "ضرایبِ منفی",
+   "a": "مجازند (الان)",
+   "b": "صفر شدن"
+  },
+  {
+   "id": "D-05",
+   "kind": "code",
+   "subject": "دقتِ محاسبات (بدون خطای شناور)",
+   "a": "حسابِ دقیق (الان)",
+   "b": "گردکردنِ ساده"
+  },
+  {
+   "id": "D-06",
+   "kind": "code",
+   "subject": "نحوهٔ ورودِ وضعیتِ اتمام (UI)",
+   "a": "selectbox (الان)",
+   "b": "فیلدِ عددی k"
+  },
+  {
+   "id": "D-07",
+   "kind": "code",
+   "subject": "مبنای کسرِ ۵٪",
+   "a": "از کلِ ΔP (الان)",
+   "b": "فقط از بخشِ قطعی"
+  },
+  {
+   "id": "D-08",
+   "kind": "setting",
+   "subject": "کسر در تعدیلِ منفی",
+   "a": "خیر + هشدار (الان)",
+   "b": "بله",
+   "flip": {
+    "fault_deduction_on_negative": true
+   }
+  },
+  {
+   "id": "D-09",
+   "kind": "setting",
+   "subject": "گرانولاریتیِ ۲-۶ (سه‌ماهه‌های قطعی‌نشده)",
+   "a": "میانگینِ ۲-۶ (الان)",
+   "b": "شاخصِ هر دورهٔ خودش",
+   "flip": {
+    "provisional_diff_method": "own_period"
+   }
+  },
+  {
+   "id": "D-10",
+   "kind": "setting",
+   "subject": "کارِ پوشش‌شده با تمدیدِ مجاز",
+   "a": "درونِ مدت + میانگینِ ۲-۶ (الان)",
+   "b": "شاخصِ همان دوره",
+   "flip": {
+    "contract_extensions": [
+     {
+      "date": "۱۴۰۵/۰۲/۱۵",
+      "months": 3,
+      "kind": "مجاز",
+      "doc_no": "سناریوی ابزار"
+     }
+    ]
+   }
+  },
+  {
+   "id": "D-11",
+   "kind": "setting",
+   "subject": "آستانهٔ ۳۰۰ میلیون ریال",
+   "a": "مقدار از config (الان)",
+   "b": "آستانه بالا ⇒ مسیرِ رشته‌ای (همان D-13)",
+   "flip": {
+    "index_method": "رشته‌ای"
+   },
+   "note": "در پروژهٔ مرجع grand_total = ۳۱٫۴B > ۳۰۰M است و مسیرِ گروهی گرفته می‌شود؛ تنها راهِ عددی برای دیدنِ اثر، اجبارِ مسیرِ رشته‌ای است که دقیقاً با D-13 یکسان است."
+  },
+  {
+   "id": "D-12",
+   "kind": "code",
+   "subject": "مرزِ آستانه (دقیقاً برابر)",
+   "a": "amount >= threshold ⇒ گروهی (الان)",
+   "b": "رشته‌ای"
+  },
+  {
+   "id": "D-13",
+   "kind": "setting",
+   "subject": "گرانولاریتیِ مسیرِ رشته‌ای",
+   "a": "گروهی (الان)",
+   "b": "رشته‌ای (شاخصِ رشته برای همه)",
+   "flip": {
+    "index_method": "رشته‌ای"
+   }
+  },
+  {
+   "id": "D-14",
+   "kind": "setting",
+   "subject": "تعدیلِ کارِ جدیدِ اضافه‌شده",
+   "a": "بله، مثلِ تجهیز تعدیل می‌شود (الان)",
+   "b": "فقط جبرانِ ۳-۵ بدونِ تعدیلِ مجدد",
+   "flip": {
+    "new_item_amount": 1000000000.0,
+    "new_item_base_period": "1404Q1",
+    "new_item_method": "فهرست پیمان"
+   },
+   "note": "اثر = سهمِ کارِ جدیدِ ۱ میلیارد ریالی از ΔP (گزینهٔ ب آن را حذف می‌کند)."
+  },
+  {
+   "id": "D-15",
+   "kind": "setting",
+   "subject": "دورهٔ شاخصِ مبنا برای کارِ جدید ناموجود",
+   "a": "ردیف ساخته نمی‌شود + خطا (الان)",
+   "b": "استفاده از دورهٔ موجود (اینجا 1404Q1)",
+   "flip": {
+    "new_item_amount": 1000000000.0,
+    "new_item_base_period": "1404Q1",
+    "new_item_method": "قیمت روز"
+   },
+   "baseline_flip": {
+    "new_item_amount": 1000000000.0,
+    "new_item_base_period": "",
+    "new_item_method": "قیمت روز"
+   },
+   "note": "سناریو در روشِ «قیمت روز» معنا دارد (در «فهرست پیمان» دوره نادیده گرفته می‌شود)."
+  },
+  {
+   "id": "D-16",
+   "kind": "setting",
+   "subject": "روشِ کارِ جدید",
+   "a": "فهرست پیمان (الان)",
+   "b": "قیمت روز",
+   "flip": {
+    "new_item_amount": 1000000000.0,
+    "new_item_base_period": "1404Q1",
+    "new_item_method": "قیمت روز"
+   },
+   "baseline_flip": {
+    "new_item_amount": 1000000000.0,
+    "new_item_base_period": "1404Q1",
+    "new_item_method": "فهرست پیمان"
+   },
+   "note": "اثر = تفاوتِ ΔP بین دو روش برای کارِ جدیدِ ۱ میلیارد ریالی."
+  },
+  {
+   "id": "D-17",
+   "kind": "code",
+   "subject": "گردکردنِ ضریبِ تبدیلِ ۳-۵",
+   "a": "گرد نمی‌شود (الان)",
+   "b": "گرد شود"
+  },
+  {
+   "id": "D-18",
+   "kind": "special",
+   "subject": "مبنای «مبلغ برآورد» در سقفِ ۱۰٪",
+   "a": "base_total × ۱٫۱ (الان)",
+   "b": "grand_total × ۱٫۱"
+  },
+  {
+   "id": "D-19",
+   "kind": "data",
+   "subject": "شاخصِ کلیِ مستقل",
+   "a": "شاخصِ رشته (الان)",
+   "b": "شاخصِ کلیِ مرکز آمار"
+  },
+  {
+   "id": "D-20",
+   "kind": "data",
+   "subject": "مصالحِ پای‌کار",
+   "a": "شاخصِ رشته (الان)",
+   "b": "شاخصِ اختصاصی"
+  }
+ ],
+ "results": {
+  "D-01": {
+   "id": "D-01",
+   "subject": "ضریب k: ۰٫۹۵ یا ۱",
+   "kind": "setting",
+   "option_a": "۰٫۹۵ موقت → ۱ در قطعی (الان)",
+   "option_b": "۱ از همان ابتدا",
+   "base_total": 23218381337.011536,
+   "grand_total": 31391251567.6396,
+   "delta_p": 10489594369.074144,
+   "baravord": 45437742820.32315,
+   "d_delta_p": 505316960.86,
+   "d_baravord": 0.0,
+   "ref_delta_p": 9984277408.21705,
+   "measurable": true,
+   "note": ""
+  },
+  "D-02": {
+   "id": "D-02",
+   "subject": "گرانولاریتیِ گردکردن (هر سه‌ماهه یا کل)",
+   "kind": "code",
+   "option_a": "هر سه‌ماهه جداگانه (الان)",
+   "option_b": "گردکردنِ کل",
+   "measurable": false,
+   "d_delta_p": null,
+   "d_baravord": null,
+   "note": ""
+  },
+  "D-03": {
+   "id": "D-03",
+   "subject": "تفسیرِ گردکردن (بند ۸-۲)",
+   "kind": "setting",
+   "option_a": "گردکردنِ روشن (الان)",
+   "option_b": "گردکردنِ خاموش",
+   "base_total": 23218381337.011536,
+   "grand_total": 31391251567.6396,
+   "delta_p": 9937407877.639488,
+   "baravord": 45437742820.32315,
+   "d_delta_p": -46869530.58,
+   "d_baravord": 0.0,
+   "ref_delta_p": 9984277408.21705,
+   "measurable": true,
+   "note": ""
+  },
+  "D-04": {
+   "id": "D-04",
+   "subject": "ضرایبِ منفی",
+   "kind": "code",
+   "option_a": "مجازند (الان)",
+   "option_b": "صفر شدن",
+   "measurable": false,
+   "d_delta_p": null,
+   "d_baravord": null,
+   "note": ""
+  },
+  "D-05": {
+   "id": "D-05",
+   "subject": "دقتِ محاسبات (بدون خطای شناور)",
+   "kind": "code",
+   "option_a": "حسابِ دقیق (الان)",
+   "option_b": "گردکردنِ ساده",
+   "measurable": false,
+   "d_delta_p": null,
+   "d_baravord": null,
+   "note": ""
+  },
+  "D-06": {
+   "id": "D-06",
+   "subject": "نحوهٔ ورودِ وضعیتِ اتمام (UI)",
+   "kind": "code",
+   "option_a": "selectbox (الان)",
+   "option_b": "فیلدِ عددی k",
+   "measurable": false,
+   "d_delta_p": null,
+   "d_baravord": null,
+   "note": ""
+  },
+  "D-07": {
+   "id": "D-07",
+   "subject": "مبنای کسرِ ۵٪",
+   "kind": "code",
+   "option_a": "از کلِ ΔP (الان)",
+   "option_b": "فقط از بخشِ قطعی",
+   "measurable": false,
+   "d_delta_p": null,
+   "d_baravord": null,
+   "note": ""
+  },
+  "D-08": {
+   "id": "D-08",
+   "subject": "کسر در تعدیلِ منفی",
+   "kind": "setting",
+   "option_a": "خیر + هشدار (الان)",
+   "option_b": "بله",
+   "base_total": 23218381337.011536,
+   "grand_total": 31391251567.6396,
+   "delta_p": 9984277408.21705,
+   "baravord": 45437742820.32315,
+   "d_delta_p": 0.0,
+   "d_baravord": 0.0,
+   "ref_delta_p": 9984277408.21705,
+   "measurable": true,
+   "note": ""
+  },
+  "D-09": {
+   "id": "D-09",
+   "subject": "گرانولاریتیِ ۲-۶ (سه‌ماهه‌های قطعی‌نشده)",
+   "kind": "setting",
+   "option_a": "میانگینِ ۲-۶ (الان)",
+   "option_b": "شاخصِ هر دورهٔ خودش",
+   "base_total": 23218381337.011536,
+   "grand_total": 31391251567.6396,
+   "delta_p": 9984277408.21705,
+   "baravord": 45437742820.32315,
+   "d_delta_p": 0.0,
+   "d_baravord": 0.0,
+   "ref_delta_p": 9984277408.21705,
+   "measurable": true,
+   "note": ""
+  },
+  "D-10": {
+   "id": "D-10",
+   "subject": "کارِ پوشش‌شده با تمدیدِ مجاز",
+   "kind": "setting",
+   "option_a": "درونِ مدت + میانگینِ ۲-۶ (الان)",
+   "option_b": "شاخصِ همان دوره",
+   "base_total": 23218381337.011536,
+   "grand_total": 31391251567.6396,
+   "delta_p": 9984277408.21705,
+   "baravord": 45437742820.32315,
+   "d_delta_p": 0.0,
+   "d_baravord": 0.0,
+   "ref_delta_p": 9984277408.21705,
+   "measurable": true,
+   "note": ""
+  },
+  "D-11": {
+   "id": "D-11",
+   "subject": "آستانهٔ ۳۰۰ میلیون ریال",
+   "kind": "setting",
+   "option_a": "مقدار از config (الان)",
+   "option_b": "آستانه بالا ⇒ مسیرِ رشته‌ای (همان D-13)",
+   "base_total": 23218381337.011536,
+   "grand_total": 31391251567.6396,
+   "delta_p": 9725954520.896103,
+   "baravord": 46172170291.96744,
+   "d_delta_p": -258322887.32,
+   "d_baravord": 734427471.64,
+   "ref_delta_p": 9984277408.21705,
+   "measurable": true,
+   "note": "در پروژهٔ مرجع grand_total = ۳۱٫۴B > ۳۰۰M است و مسیرِ گروهی گرفته می‌شود؛ تنها راهِ عددی برای دیدنِ اثر، اجبارِ مسیرِ رشته‌ای است که دقیقاً با D-13 یکسان است."
+  },
+  "D-12": {
+   "id": "D-12",
+   "subject": "مرزِ آستانه (دقیقاً برابر)",
+   "kind": "code",
+   "option_a": "amount >= threshold ⇒ گروهی (الان)",
+   "option_b": "رشته‌ای",
+   "measurable": false,
+   "d_delta_p": null,
+   "d_baravord": null,
+   "note": ""
+  },
+  "D-13": {
+   "id": "D-13",
+   "subject": "گرانولاریتیِ مسیرِ رشته‌ای",
+   "kind": "setting",
+   "option_a": "گروهی (الان)",
+   "option_b": "رشته‌ای (شاخصِ رشته برای همه)",
+   "base_total": 23218381337.011536,
+   "grand_total": 31391251567.6396,
+   "delta_p": 9725954520.896103,
+   "baravord": 46172170291.96744,
+   "d_delta_p": -258322887.32,
+   "d_baravord": 734427471.64,
+   "ref_delta_p": 9984277408.21705,
+   "measurable": true,
+   "note": ""
+  },
+  "D-14": {
+   "id": "D-14",
+   "subject": "تعدیلِ کارِ جدیدِ اضافه‌شده",
+   "kind": "setting",
+   "option_a": "بله، مثلِ تجهیز تعدیل می‌شود (الان)",
+   "option_b": "فقط جبرانِ ۳-۵ بدونِ تعدیلِ مجدد",
+   "base_total": 23218381337.011536,
+   "grand_total": 31391251567.6396,
+   "delta_p": 10294107505.30443,
+   "baravord": 46908603903.783905,
+   "d_delta_p": 309830097.09,
+   "d_baravord": 1470861083.46,
+   "ref_delta_p": 9984277408.21705,
+   "measurable": true,
+   "note": "اثر = سهمِ کارِ جدیدِ ۱ میلیارد ریالی از ΔP (گزینهٔ ب آن را حذف می‌کند)."
+  },
+  "D-15": {
+   "id": "D-15",
+   "subject": "دورهٔ شاخصِ مبنا برای کارِ جدید ناموجود",
+   "kind": "setting",
+   "option_a": "ردیف ساخته نمی‌شود + خطا (الان)",
+   "option_b": "استفاده از دورهٔ موجود (اینجا 1404Q1)",
+   "base_total": 23218381337.011536,
+   "grand_total": 31391251567.6396,
+   "delta_p": 10265165355.642443,
+   "baravord": 46771206401.05677,
+   "d_delta_p": 280887947.43,
+   "d_baravord": 1333463580.73,
+   "ref_delta_p": 9984277408.21705,
+   "measurable": true,
+   "note": "سناریو در روشِ «قیمت روز» معنا دارد (در «فهرست پیمان» دوره نادیده گرفته می‌شود)."
+  },
+  "D-16": {
+   "id": "D-16",
+   "subject": "روشِ کارِ جدید",
+   "kind": "setting",
+   "option_a": "فهرست پیمان (الان)",
+   "option_b": "قیمت روز",
+   "base_total": 23218381337.011536,
+   "grand_total": 31391251567.6396,
+   "delta_p": 10265165355.642443,
+   "baravord": 46771206401.05677,
+   "d_delta_p": -28942149.66,
+   "d_baravord": -137397502.73,
+   "ref_delta_p": 10294107505.30443,
+   "measurable": true,
+   "note": "اثر = تفاوتِ ΔP بین دو روش برای کارِ جدیدِ ۱ میلیارد ریالی."
+  },
+  "D-17": {
+   "id": "D-17",
+   "subject": "گردکردنِ ضریبِ تبدیلِ ۳-۵",
+   "kind": "code",
+   "option_a": "گرد نمی‌شود (الان)",
+   "option_b": "گرد شود",
+   "measurable": false,
+   "d_delta_p": null,
+   "d_baravord": null,
+   "note": ""
+  },
+  "D-18": {
+   "id": "D-18",
+   "subject": "مبنای «مبلغ برآورد» در سقفِ ۱۰٪",
+   "kind": "special",
+   "option_a": "base_total × ۱٫۱ (الان)",
+   "option_b": "grand_total × ۱٫۱",
+   "ceiling_a": 25540219470.71,
+   "ceiling_b": 34530376724.4,
+   "d_ceiling": 8990157253.69,
+   "measurable": true,
+   "note": ""
+  },
+  "D-19": {
+   "id": "D-19",
+   "subject": "شاخصِ کلیِ مستقل",
+   "kind": "data",
+   "option_a": "شاخصِ رشته (الان)",
+   "option_b": "شاخصِ کلیِ مرکز آمار",
+   "measurable": false,
+   "d_delta_p": null,
+   "d_baravord": null,
+   "note": ""
+  },
+  "D-20": {
+   "id": "D-20",
+   "subject": "مصالحِ پای‌کار",
+   "kind": "data",
+   "option_a": "شاخصِ رشته (الان)",
+   "option_b": "شاخصِ اختصاصی",
+   "measurable": false,
+   "d_delta_p": null,
+   "d_baravord": null,
+   "note": ""
+  }
+ }
+}
