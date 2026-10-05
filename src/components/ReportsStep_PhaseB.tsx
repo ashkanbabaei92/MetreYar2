@@ -518,14 +518,14 @@ function InputsStatusPanel({ result }: { result: ProjectResult }) {
         </>
       )}
       <div className="text-[12px] font-bold text-ink/90 mb-2">
-        تفسیرهای ابهامِ بخشنامه — منتظر تأیید کاربر ({faDigits(String(PENDING_INTERPRETATIONS.length))} مورد)
+        تصمیماتِ باز — منتظر تأیید کاربر ({faDigits(String(PENDING_INTERPRETATIONS.length))} مورد)
       </div>
       <div className="rounded-xl border border-line/70 overflow-hidden">
         <div className="overflow-x-auto">
           <table className="w-full text-[12px] whitespace-nowrap">
             <thead>
               <tr className="bg-white/[0.04] text-ink-dim">
-                <th className="text-right font-bold py-2 px-3">شماره</th>
+                <th className="text-right font-bold py-2 px-3">شناسه</th>
                 <th className="text-right font-bold py-2 px-3">موضوع</th>
                 <th className="text-right font-bold py-2 px-3">تفسیرِ پیاده‌شده</th>
                 <th className="text-right font-bold py-2 px-3">گزینهٔ دیگر</th>
@@ -534,8 +534,8 @@ function InputsStatusPanel({ result }: { result: ProjectResult }) {
             </thead>
             <tbody>
               {PENDING_INTERPRETATIONS.map((it) => (
-                <tr key={it.no} className="border-t border-line/40">
-                  <td className="py-2 px-3 num text-ink/90 font-bold">{faDigits(String(it.no))}</td>
+                <tr key={it.id} className="border-t border-line/40">
+                  <td className="py-2 px-3 num text-ink/90 font-bold">{it.id}</td>
                   <td className="py-2 px-3 text-ink/90 font-semibold">{it.subject}</td>
                   <td className="py-2 px-3 text-ink-dim text-[11px]">{it.implemented}</td>
                   <td className="py-2 px-3 text-ink-dim text-[11px]">{it.alternative}</td>

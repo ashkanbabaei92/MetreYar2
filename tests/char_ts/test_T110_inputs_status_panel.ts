@@ -44,8 +44,8 @@ describe("T110 — پنلِ وضعیت ورودی‌ها (گام ۱۲)", () => {
   it("structure is well-formed five-field entries", () => {
     expect(PENDING_INTERPRETATIONS.length).toBeGreaterThanOrEqual(18);
     for (const e of PENDING_INTERPRETATIONS) {
-      expect(typeof e.no).toBe("number");
-      expect(e.no).toBeGreaterThan(0);
+      expect(typeof e.id).toBe("string");
+      expect(e.id).toMatch(/^D-\d{2}$/);
       for (const txt of [e.subject, e.implemented, e.alternative, e.effect]) {
         expect(typeof txt).toBe("string");
         expect(txt.trim().length).toBeGreaterThan(0);
@@ -53,12 +53,13 @@ describe("T110 — پنلِ وضعیت ورودی‌ها (گام ۱۲)", () => {
     }
   });
 
-  it("numbers are contiguous and unique", () => {
-    const nos = PENDING_INTERPRETATIONS.map((e) => e.no);
-    expect(nos).toEqual(
-      Array.from({ length: PENDING_INTERPRETATIONS.length }, (_, i) => i + 1),
+  it("ids are contiguous and unique", () => {
+    const ids = PENDING_INTERPRETATIONS.map((e) => e.id);
+    expect(ids).toEqual(
+      Array.from({ length: PENDING_INTERPRETATIONS.length },
+                  (_, i) => `D-${String(i + 1).padStart(2, "0")}`),
     );
-    expect(new Set(nos).size).toBe(nos.length);
+    expect(new Set(ids).size).toBe(ids.length);
   });
 
   // ── ۲) موضوع‌های کلیدی موجودند (پاریتیِ Must با Python) ──
@@ -71,12 +72,12 @@ describe("T110 — پنلِ وضعیت ورودی‌ها (گام ۱۲)", () => {
 
   // ─ـ ۳) تفسیرِ سقفِ ۱۰٪ (تفسیر ۱۸) اثرِ عددیِ مستند دارد ──
   it("ceiling entry has numeric effect", () => {
-    const ceil = PENDING_INTERPRETATIONS.filter((e) => e.no === 18);
+    const ceil = PENDING_INTERPRETATIONS.filter((e) => e.id === "D-18");
     expect(ceil).toHaveLength(1);
     const e = ceil[0];
     expect(e.implemented).toContain("base_total");
     expect(e.alternative).toContain("grand_total");
-    expect(e.effect).toContain("۲٫۵۲ میلیارد ریال");
+    expect(e.effect).toContain("۸٬۹۹۰٬۱۵۷٬۲۵۳٫۶۹");
   });
 
   // ── ۴) شیتِ Excel «مقادیر منتظر تأیید» جدول را در بر دارد ──
@@ -126,9 +127,12 @@ describe("T110 — پنلِ وضعیت ورودی‌ها (گام ۱۲)", () => {
     const rows2 = XLSX.utils.sheet_to_json<any[]>(
       wb.Sheets["مقادیر منتظر تأیید"], { header: 1 });
     const joined = rows2.map((r) => r.join(" ")).join("\n");
-    expect(joined).toContain("تفسیرهای ابهامِ بخشنامه — منتظر تأیید کاربر");
+    expect(joined).toContain("تصمیماتِ باز — منتظر تأیید کاربر");
     for (const e of PENDING_INTERPRETATIONS) {
       expect(joined).toContain(e.subject);
     }
+    expect(joined).toContain("D-01");
+    expect(joined).toContain(
+      `D-${String(PENDING_INTERPRETATIONS.length).padStart(2, "0")}`);
   });
 });

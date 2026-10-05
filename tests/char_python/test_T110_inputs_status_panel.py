@@ -5,8 +5,8 @@
 # تک‌منبعِ حقیقتِ تفسیرهای «منتظر تأیید کاربر»: PENDING_INTERPRETATIONS
 # در app.py — استفاده در پنلِ Streamlit و شیتِ Excel «مقادیر منتظر تأیید».
 # این تست بررسی می‌کند:
-#   ۱) ساختار: هر ورودی یک ۵-تایی (شماره، موضوع، تفسیر، گزینه، اثر) است.
-#   ۲) شماره‌ها ۱..N پشتِ سرِ هم و یکتا هستند.
+#   ۱) ساختار: هر ورودی یک ۵-تایی (شناسه، موضوع، تفسیر، گزینه، اثر) است.
+#   ۲) شناسه‌ها D-01..D-N پشتِ سرِ هم و یکتا هستند (فاز E-8 §۱).
 #   ۳) هیچ فیلدی خالی نیست (قاعدهٔ طلایی: هر ورودی مستند است).
 #   ۴) شیتِ Excel «مقادیر منتظر تأیید» شاملِ جدول می‌شود.
 #   ۵) همهٔ subjectها با نسخهٔ TS (PENDING_INTERPRETATIONS در adjustment.ts)
@@ -23,7 +23,7 @@ pytestmark = pytest.mark.slow
 
 from app import (DynamoMappingParser, ExcelExporter, PENDING_INTERPRETATIONS,
                  RevitScheduleParser, TechnicalOfficeEngine,
-                 _default_fehrest_db, default_settings, fa)
+                 _default_fehrest_db, default_settings)
 
 ROOT = os.path.join(os.path.dirname(__file__), "..", "..")
 REVIT_DIR = os.path.join(ROOT, "data", "export revit")
@@ -43,14 +43,15 @@ MUST_SUBJECTS = [
 ]
 
 
-# ── ۱) ساختار و یکتاییِ شماره‌ها ──
+# ── ۱) ساختار و یکتاییِ شناسه‌ها ──
 
 def test_T110_structure_is_five_tuples():
     assert len(PENDING_INTERPRETATIONS) >= 18
     for entry in PENDING_INTERPRETATIONS:
         assert isinstance(entry, tuple) and len(entry) == 5
         _no, subj, impl, alt, eff = entry
-        assert isinstance(_no, int) and _no > 0
+        assert isinstance(_no, str) and _no.startswith("D-"), \
+            "شناسه باید D-xx باشد: %r" % (_no,)
         for txt in (subj, impl, alt, eff):
             assert isinstance(txt, str) and txt.strip(), \
                 "هیچ فیلدی نباید خالی باشد (قاعدهٔ طلایی: مستندسازی)"
@@ -58,7 +59,7 @@ def test_T110_structure_is_five_tuples():
 
 def test_T110_numbers_are_contiguous_and_unique():
     nos = [e[0] for e in PENDING_INTERPRETATIONS]
-    assert nos == list(range(1, len(PENDING_INTERPRETATIONS) + 1))
+    assert nos == ["D-%02d" % i for i in range(1, len(PENDING_INTERPRETATIONS) + 1)]
     assert len(set(nos)) == len(nos)
 
 
@@ -73,11 +74,11 @@ def test_T110_key_subjects_present():
 # ── ۳) تفسیرِ سقفِ ۱۰٪ (تفسیر ۱۸) اثرِ عددیِ مستند دارد ──
 
 def test_T110_ceiling_entry_has_numeric_effect():
-    ceil = [e for e in PENDING_INTERPRETATIONS if e[0] == 18]
+    ceil = [e for e in PENDING_INTERPRETATIONS if e[0] == "D-18"]
     assert len(ceil) == 1
     _no, _s, impl, alt, eff = ceil[0]
     assert "base_total" in impl and "grand_total" in alt
-    assert "۲٫۵۲ میلیارد ریال" in eff
+    assert "۸٬۹۹۰٬۱۵۷٬۲۵۳٫۶۹" in eff
 
 
 # ── ۴) شیتِ Excel «مقادیر منتظر تأیید» جدول را در بر دارد ──
@@ -117,9 +118,10 @@ def test_T110_excel_sheet_contains_interpretations(pending_sheet):
         cells.extend(str(c.value) for c in r if c.value is not None)
     joined = "\n".join(cells)
     # عنوانِ جدول
-    assert "تفسیرهای ابهامِ بخشنامه — منتظر تأیید کاربر" in joined
-    # هر ۱۸ موضوع
+    assert "تصمیماتِ باز — منتظر تأیید کاربر" in joined
+    # هر موضوع
     for e in PENDING_INTERPRETATIONS:
         assert e[1] in joined, "موضوع در شیت Excel نیست: %s" % e[1]
-    # شمارهٔ آخر (۱۸) در شیت است
-    assert fa(18) in joined or "18" in joined
+    # شناسهٔ اول و آخر در شیت است (D-01 .. D-20)
+    assert "D-01" in joined
+    assert "D-%02d" % len(PENDING_INTERPRETATIONS) in joined

@@ -855,13 +855,15 @@ export const TADIL_K_SOURCE =
   "بودجه، دستورالعمل تعدیل واحدهای پایهٔ پیمان — بند ۱-۸";
 export const TADIL_K_SOURCE_COMPLETED = TADIL_K_SOURCE + " + تبصرهٔ ۲";
 
-// ─ـ فاز E-6 Part C گام ۱۲ (حرف g): تفسیرهای «منتظر تأیید کاربر» ──
+// ─ـ فاز E-6 Part C گام ۱۲ (حرف g): تصمیماتِ باز «منتظر تأیید کاربر» ─ـ
+// فاز E-8 §۱: شناسهٔ ثابت و پایدار D-01..D-20 (هرگز عوض نمی‌شود).
+// D-01..D-18 = تفسیرهای ابهامِ بخشنامهٔ ۲۰۸۰ (ACCEPTANCE §۱۸-۳).
+// D-19/D-20 = دو تصمیمِ وابسته به داده (خارج از تفسیرِ ۲۰۸۰).
 // تک‌منبعِ حقیقت برای پنلِ «وضعیت ورودی‌ها» (React) و شیتِ Excel
-// «مقادیر منتظر تأیید». هر ورودی: [شماره، موضوع، تفسیرِ پیاده‌سازی‌شده،
-// گزینهٔ دیگر، اثر عددی]. این فهرست باید با §۱۸-۳ ACCEPTANCE.md و
+// «مقادیر منتظر تأیید». این فهرست باید با §۱۸-۳ ACCEPTANCE.md و
 // PENDING_INTERPRETATIONS در app.py یکی باشد.
 export interface PendingInterpretation {
-  no: number;
+  id: string;
   subject: string;
   implemented: string;
   alternative: string;
@@ -869,22 +871,23 @@ export interface PendingInterpretation {
 }
 export const PENDING_INTERPRETATIONS: PendingInterpretation[] = [
   {
-    no: 1,
+    id: "D-01",
     subject: "ضریب k ورودی کاربر نیست (بند ۱-۸)",
     implemented:
       "k از وضعیت اتمام کار مشتق می‌شود: ۰٫۹۵ (بند ۱-۸) یا ۱ (تبصرهٔ ۲).",
     alternative: "ورودیِ دستیِ k مثلِ نسخه‌های قدیم.",
-    effect: "ΔP با k = ۱ حدود ۵٫۳٪ بیشتر می‌شود.",
+    effect:
+      "k=۱ به‌جای ۰٫۹۵ ⇒ ΔP از ۹٬۹۸۴٬۲۷۷٬۴۰۸٫۲۲ به ۱۰٬۴۸۹٬۵۹۴٬۳۶۹٫۰۷ یعنی +۵۰۵٬۳۱۶٬۹۶۰٫۸۶ ریال (=`k_diff` بند ۸-۴).",
   },
   {
-    no: 2,
+    id: "D-02",
     subject: "گرانولاریتیِ گردکردن (بند ۸-۲)",
     implemented: "ضریبِ هر فصل در هر سه‌ماهه به‌صورتِ مجزا گرد می‌شود.",
     alternative: "گردکردنِ ضریبِ کلِ فصل.",
     effect: "تفاوتِ جزئی در فصل‌هایی با کارکردِ ناتمام.",
   },
   {
-    no: 3,
+    id: "D-03",
     subject: "تفسیر گردکردن (الف)",
     implemented:
       "ضریب با ۳ رقم اعشار با ROUND_HALF_UP؛ اگر رقمِ سوم ≥ ۵ بود رقمِ دوم بالا می‌رود وگرنه رقمِ سوم برداشته می‌شود.",
@@ -892,7 +895,7 @@ export const PENDING_INTERPRETATIONS: PendingInterpretation[] = [
     effect: "تفاوتِ حداکثر ۰٫۰۰۵ در هر ضریب.",
   },
   {
-    no: 4,
+    id: "D-04",
     subject: "ضرایب منفی",
     implemented:
       "بخشنامه ساکت است؛ ضرایبِ منفی مجازند و ΔP می‌تواند منفی شود.",
@@ -900,7 +903,7 @@ export const PENDING_INTERPRETATIONS: PendingInterpretation[] = [
     effect: "در صورتِ کاهشِ شاخص، ΔP منفی نشان داده می‌شود.",
   },
   {
-    no: 5,
+    id: "D-05",
     subject: "پیاده‌سازی بدون خطای شناور",
     implemented:
       "پایتون از Decimal روی کوتاه‌ترین نمایشِ float استفاده می‌کند.",
@@ -908,7 +911,7 @@ export const PENDING_INTERPRETATIONS: PendingInterpretation[] = [
     effect: "تفاوت در مرزهایِ گردکردن (مثل ۰٫۰۰۵).",
   },
   {
-    no: 6,
+    id: "D-06",
     subject: "رفتار UI",
     implemented:
       "فیلد عددی k حذف شد و به‌جای آن selectbox برای وضعیت اتمام کار است.",
@@ -916,14 +919,14 @@ export const PENDING_INTERPRETATIONS: PendingInterpretation[] = [
     effect: "فقط تجربهٔ کاربری؛ اعداد تغییر نمی‌کنند.",
   },
   {
-    no: 7,
+    id: "D-07",
     subject: "مبنای کسرِ ۵٪ (بند ۷)",
     implemented: "کسر = ۵٪ از کلِ ΔP (مستقل از قطعی/علی‌الحساب).",
     alternative: "۵٪ فقط از بخشِ قطعی.",
     effect: "در سناریوی ترکیبی، کسر از کلِ ΔP بیشتر می‌شود.",
   },
   {
-    no: 8,
+    id: "D-08",
     subject: "کسر در تعدیلِ منفی (بند ۷)",
     implemented:
       "اگر ΔP < ۰، کسر اعمال نمی‌شود (هیچ کسری از عددِ منفی کسر نمی‌شود).",
@@ -931,7 +934,7 @@ export const PENDING_INTERPRETATIONS: PendingInterpretation[] = [
     effect: "در صورتِ کاهشِ شاخص، کسر صفر می‌شود.",
   },
   {
-    no: 9,
+    id: "D-09",
     subject: "گرانولاریتیِ بند ۲-۶",
     implemented:
       "هر سه‌ماهه‌ای که روز شروعش > آخرین موقت است میانگینِ ۲-۶ را می‌گیرد.",
@@ -939,7 +942,7 @@ export const PENDING_INTERPRETATIONS: PendingInterpretation[] = [
     effect: "فقط در پروژه‌هایی با lpd نمایش داده می‌شود.",
   },
   {
-    no: 10,
+    id: "D-10",
     subject: "کارِ پوشش‌شده با تمدیدِ مجاز در بند ۲-۶",
     implemented:
       "«مدت پیمان» = مدت اولیه + تمدیدها؛ کارِ قبل از term_end درونِ مدت محسوب می‌شود و میانگینِ ۲-۶ را می‌گیرد.",
@@ -947,7 +950,7 @@ export const PENDING_INTERPRETATIONS: PendingInterpretation[] = [
     effect: "فقط در پروژه‌هایی با تمدیدِ مجاز + lpd.",
   },
   {
-    no: 11,
+    id: "D-11",
     subject: "آستانهٔ ۳۰۰ میلیون ریال (بندهای ۲-۱/۲-۲)",
     implemented:
       "مقدار از config (bulletin_2080.threshold_rail) خوانده می‌شود.",
@@ -955,14 +958,14 @@ export const PENDING_INTERPRETATIONS: PendingInterpretation[] = [
     effect: "با مقدارِ فعلی: هیچ.",
   },
   {
-    no: 12,
+    id: "D-12",
     subject: "مرزِ آستانه (۲-۱/۲-۲)",
     implemented: "آستانه و بیشتر ⇒ گروهی (amount >= threshold).",
     alternative: "دقیقاً برابر ⇒ رشته‌ای.",
     effect: "فقط در پیمانِ دقیقاً ۳۰۰٬۰۰۰٬۰۰۰ ریالی.",
   },
   {
-    no: 13,
+    id: "D-13",
     subject: "گرانولاریتیِ مسیر رشته‌ای (۲-۱)",
     implemented:
       "در مسیر رشته‌ای همهٔ فصول و تجهیز از شاخصِ رشته استفاده می‌کنند.",
@@ -971,15 +974,15 @@ export const PENDING_INTERPRETATIONS: PendingInterpretation[] = [
       "پروژهٔ مرجع ابنیه و مسیرِ پیش‌فرض گروهی است؛ اعداد ثابت می‌مانند.",
   },
   {
-    no: 14,
+    id: "D-14",
     subject: "کار جدید بعد از تبدیل مثلِ تجهیز تعدیل می‌شود (۳-۱..۳-۵)",
     implemented:
       "بعد از تبدیل، مبلغِ کار جدید مثلِ تجهیز (بند ۴) با شاخصِ رشته و شاخه‌های تأخیر تعدیل می‌شود.",
     alternative: "فقط جبرانِ ۳-۵ بدونِ تعدیلِ مجدد.",
-    effect: "ΔP در سناریوی مرجع به‌جای ۰ به ۲۶۵٬۳۱۵٬۰۶۸٫۴۹ می‌رسد.",
+    effect: "ΔP در پروژهٔ مرجع به‌جای ۰ به ۳۰۹٬۸۳۰٬۰۹۷٫۰۹ ریال می‌رسد.",
   },
   {
-    no: 15,
+    id: "D-15",
     subject: "دورهٔ شاخصِ مبنا در ۳-۲/۳-۳ ناموجود",
     implemented:
       "اگر new_item_base_period خالی یا ناموجود باشد، ردیف ساخته نمی‌شود و هشدارِ خطا داده می‌شود.",
@@ -987,7 +990,7 @@ export const PENDING_INTERPRETATIONS: PendingInterpretation[] = [
     effect: "کار جدید کاملاً نادیده گرفته می‌شود (ΔP ثابت).",
   },
   {
-    no: 16,
+    id: "D-16",
     subject: "روشِ نامعتبرِ کار جدید به ۳-۱ برمی‌گردد",
     implemented:
       "اگر new_item_method مجاز نباشد، موتور به «فهرست پیمان» برمی‌گردد.",
@@ -995,7 +998,7 @@ export const PENDING_INTERPRETATIONS: PendingInterpretation[] = [
     effect: "با فرضِ ۳-۱ ادامه می‌یابد (conv = ۱).",
   },
   {
-    no: 17,
+    id: "D-17",
     subject: "گردنشدنِ ضریبِ تبدیلِ ۳-۵ قبل از ضرب در مبلغ",
     implemented:
       "conv با دقتِ کامل float محاسبه و در مبلغ ضرب می‌شود؛ گردکردنِ ۸-۲ فقط روی ضرایبِ k×(It/Io−1) اعمال می‌شود.",
@@ -1003,13 +1006,32 @@ export const PENDING_INTERPRETATIONS: PendingInterpretation[] = [
     effect: "تفاوت زیرریالی (conv = ۰٫۸۸۳۶۶۴۶۲۳۳۰۸۷۸۹).",
   },
   {
-    no: 18,
+    id: "D-18",
     subject: "مبنای «مبلغ برآورد» در سقفِ ۱۰٪ نامه-۶ (گام ۷)",
     implemented:
       "مبلغ برآورد بر اساس قیمت‌های پایه = base_total (بدون ضرایب)، نه grand_total.",
     alternative: "grand_total (شاملِ ضرایب).",
     effect:
-      "در سناریوی مرجع سقف ۱۱e۹ به‌جای ۱۳٫۵۲e۹ — تفاوت ۲٫۵۲ میلیارد ریال.",
+      "سقفِ ۲۵٬۵۴۰٬۲۱۹٬۴۷۰٫۷۱ به‌جای ۳۴٬۵۳۰٬۳۷۶٬۷۲۴٫۴۰ — تفاوت ۸٬۹۹۰٬۱۵۷٬۲۵۳٫۶۹ ریال.",
+  },
+  // ── دو تصمیمِ بازِ خارج از تفسیرِ بخشنامه (وابسته به داده) ──
+  {
+    id: "D-19",
+    subject: "شاخص کلیِ مستقل برای تجهیز/مصالح (بندهای ۱-۲/۲-۳)",
+    implemented:
+      "در مسیرِ رشته‌ای، شاخصِ رشتهٔ خودِ پروژه خوانده می‌شود؛ شاخصِ کلیِ مستقل هنوز در config وجود ندارد.",
+    alternative: "استفاده از شاخصِ کلیِ مستقلِ مرکز آمار (داده نیاز است).",
+    effect:
+      "اگر شاخصِ مستقل برابرِ شاخصِ رشته باشد اثر صفر؛ در غیر این صورت تفاوت روی هزینهٔ تجهیزِ کارگاه (ایراد I-09).",
+  },
+  {
+    id: "D-20",
+    subject: "مصالحِ پای‌کار (بند ۲-۴)",
+    implemented:
+      "هیچ شاخصِ اختصاصی برای مصالحِ پای‌کار پیاده نشده؛ از شاخصِ رشته استفاده می‌شود.",
+    alternative: "شاخصِ اختصاصیِ مصالحِ پای‌کار (کرایهٔ حمل از پایِ کارگاه).",
+    effect:
+      "در پروژهٔ مرجع site_setup_amount = ۰ است ⇒ اثر صفر؛ در پروژه‌هایی با تجهیزِ بالا تفاوت می‌کند.",
   },
 ];
 
