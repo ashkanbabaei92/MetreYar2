@@ -1,0 +1,24 @@
+{
+  "estimated_flags": [
+    {
+      "code": "080301",
+      "estimated": false,
+      "price": 6900000
+    },
+    {
+      "code": "080302",
+      "estimated": false,
+      "price": 7400000
+    },
+    {
+      "code": "100102",
+      "estimated": true,
+      "price": 2780000
+    },
+    {
+      "code": "080201",
+      "estimated": true,
+      "price": 5200000
+    }
+  ]
+}

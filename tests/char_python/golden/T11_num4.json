@@ -1,0 +1,12 @@
+{
+  "input": "13429.25 mm",
+  "file": "جدول بتن‌ریزی پی - Foundation Concrete Schedule.txt",
+  "parse": {
+    "value": 13429.25,
+    "unit": "mm"
+  },
+  "si": [
+    13.42925,
+    "m"
+  ]
+}

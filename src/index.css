@@ -1,0 +1,193 @@
+@import "tailwindcss";
+
+@theme {
+  --font-sans: "Vazirmatn", "Segoe UI", Tahoma, sans-serif;
+
+  --color-ink: #e9edf4;
+  --color-ink-dim: #98a2b8;
+  --color-paper: #0a0e14;
+  --color-panel: #10151f;
+  --color-panel-2: #151b29;
+  --color-line: rgba(148, 163, 184, 0.14);
+
+  --color-gold: #f2b33d;
+  --color-gold-2: #ffd166;
+  --color-teal: #2dd4bf;
+  --color-sky: #38bdf8;
+  --color-emerald: #34d399;
+  --color-rose: #fb7a93;
+  --color-violet: #a78bfa;
+}
+
+html,
+body {
+  background: var(--color-paper);
+  color: var(--color-ink);
+  font-family: var(--font-sans);
+  scroll-behavior: smooth;
+}
+
+* {
+  -webkit-tap-highlight-color: transparent;
+}
+
+::selection {
+  background: rgba(242, 179, 61, 0.28);
+  color: #fff;
+}
+
+/* ── اسکرول‌بار سفارشی ─────────────────────────── */
+::-webkit-scrollbar {
+  width: 10px;
+  height: 10px;
+}
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+::-webkit-scrollbar-thumb {
+  background: #232c3d;
+  border-radius: 99px;
+  border: 2px solid var(--color-paper);
+}
+::-webkit-scrollbar-thumb:hover {
+  background: #2f3b52;
+}
+
+/* ── اعداد لاتین تباریکه‌شده برای ارقام ─────────── */
+.num {
+  font-feature-settings:
+    "tnum" 1,
+    "lnum" 1;
+  letter-spacing: 0.01em;
+}
+
+/* ── زمینهٔ نقشه‌کشی (Blueprint) ───────────────── */
+.blueprint-bg {
+  position: fixed;
+  inset: 0;
+  z-index: -2;
+  background:
+    radial-gradient(1200px 800px at 85% -10%, rgba(56, 189, 248, 0.07), transparent 55%),
+    radial-gradient(1000px 700px at -10% 110%, rgba(242, 179, 61, 0.06), transparent 55%),
+    var(--color-paper);
+}
+.blueprint-grid {
+  position: fixed;
+  inset: 0;
+  z-index: -1;
+  pointer-events: none;
+  background-image:
+    linear-gradient(to left, rgba(148, 163, 184, 0.055) 1px, transparent 1px),
+    linear-gradient(to bottom, rgba(148, 163, 184, 0.055) 1px, transparent 1px);
+  background-size: 44px 44px;
+  mask-image: radial-gradient(ellipse 120% 90% at 50% 0%, black 30%, transparent 78%);
+}
+
+/* ── پنل شیشه‌ای ───────────────────────────────── */
+.glass {
+  background: linear-gradient(160deg, rgba(21, 27, 41, 0.9), rgba(16, 21, 31, 0.86));
+  border: 1px solid var(--color-line);
+  backdrop-filter: blur(14px);
+}
+.glass-soft {
+  background: rgba(21, 27, 41, 0.55);
+  border: 1px solid var(--color-line);
+}
+
+/* ── خط جداکنندهٔ نقطه‌چین به سبک متره ─────────── */
+.dot-rule {
+  border: 0;
+  border-top: 1px dashed rgba(148, 163, 184, 0.28);
+}
+
+/* ── جدول‌های گزارش ────────────────────────────── */
+.dt {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 13px;
+}
+.dt th {
+  text-align: right;
+  font-weight: 600;
+  color: var(--color-ink-dim);
+  font-size: 11.5px;
+  padding: 10px 14px;
+  border-bottom: 1px solid var(--color-line);
+  white-space: nowrap;
+  background: rgba(148, 163, 184, 0.05);
+}
+.dt td {
+  padding: 10px 14px;
+  border-bottom: 1px solid rgba(148, 163, 184, 0.07);
+  vertical-align: middle;
+}
+.dt tr:hover td {
+  background: rgba(242, 179, 61, 0.035);
+}
+.dt tfoot td {
+  font-weight: 700;
+  background: rgba(242, 179, 61, 0.07);
+  border-bottom: 0;
+}
+
+/* ── انیمیشن‌ها ────────────────────────────────── */
+@keyframes float-blob {
+  0%,
+  100% {
+    transform: translate(0, 0) scale(1);
+  }
+  50% {
+    transform: translate(-24px, 18px) scale(1.06);
+  }
+}
+@keyframes shimmer {
+  from {
+    background-position: 200% 0;
+  }
+  to {
+    background-position: -200% 0;
+  }
+}
+.shimmer {
+  background-size: 200% 100%;
+  animation: shimmer 2.2s linear infinite;
+}
+
+/* ── اسپینر دماسنج ─────────────────────────────── */
+@keyframes pulse-ring {
+  0% {
+    box-shadow: 0 0 0 0 rgba(242, 179, 61, 0.35);
+  }
+  70% {
+    box-shadow: 0 0 0 14px rgba(242, 179, 61, 0);
+  }
+  100% {
+    box-shadow: 0 0 0 0 rgba(242, 179, 61, 0);
+  }
+}
+.pulse-ring {
+  animation: pulse-ring 1.8s ease-out infinite;
+}
+
+/* ── چاپ (صورت‌وضعیت کاغذی) ────────────────────── */
+@media print {
+  body {
+    background: #fff !important;
+  }
+  .app-chrome {
+    display: none !important;
+  }
+  #print-root {
+    display: block !important;
+    background: #fff;
+    color: #111;
+    font-family: "Vazirmatn", Tahoma, sans-serif;
+  }
+  @page {
+    size: A4;
+    margin: 14mm 12mm;
+  }
+}
+#print-root {
+  display: none;
+}

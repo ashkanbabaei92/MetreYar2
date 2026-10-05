@@ -1,0 +1,11 @@
+{
+  "code": "080201",
+  "desc": "تهیه و اجرای بتن مگر (با عیار ۱۵۰ کیلوگرم سیمان در مترمکعب)",
+  "unit": "مترمکعب",
+  "price": 5200000.0,
+  "method": "rule-exact",
+  "confidence": 0.85,
+  "estimated": true,
+  "needs_review": true,
+  "candidates": []
+}

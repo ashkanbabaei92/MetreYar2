@@ -1,0 +1,29 @@
+{
+  "file": "جدول ریزمتره قالب‌بندی اسکلت - Superstructure Formwork Schedule.txt",
+  "title": "جدول ریزمتره قالب‌بندی اسکلت",
+  "kind": "formwork_super",
+  "kind_conf": 0.95,
+  "headers": [
+    "Category",
+    "Family and Type",
+    "Material: Name",
+    "Material: Area",
+    "Mark",
+    "Level",
+    "Comments"
+  ],
+  "rows_count": 116,
+  "subtotal_count": 0,
+  "grand_total_keys": [
+    "area"
+  ],
+  "warnings": [],
+  "col_map": {
+    "category": 0,
+    "familyType": 1,
+    "material": 2,
+    "area": 3,
+    "mark": 4,
+    "level": 5
+  }
+}

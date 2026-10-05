@@ -1,0 +1,14 @@
+{
+  "lean_concrete": {
+    "has_fixture": false
+  },
+  "structural_concrete": {
+    "has_fixture": false
+  },
+  "formwork_foundation": {
+    "has_fixture": false
+  },
+  "joist_floor": {
+    "has_fixture": false
+  }
+}

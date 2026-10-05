@@ -1,0 +1,5 @@
+{
+  "has_writefile_call": true,
+  "sheet_count": 16,
+  "note": "Sheet count based on exporters.ts implementation"
+}

@@ -1,0 +1,25 @@
+{
+  "file": "جدول متره بتن پاشنه و یونولیت - Joist Concrete & EPS Block Schedule.txt",
+  "title": "جدول متره بتن پاشنه و یونولیت",
+  "kind": "joist_materials",
+  "kind_conf": 0.97,
+  "headers": [
+    "Family and Type",
+    "Mark",
+    "Material: Name",
+    "Material: Volume",
+    "Structural Usage"
+  ],
+  "rows_count": 4,
+  "subtotal_count": 2,
+  "grand_total_keys": [
+    "volume"
+  ],
+  "warnings": [],
+  "col_map": {
+    "familyType": 0,
+    "mark": 1,
+    "material": 2,
+    "volume": 3
+  }
+}

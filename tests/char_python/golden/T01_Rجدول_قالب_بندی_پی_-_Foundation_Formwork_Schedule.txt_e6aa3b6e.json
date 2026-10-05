@@ -1,0 +1,26 @@
+{
+  "file": "جدول قالب‌بندی پی - Foundation Formwork Schedule.txt",
+  "title": "جدول قالب‌بندی پی",
+  "kind": "formwork_foundation",
+  "kind_conf": 0.97,
+  "headers": [
+    "Family and Type",
+    "Mark",
+    "Length",
+    "Width",
+    "Formwork Area"
+  ],
+  "rows_count": 13,
+  "subtotal_count": 0,
+  "grand_total_keys": [
+    "area"
+  ],
+  "warnings": [],
+  "col_map": {
+    "familyType": 0,
+    "mark": 1,
+    "length": 2,
+    "width": 3,
+    "area": 4
+  }
+}

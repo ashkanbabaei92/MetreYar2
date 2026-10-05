@@ -1,0 +1,38 @@
+{
+  "total_rows": 3,
+  "rows_detail": [
+    {
+      "values": {
+        "volume": 13.95
+      },
+      "texts": {
+        "category": "Floors",
+        "familyType": "Floor: Slab20",
+        "material": "CONCRETE"
+      },
+      "is_subtotal": false
+    },
+    {
+      "values": {
+        "volume": 4.21
+      },
+      "texts": {
+        "category": "Stairs",
+        "familyType": "Cast-In-Place Stair",
+        "material": "CONCRETE"
+      },
+      "is_subtotal": false
+    },
+    {
+      "values": {
+        "volume": 11.76
+      },
+      "texts": {
+        "category": "Structural Columns",
+        "familyType": "M_Concrete-Rectangular-Column: C45X50-14F16",
+        "material": "CONCRETE"
+      },
+      "is_subtotal": false
+    }
+  ]
+}

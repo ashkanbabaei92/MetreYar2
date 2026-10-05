@@ -1,0 +1,28 @@
+{
+  "file": "جدول بتن‌ریزی پی - Foundation Concrete Schedule.txt",
+  "title": "جدول بتن‌ریزی پی",
+  "kind": "structural_concrete",
+  "kind_conf": 0.97,
+  "headers": [
+    "Mark",
+    "Family and Type",
+    "Length",
+    "Volume",
+    "Area"
+  ],
+  "rows_count": 13,
+  "subtotal_count": 0,
+  "grand_total_keys": [
+    "length",
+    "volume",
+    "area"
+  ],
+  "warnings": [],
+  "col_map": {
+    "mark": 0,
+    "familyType": 1,
+    "length": 2,
+    "volume": 3,
+    "area": 4
+  }
+}

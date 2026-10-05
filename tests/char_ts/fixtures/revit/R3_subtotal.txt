@@ -1,0 +1,6 @@
+"جدول ریزمتره آرماتورها - Rebar Schedule","","",""
+"Mark","Bar Type","Bar Diameter","Material","Count","Total Bar Length","Total Weight"
+"","","","","","",""
+"STR-ST1-TR-B","Φ14","14 mm","IR-Rebar-Fy4000","44","55.740 m","67.36 kg"
+"Rebar - Φ14: 44","","","","","","67.36 kg"
+"Grand total","","","","","2315","12001.91 kg"

@@ -1,0 +1,28 @@
+{
+  "file": "جدول ریزمتره آرماتورهای تیرچه - Joist Rebar Schedule.txt",
+  "title": "جدول ریزمتره آرماتورهای تیرچه",
+  "kind": "rebar_joist",
+  "kind_conf": 0.96,
+  "headers": [
+    "Family and Type",
+    "Mark",
+    "Material: Name",
+    "Material: Volume",
+    "وزن کل آرماتور (kg)",
+    "Structural Usage"
+  ],
+  "rows_count": 6,
+  "subtotal_count": 3,
+  "grand_total_keys": [
+    "volume",
+    "weight"
+  ],
+  "warnings": [],
+  "col_map": {
+    "familyType": 0,
+    "mark": 1,
+    "material": 2,
+    "volume": 3,
+    "weight": 4
+  }
+}

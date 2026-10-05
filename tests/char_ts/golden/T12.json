@@ -1,0 +1,12 @@
+{
+  "input": "1.250",
+  "parse": {
+    "value": 1.25,
+    "unit": ""
+  },
+  "si": {
+    "value": 1.25,
+    "si": "count"
+  },
+  "persian_converted": "1.250"
+}

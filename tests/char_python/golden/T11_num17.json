@@ -1,0 +1,12 @@
+{
+  "input": "11.96 m³",
+  "file": "جدول بتن‌ریزی پی - Foundation Concrete Schedule.txt",
+  "parse": {
+    "value": 11.96,
+    "unit": "m³"
+  },
+  "si": [
+    11.96,
+    "m3"
+  ]
+}

@@ -1,0 +1,20 @@
+{
+  "results": [
+    {
+      "code": "080301",
+      "estimated": false
+    },
+    {
+      "code": "080302",
+      "estimated": false
+    },
+    {
+      "code": "100102",
+      "estimated": true
+    },
+    {
+      "code": "080201",
+      "estimated": true
+    }
+  ]
+}

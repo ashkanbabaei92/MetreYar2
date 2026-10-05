@@ -1,0 +1,94 @@
+{
+  "cases": [
+    {
+      "id": "und_lead",
+      "input": "_بتن مگر",
+      "output": "بتن مگر"
+    },
+    {
+      "id": "und_trail",
+      "input": "بتن مگر_",
+      "output": "بتن مگر"
+    },
+    {
+      "id": "und_both",
+      "input": "_بتن مگر_",
+      "output": "بتن مگر"
+    },
+    {
+      "id": "und_multi",
+      "input": "___تهیه و اجرای بتن___",
+      "output": "تهیه و اجرای بتن"
+    },
+    {
+      "id": "und_inner",
+      "input": "تهیه_و_اجرا",
+      "output": "تهیه و اجرا"
+    },
+    {
+      "id": "und_only",
+      "input": "___",
+      "output": ""
+    },
+    {
+      "id": "punct_lead",
+      "input": "!!!تهیه و اجرای بتن",
+      "output": "تهیه و اجرای بتن"
+    },
+    {
+      "id": "punct_trail",
+      "input": "تهیه و اجرای بتن!!!",
+      "output": "تهیه و اجرای بتن"
+    },
+    {
+      "id": "dash_edges",
+      "input": "--مترمکعب--",
+      "output": "مترمکعب"
+    },
+    {
+      "id": "empty",
+      "input": "",
+      "output": ""
+    },
+    {
+      "id": "space_only",
+      "input": "   ",
+      "output": ""
+    },
+    {
+      "id": "ha_suffix",
+      "input": "ستونهای بتنی",
+      "output": "ستون بتنی"
+    },
+    {
+      "id": "hay_suffix",
+      "input": "تیرهای بتنی",
+      "output": "تیر بتنی"
+    },
+    {
+      "id": "mixed_punct",
+      "input": "(),.;:!?(){}[]\"'«»<>|*+×÷=~#$%^&",
+      "output": ""
+    },
+    {
+      "id": "fa_digits",
+      "input": "۱۸٫۶۵ مترمکعب",
+      "output": "18٫65 مترمکعب"
+    },
+    {
+      "id": "upper_en",
+      "input": "STRUCTURAL CONCRETE SCHEDULE",
+      "output": "structural concrete schedule"
+    },
+    {
+      "id": "arab_yeh",
+      "input": "يونولیت",
+      "output": "یونولیت"
+    },
+    {
+      "id": "tanh_zwnj",
+      "input": "متره‌ی",
+      "output": "متره ی"
+    }
+  ]
+}

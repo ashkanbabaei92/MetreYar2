@@ -1,0 +1,36 @@
+{
+  "inputs": {
+    "12.50": {
+      "original": "12.50",
+      "persian_digits_converted": "12.50"
+    },
+    "12,50": {
+      "original": "12,50",
+      "persian_digits_converted": "12,50"
+    },
+    "1,250.75": {
+      "original": "1,250.75",
+      "persian_digits_converted": "1,250.75"
+    },
+    "1.250,75": {
+      "original": "1.250,75",
+      "persian_digits_converted": "1.250,75"
+    },
+    "۱۲٫۵۰": {
+      "original": "۱۲٫۵۰",
+      "persian_digits_converted": "12٫50"
+    },
+    "12٬500": {
+      "original": "12٬500",
+      "persian_digits_converted": "12٬500"
+    },
+    "1.250": {
+      "original": "1.250",
+      "persian_digits_converted": "1.250"
+    },
+    " 12.50 ": {
+      "original": " 12.50 ",
+      "persian_digits_converted": " 12.50 "
+    }
+  }
+}

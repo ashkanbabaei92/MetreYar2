@@ -1,0 +1,46 @@
+{
+  "file_name": "test_R5.txt",
+  "title": "جدول ریزمتره بتن سازه‌ای",
+  "headers": [
+    "Category",
+    "Family and Type"
+  ],
+  "rows": [
+    {
+      "cells": [
+        "Floors",
+        "Floor: Slab20"
+      ],
+      "values": {},
+      "texts": {
+        "category": "Floors",
+        "familyType": "Floor: Slab20"
+      },
+      "is_subtotal": false
+    },
+    {
+      "cells": [
+        "Stairs",
+        "Cast-In-Place Stair"
+      ],
+      "values": {},
+      "texts": {
+        "category": "Stairs",
+        "familyType": "Cast-In-Place Stair"
+      },
+      "is_subtotal": false
+    }
+  ],
+  "grand_total": {
+    "col3": 400.0
+  },
+  "kind": "unknown",
+  "kind_conf": 0.0,
+  "col_map": {
+    "category": 0,
+    "familyType": 1
+  },
+  "warnings": [
+    "نوع جدول به‌صورت خودکار تشخیص داده نشد؛ لطفاً دستی تعیین کنید."
+  ]
+}

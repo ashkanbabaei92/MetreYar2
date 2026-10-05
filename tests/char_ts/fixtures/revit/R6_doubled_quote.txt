@@ -1,0 +1,5 @@
+﻿"جدول ریزمتره بتن مگر - Lean Concrete Schedule"","""","""","""
+"Mark"",""Family and Type"",""Volume"",""Area"
+""","""","""","""
+"LC-01"",""Foundation Slab: Lean Concrete - 100mm"",""18.65 m³"",""187.0 m²"
+"LC-02"",""Foundation Slab: Lean Concrete - 100mm"",""9.12 m³"",""91.0 m²"

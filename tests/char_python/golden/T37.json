@@ -1,0 +1,16 @@
+{
+  "results": [
+    {
+      "a": "بتن",
+      "b": "بتن",
+      "py_match": "بتن",
+      "py_score": 1.0
+    },
+    {
+      "a": "Concrete",
+      "b": "Concrete",
+      "py_match": "Concrete",
+      "py_score": 1.0
+    }
+  ]
+}

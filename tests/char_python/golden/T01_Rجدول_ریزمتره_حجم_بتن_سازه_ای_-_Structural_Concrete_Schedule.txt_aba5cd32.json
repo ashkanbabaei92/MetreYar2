@@ -1,0 +1,27 @@
+{
+  "file": "جدول ریزمتره حجم بتن سازه‌ای - Structural Concrete Schedule.txt",
+  "title": "جدول ریزمتره حجم بتن سازه‌ای",
+  "kind": "structural_concrete",
+  "kind_conf": 0.97,
+  "headers": [
+    "Category",
+    "Mark",
+    "Level",
+    "Material: Name",
+    "Material: Volume",
+    "Comments"
+  ],
+  "rows_count": 130,
+  "subtotal_count": 0,
+  "grand_total_keys": [
+    "volume"
+  ],
+  "warnings": [],
+  "col_map": {
+    "category": 0,
+    "mark": 1,
+    "level": 2,
+    "material": 3,
+    "volume": 4
+  }
+}

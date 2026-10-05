@@ -1,0 +1,75 @@
+[
+ {
+  "id": "und_lead",
+  "input": "_بتن مگر"
+ },
+ {
+  "id": "und_trail",
+  "input": "بتن مگر_"
+ },
+ {
+  "id": "und_both",
+  "input": "_بتن مگر_"
+ },
+ {
+  "id": "und_multi",
+  "input": "___تهیه و اجرای بتن___"
+ },
+ {
+  "id": "und_inner",
+  "input": "تهیه_و_اجرا"
+ },
+ {
+  "id": "und_only",
+  "input": "___"
+ },
+ {
+  "id": "punct_lead",
+  "input": "!!!تهیه و اجرای بتن"
+ },
+ {
+  "id": "punct_trail",
+  "input": "تهیه و اجرای بتن!!!"
+ },
+ {
+  "id": "dash_edges",
+  "input": "--مترمکعب--"
+ },
+ {
+  "id": "empty",
+  "input": ""
+ },
+ {
+  "id": "space_only",
+  "input": "   "
+ },
+ {
+  "id": "ha_suffix",
+  "input": "ستونهای بتنی"
+ },
+ {
+  "id": "hay_suffix",
+  "input": "تیرهای بتنی"
+ },
+ {
+  "id": "mixed_punct",
+  "input": "(),.;:!?(){}[]\"'«»<>|*+×÷=~#$%^&"
+ },
+ {
+  "id": "fa_digits",
+  "input": "۱۸٫۶۵ مترمکعب"
+ },
+ {
+  "id": "upper_en",
+  "input": "STRUCTURAL CONCRETE SCHEDULE"
+ },
+ {
+  "id": "arab_yeh",
+  "input": "يونولیت",
+  "note": "U+064A first char"
+ },
+ {
+  "id": "tanh_zwnj",
+  "input": "متره‌ی"
+ }
+]

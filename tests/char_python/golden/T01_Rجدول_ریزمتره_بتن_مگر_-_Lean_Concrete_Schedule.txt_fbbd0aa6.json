@@ -1,0 +1,22 @@
+{
+  "file": "جدول ریزمتره بتن مگر - Lean Concrete Schedule.txt",
+  "title": "جدول ریزمتره بتن مگر",
+  "kind": "lean_concrete",
+  "kind_conf": 0.97,
+  "headers": [
+    "Mark",
+    "Family and Type",
+    "Area",
+    "Volume"
+  ],
+  "rows_count": 1,
+  "subtotal_count": 0,
+  "grand_total_keys": [],
+  "warnings": [],
+  "col_map": {
+    "mark": 0,
+    "familyType": 1,
+    "area": 2,
+    "volume": 3
+  }
+}

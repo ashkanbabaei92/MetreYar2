@@ -1,0 +1,6 @@
+{
+  "engine_type": "TechnicalOfficeEngine",
+  "has_compute": true,
+  "has_db": true,
+  "db_count": 50
+}

@@ -1,0 +1,166 @@
+{
+  "meta": {
+    "test_id": "T32",
+    "title": "Rebar Grand Total reconciliation",
+    "contract": "canonical RevitTable input; no parser, Mapping, fuzzy matching, or golden dependency",
+    "threshold": 1.02,
+    "cases": [
+      "reconcile_above_threshold",
+      "boundary_at_threshold"
+    ]
+  },
+  "db": [
+    {
+      "code": "070201",
+      "chapter": "07",
+      "desc": "Rebar up to 10 mm",
+      "unit": "کيلوگرم",
+      "price": 1000,
+      "estimated": false
+    },
+    {
+      "code": "070203",
+      "chapter": "07",
+      "desc": "Rebar 20 mm and above",
+      "unit": "کيلوگرم",
+      "price": 2000,
+      "estimated": false
+    },
+    {
+      "code": "280101",
+      "chapter": "28",
+      "desc": "Transport of steel materials",
+      "unit": "تن-کیلومتر",
+      "price": 3000,
+      "estimated": false
+    }
+  ],
+  "settings": {
+    "overhead_coef": 1.4,
+    "regional_coef": 1,
+    "floors_coef": 1,
+    "site_setup_amount": 0,
+    "insurance_pct": 7.8,
+    "tax_pct": 5,
+    "good_job_pct": 10,
+    "advance_payment": 0
+  },
+  "table": {
+    "id": "T32-rebar-table",
+    "file_name": "T32_rebar_schedule.txt",
+    "title": "T32 Rebar Schedule",
+    "headers": [],
+    "kind": "rebar_detailed",
+    "kind_confidence": 1,
+    "col_map": {},
+    "warnings": [],
+    "rows": [
+      {
+        "cells": [],
+        "values": {
+          "weight": 100,
+          "diameter": 8,
+          "count": 1,
+          "length": 10
+        },
+        "texts": {
+          "mark": "RB-08",
+          "barType": "AIII",
+          "material": "AIII",
+          "familyType": "Rebar 8"
+        },
+        "is_subtotal": false
+      },
+      {
+        "cells": [],
+        "values": {
+          "weight": 200,
+          "diameter": 20,
+          "count": 1,
+          "length": 20
+        },
+        "texts": {
+          "mark": "RB-20",
+          "barType": "AIII",
+          "material": "AIII",
+          "familyType": "Rebar 20"
+        },
+        "is_subtotal": false
+      },
+      {
+        "cells": [],
+        "values": {
+          "weight": 999,
+          "diameter": 20,
+          "count": 1,
+          "length": 99
+        },
+        "texts": {
+          "mark": "SUBTOTAL",
+          "barType": "AIII",
+          "material": "AIII",
+          "familyType": "Subtotal"
+        },
+        "is_subtotal": true
+      }
+    ]
+  },
+  "expected": {
+    "reconcile_above_threshold": {
+      "grand_total_weight": 310,
+      "rows_sum": 300,
+      "reconciled": true,
+      "difference": 10,
+      "bucket_kg": {
+        "070201": 100,
+        "070203": 210
+      },
+      "warning_count": 2,
+      "rebar_lines": {
+        "070201": {
+          "qty": 100,
+          "total": 100000
+        },
+        "070203": {
+          "qty": 210,
+          "total": 420000
+        }
+      },
+      "transport": {
+        "qty": 6.2,
+        "total": 18600.0
+      },
+      "base_total": 538600.0,
+      "grand_total": 754040.0,
+      "net_payable": 582118.88
+    },
+    "boundary_at_threshold": {
+      "grand_total_weight": 306,
+      "rows_sum": 300,
+      "reconciled": false,
+      "difference": 0,
+      "bucket_kg": {
+        "070201": 100,
+        "070203": 200
+      },
+      "warning_count": 1,
+      "rebar_lines": {
+        "070201": {
+          "qty": 100,
+          "total": 100000
+        },
+        "070203": {
+          "qty": 200,
+          "total": 400000
+        }
+      },
+      "transport": {
+        "qty": 6.0,
+        "total": 18000.0
+      },
+      "base_total": 518000.0,
+      "grand_total": 725200.0,
+      "net_payable": 559854.4
+    }
+  }
+}

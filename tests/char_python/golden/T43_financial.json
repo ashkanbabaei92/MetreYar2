@@ -1,0 +1,33 @@
+{
+  "tables_parsed": 3,
+  "has_result": true,
+  "keys": [
+    "lines",
+    "rebar",
+    "chapter_sums",
+    "records",
+    "base_total",
+    "floors_amount",
+    "overhead_amount",
+    "regional_amount",
+    "site_setup",
+    "gross_payable",
+    "grand_total",
+    "insurance",
+    "tax",
+    "good_job",
+    "advance_payment",
+    "total_deductions",
+    "net_payable",
+    "adjustment",
+    "index",
+    "coefs",
+    "warnings",
+    "warnings_by_level",
+    "status",
+    "quality"
+  ],
+  "lines_count": 6,
+  "base_total": 9311180656.000004,
+  "grand_total": 12588716246.912006
+}

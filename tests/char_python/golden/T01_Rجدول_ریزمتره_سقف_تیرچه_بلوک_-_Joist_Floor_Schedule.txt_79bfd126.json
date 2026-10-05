@@ -1,0 +1,32 @@
+{
+  "file": "جدول ریزمتره سقف تیرچه بلوک - Joist Floor Schedule.txt",
+  "title": "جدول ریزمتره سقف تیرچه بلوک",
+  "kind": "joist_floor",
+  "kind_conf": 0.97,
+  "headers": [
+    "Family and Type",
+    "Mark",
+    "Reference Level",
+    "Length",
+    "Count",
+    "Volume",
+    "Comments",
+    "Description"
+  ],
+  "rows_count": 13,
+  "subtotal_count": 0,
+  "grand_total_keys": [
+    "length",
+    "count",
+    "volume"
+  ],
+  "warnings": [],
+  "col_map": {
+    "familyType": 0,
+    "mark": 1,
+    "level": 2,
+    "length": 3,
+    "count": 4,
+    "volume": 5
+  }
+}

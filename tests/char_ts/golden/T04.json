@@ -1,0 +1,31 @@
+{
+  "id": "mock-uuid-0",
+  "fileName": "R4.txt",
+  "title": "جدول نامشخص",
+  "headers": [
+    "Random Column 1",
+    "Random Column 2",
+    "Random Column 3"
+  ],
+  "rows": [
+    {
+      "cells": [
+        "Value 1",
+        "Value 2",
+        "Value 3"
+      ],
+      "values": {},
+      "texts": {},
+      "isSubtotal": false
+    }
+  ],
+  "grandTotal": {
+    "col3": 100
+  },
+  "kind": "unknown",
+  "kindConfidence": 0,
+  "colMap": {},
+  "warnings": [
+    "نوع جدول به‌صورت خودکار تشخیص داده نشد؛ لطفاً دستی تعیین کنید."
+  ]
+}

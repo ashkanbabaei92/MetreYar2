@@ -1,0 +1,50 @@
+[
+ {
+  "id": "headers_fa",
+  "text": "مارک,فامیل و تایپ,دسته,تعداد,حجم",
+  "text_cp1256": "مارک,فاميل و تايپ,دسته,تعداد,حجم",
+  "utf8_hex": "d985d8a7d8b1daa92cd981d8a7d985db8cd98420d98820d8aad8a7db8cd9be2cd8afd8b3d8aad9872cd8aad8b9d8afd8a7d8af2cd8add8acd985",
+  "utf8_bom_hex": "efbbbfd985d8a7d8b1daa92cd981d8a7d985db8cd98420d98820d8aad8a7db8cd9be2cd8afd8b3d8aad9872cd8aad8b9d8afd8a7d8af2cd8add8acd985",
+  "cp1256_hex": "e3c7d1982cddc7e3ede120e620cac7ed812ccfd3cae52ccadacfc7cf2ccdcce3"
+ },
+ {
+  "id": "quoted_fa",
+  "text": "\"مارک\",\"فامیل و تایپ\",\"دسته\"",
+  "text_cp1256": "\"مارک\",\"فاميل و تايپ\",\"دسته\"",
+  "utf8_hex": "22d985d8a7d8b1daa9222c22d981d8a7d985db8cd98420d98820d8aad8a7db8cd9be222c22d8afd8b3d8aad98722",
+  "utf8_bom_hex": "efbbbf22d985d8a7d8b1daa9222c22d981d8a7d985db8cd98420d98820d8aad8a7db8cd9be222c22d8afd8b3d8aad98722",
+  "cp1256_hex": "22e3c7d198222c22ddc7e3ede120e620cac7ed81222c22cfd3cae522"
+ },
+ {
+  "id": "mixed_en_fa",
+  "text": "بتن عیار 350 - حجم 18.65 m3",
+  "text_cp1256": "بتن عيار 350 - حجم 18.65 m3",
+  "utf8_hex": "d8a8d8aad98620d8b9db8cd8a7d8b120333530202d20d8add8acd9852031382e3635206d33",
+  "utf8_bom_hex": "efbbbfd8a8d8aad98620d8b9db8cd8a7d8b120333530202d20d8add8acd9852031382e3635206d33",
+  "cp1256_hex": "c8cae420daedc7d120333530202d20cdcce32031382e3635206d33"
+ },
+ {
+  "id": "ascii_only",
+  "text": "ElementId,Mark,HostElementId,MappingMark",
+  "text_cp1256": "ElementId,Mark,HostElementId,MappingMark",
+  "utf8_hex": "456c656d656e7449642c4d61726b2c486f7374456c656d656e7449642c4d617070696e674d61726b",
+  "utf8_bom_hex": "efbbbf456c656d656e7449642c4d61726b2c486f7374456c656d656e7449642c4d617070696e674d61726b",
+  "cp1256_hex": "456c656d656e7449642c4d61726b2c486f7374456c656d656e7449642c4d617070696e674d61726b"
+ },
+ {
+  "id": "rebar_fa",
+  "text": "ستون C30 با میلگرد قطر 16",
+  "text_cp1256": "ستون C30 با ميلگرد قطر 16",
+  "utf8_hex": "d8b3d8aad988d9862043333020d8a8d8a720d985db8cd984daafd8b1d8af20d982d8b7d8b1203136",
+  "utf8_bom_hex": "efbbbfd8b3d8aad988d9862043333020d8a8d8a720d985db8cd984daafd8b1d8af20d982d8b7d8b1203136",
+  "cp1256_hex": "d3cae6e42043333020c8c720e3ede190d1cf20ded8d1203136"
+ },
+ {
+  "id": "empty",
+  "text": "",
+  "text_cp1256": "",
+  "utf8_hex": "",
+  "utf8_bom_hex": "efbbbf",
+  "cp1256_hex": ""
+ }
+]

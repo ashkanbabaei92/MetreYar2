@@ -1,0 +1,75 @@
+{
+  "id": "mock-uuid-0",
+  "fileName": "R3.txt",
+  "title": "جدول ریزمتره آرماتورها",
+  "headers": [
+    "Mark",
+    "Bar Type",
+    "Bar Diameter",
+    "Material",
+    "Count",
+    "Total Bar Length",
+    "Total Weight"
+  ],
+  "rows": [
+    {
+      "cells": [
+        "STR-ST1-TR-B",
+        "Φ14",
+        "14 mm",
+        "IR-Rebar-Fy4000",
+        "44",
+        "55.740 m",
+        "67.36 kg"
+      ],
+      "values": {
+        "diameter": 0.014,
+        "count": 44,
+        "length": 55.74,
+        "weight": 67.36
+      },
+      "texts": {
+        "mark": "STR-ST1-TR-B",
+        "barType": "Φ14",
+        "material": "IR-Rebar-Fy4000"
+      },
+      "isSubtotal": false
+    },
+    {
+      "cells": [
+        "Rebar - Φ14: 44",
+        "",
+        "",
+        "",
+        "",
+        "",
+        "67.36 kg"
+      ],
+      "values": {
+        "weight": 67.36
+      },
+      "texts": {
+        "mark": "Rebar - Φ14: 44",
+        "barType": "",
+        "material": ""
+      },
+      "isSubtotal": true
+    }
+  ],
+  "grandTotal": {
+    "length": 2315,
+    "weight": 12001.91
+  },
+  "kind": "rebar_detailed",
+  "kindConfidence": 0.93,
+  "colMap": {
+    "mark": 0,
+    "barType": 1,
+    "diameter": 2,
+    "material": 3,
+    "count": 4,
+    "length": 5,
+    "weight": 6
+  },
+  "warnings": []
+}

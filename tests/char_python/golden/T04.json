@@ -1,0 +1,30 @@
+{
+  "file_name": "test_R4.txt",
+  "title": "جدول نامشخص",
+  "headers": [
+    "Random Column 1",
+    "Random Column 2",
+    "Random Column 3"
+  ],
+  "rows": [
+    {
+      "cells": [
+        "Value 1",
+        "Value 2",
+        "Value 3"
+      ],
+      "values": {},
+      "texts": {},
+      "is_subtotal": false
+    }
+  ],
+  "grand_total": {
+    "col3": 100.0
+  },
+  "kind": "unknown",
+  "kind_conf": 0.0,
+  "col_map": {},
+  "warnings": [
+    "نوع جدول به‌صورت خودکار تشخیص داده نشد؛ لطفاً دستی تعیین کنید."
+  ]
+}

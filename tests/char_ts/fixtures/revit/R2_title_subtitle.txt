@@ -1,0 +1,7 @@
+"جدول ریزمتره حجم بتن سازه‌ای - Structural Concrete Schedule","","",""
+"Category","Family and Type","Material: Name","Material: Volume"
+"","","",""
+"Floors","Floor: Slab20","CONCRETE","13.95 m³"
+"Stairs","Cast-In-Place Stair","CONCRETE","4.21 m³"
+"Structural Columns","M_Concrete-Rectangular-Column: C45X50-14F16","CONCRETE","11.76 m³"
+"Grand total: 5","","","35.71 m³"

@@ -1,0 +1,284 @@
+# گزارش Mapping پروژه	12weiter_azmon	تاریخ:	9/20/2026 0:31	نسخه اسکریپت:	2										
+															
+ElementId	دسته	Family	Type	Mark	طبقه	فاز	متریال	کد فهرست بها	توضیحات	حجم (m³)	سطح (m²)	طول (m)	قالب‌بندی (m²)	جزئیات میلگرد	وزن کل میلگرد (kg)
+575353	StructuralColumns	M_Concrete-Rectangular-Column		C07-ST06	Story5		CONCRETE			0.765	3.455	3.4	0		0
+575356	StructuralColumns	M_Concrete-Rectangular-Column		C07-ST05	Story4		CONCRETE			0.765	3.455	3.4	0		0
+575360	StructuralColumns	M_Concrete-Rectangular-Column		C07-ST04	Story3		CONCRETE			0.765	3.455	3.4	0		0
+575364	StructuralColumns	M_Concrete-Rectangular-Column		C07-ST03	Story2		CONCRETE			0.765	3.455	3.4	0		0
+575368	StructuralColumns	M_Concrete-Rectangular-Column		C07-ST02	Story1		CONCRETE			0.8415	3.6475	3.4	0		0
+575372	StructuralColumns	M_Concrete-Rectangular-Column		C07-ST01	Foundation Top		CONCRETE			0.729	4.905	3.7	0		0
+575376	StructuralColumns	M_Concrete-Rectangular-Column		C07-ST06	Story5		CONCRETE			0.765	3.455	3.4	0		0
+575379	StructuralColumns	M_Concrete-Rectangular-Column		C07-ST05	Story4		CONCRETE			0.765	3.455	3.4	0		0
+575381	StructuralColumns	M_Concrete-Rectangular-Column		C07-ST04	Story3		CONCRETE			0.765	3.455	3.4	0		0
+575383	StructuralColumns	M_Concrete-Rectangular-Column		C07-ST03	Story2		CONCRETE			0.765	3.455	3.4	0		0
+575385	StructuralColumns	M_Concrete-Rectangular-Column		C07-ST02	Story1		CONCRETE			0.8301	3.6476	3.4	0		0
+575387	StructuralColumns	M_Concrete-Rectangular-Column		C07-ST01	Foundation Top		CONCRETE			0.999	4.155	3.7	0		0
+575389	StructuralColumns	M_Concrete-Square-Column		C01-ST06	Story5		CONCRETE			0.6885	3.2625	3.4	0		0
+575392	StructuralColumns	M_Concrete-Square-Column		C01-ST05	Story4		CONCRETE			0.6885	3.2625	3.4	0		0
+575396	StructuralColumns	M_Concrete-Rectangular-Column		C01-ST04	Story3		CONCRETE			0.765	3.455	3.4	0		0
+575400	StructuralColumns	M_Concrete-Rectangular-Column		C01-ST03	Story2		CONCRETE			0.765	3.455	3.4	0		0
+575404	StructuralColumns	M_Concrete-Rectangular-Column		C01-ST02	Story1		CONCRETE			0.8295	3.6256	3.4	0		0
+575408	StructuralColumns	M_Concrete-Rectangular-Column		C01-ST01	Foundation Top		CONCRETE			0.999	4.155	3.7	0		0
+575412	StructuralColumns	M_Concrete-Square-Column		C01-ST06	Story5		CONCRETE			0.6885	3.2625	3.4	0		0
+575415	StructuralColumns	M_Concrete-Square-Column		C01-ST05	Story4		CONCRETE			0.6885	3.2625	3.4	0		0
+575417	StructuralColumns	M_Concrete-Rectangular-Column		C01-ST04	Story3		CONCRETE			0.765	3.455	3.4	0		0
+575419	StructuralColumns	M_Concrete-Rectangular-Column		C01-ST03	Story2		CONCRETE			0.765	3.455	3.4	0		0
+575425	StructuralColumns	M_Concrete-Square-Column		C01-ST06	Story5		CONCRETE			0.6885	3.2625	3.4	0		0
+575427	StructuralColumns	M_Concrete-Square-Column		C01-ST05	Story4		CONCRETE			0.6885	3.2625	3.4	0		0
+575429	StructuralColumns	M_Concrete-Rectangular-Column		C01-ST04	Story3		CONCRETE			0.765	3.455	3.4	0		0
+575431	StructuralColumns	M_Concrete-Rectangular-Column		C01-ST03	Story2		CONCRETE			0.765	3.455	3.4	0		0
+575433	StructuralColumns	M_Concrete-Rectangular-Column		C01-ST02	Story1		CONCRETE			0.8415	3.6475	3.4	0		0
+575435	StructuralColumns	M_Concrete-Rectangular-Column		C01-ST01	Foundation Top		CONCRETE			0.999	4.155	3.7	0		0
+575437	StructuralColumns	M_Concrete-Square-Column		C01-ST06	Story5		CONCRETE			0.6885	3.2625	3.4	0		0
+575439	StructuralColumns	M_Concrete-Square-Column		C01-ST05	Story4		CONCRETE			0.6885	3.2625	3.4	0		0
+575441	StructuralColumns	M_Concrete-Rectangular-Column		C01-ST04	Story3		CONCRETE			0.765	3.455	3.4	0		0
+575443	StructuralColumns	M_Concrete-Rectangular-Column		C01-ST03	Story2		CONCRETE			0.765	3.455	3.4	0		0
+575445	StructuralColumns	M_Concrete-Rectangular-Column		C01-ST02	Story1		CONCRETE			0.8415	3.6475	3.4	0		0
+575447	StructuralColumns	M_Concrete-Rectangular-Column		C01-ST01	Foundation Top		CONCRETE			0.999	4.155	3.7	0		0
+575449	StructuralColumns	M_Concrete-Rectangular-Column		C02-ST06	Story5		CONCRETE			0.765	3.455	3.4	0		0
+575452	StructuralColumns	M_Concrete-Rectangular-Column		C02-ST05	Story4		CONCRETE			0.765	3.455	3.4	0		0
+575455	StructuralColumns	M_Concrete-Rectangular-Column		C02-ST04	Story3		CONCRETE			0.8415	3.6475	3.4	0		0
+575458	StructuralColumns	M_Concrete-Rectangular-Column		C02-ST03	Story2		CONCRETE			0.918	3.84	3.4	0		0
+575462	StructuralColumns	M_Concrete-Rectangular-Column		C02-ST02	Story1		CONCRETE			1.0125	4.025	3.4	0		0
+575466	StructuralColumns	M_Concrete-Rectangular-Column		C02-ST01	Foundation Top		CONCRETE			0.7875	5.225	3.7	0		0
+575470	StructuralColumns	M_Concrete-Rectangular-Column		C02-ST06	Story5		CONCRETE			0.765	3.455	3.4	0		0
+575472	StructuralColumns	M_Concrete-Rectangular-Column		C02-ST05	Story4		CONCRETE			0.765	3.455	3.4	0		0
+575474	StructuralColumns	M_Concrete-Rectangular-Column		C02-ST04	Story3		CONCRETE			0.8415	3.6475	3.4	0		0
+575476	StructuralColumns	M_Concrete-Rectangular-Column		C02-ST03	Story2		CONCRETE			0.918	3.84	3.4	0		0
+575478	StructuralColumns	M_Concrete-Rectangular-Column		C02-ST02	Story1		CONCRETE			1.02	4.04	3.4	0		0
+575480	StructuralColumns	M_Concrete-Rectangular-Column		C02-ST01	Foundation Top		CONCRETE			1.11	4.37	3.7	0		0
+575482	StructuralColumns	M_Concrete-Square-Column		C03-ST06	Story5		CONCRETE			0.6885	3.2625	3.4	0		0
+575485	StructuralColumns	M_Concrete-Square-Column		C03-ST05	Story4		CONCRETE			0.6885	3.2625	3.4	0		0
+575487	StructuralColumns	M_Concrete-Rectangular-Column		C03-ST04	Story3		CONCRETE			0.765	3.455	3.4	0		0
+575489	StructuralColumns	M_Concrete-Rectangular-Column		C03-ST03	Story2		CONCRETE			0.765	3.455	3.4	0		0
+575491	StructuralColumns	M_Concrete-Rectangular-Column		C03-ST02	Story1		CONCRETE			0.8415	3.6475	3.4	0		0
+575493	StructuralColumns	M_Concrete-Rectangular-Column		C03-ST01	Foundation Top		CONCRETE			0.729	4.905	3.7	0		0
+575495	StructuralColumns	M_Concrete-Square-Column		C03-ST06	Story5		CONCRETE			0.6885	3.2625	3.4	0		0
+575497	StructuralColumns	M_Concrete-Square-Column		C03-ST05	Story4		CONCRETE			0.6885	3.2625	3.4	0		0
+575499	StructuralColumns	M_Concrete-Rectangular-Column		C03-ST04	Story3		CONCRETE			0.765	3.455	3.4	0		0
+575501	StructuralColumns	M_Concrete-Rectangular-Column		C03-ST03	Story2		CONCRETE			0.765	3.455	3.4	0		0
+575503	StructuralColumns	M_Concrete-Rectangular-Column		C03-ST02	Story1		CONCRETE			0.8415	3.6475	3.4	0		0
+575505	StructuralColumns	M_Concrete-Rectangular-Column		C03-ST01	Foundation Top		CONCRETE			0.999	4.155	3.7	0		0
+575507	StructuralColumns	M_Concrete-Square-Column		C01-ST06	Story5		CONCRETE			0.6885	3.2625	3.4	0		0
+575509	StructuralColumns	M_Concrete-Square-Column		C01-ST05	Story4		CONCRETE			0.6885	3.2625	3.4	0		0
+575511	StructuralColumns	M_Concrete-Rectangular-Column		C01-ST04	Story3		CONCRETE			0.765	3.455	3.4	0		0
+575513	StructuralColumns	M_Concrete-Rectangular-Column		C01-ST03	Story2		CONCRETE			0.765	3.455	3.4	0		0
+575515	StructuralColumns	M_Concrete-Rectangular-Column		C01-ST02	Story1		CONCRETE			0.8415	3.6475	3.4	0		0
+575517	StructuralColumns	M_Concrete-Rectangular-Column		C01-ST01	Foundation Top		CONCRETE			0.999	4.155	3.7	0		0
+575519	StructuralColumns	M_Concrete-Square-Column		C01-ST06	Story5		CONCRETE			0.6885	3.2625	3.4	0		0
+575521	StructuralColumns	M_Concrete-Square-Column		C01-ST05	Story4		CONCRETE			0.6885	3.2625	3.4	0		0
+575523	StructuralColumns	M_Concrete-Rectangular-Column		C01-ST04	Story3		CONCRETE			0.765	3.455	3.4	0		0
+575525	StructuralColumns	M_Concrete-Rectangular-Column		C01-ST03	Story2		CONCRETE			0.765	3.455	3.4	0		0
+575531	StructuralColumns	M_Concrete-Square-Column		C04-ST07	Story6		CONCRETE			0.448	2.4	2.8	0		0
+575534	StructuralColumns	M_Concrete-Square-Column		C04-ST06	Story5		CONCRETE			0.6885	3.2625	3.4	0		0
+575538	StructuralColumns	M_Concrete-Square-Column		C04-ST05	Story4		CONCRETE			0.6885	3.2625	3.4	0		0
+575542	StructuralColumns	M_Concrete-Rectangular-Column		C04-ST04	Story3		CONCRETE			0.765	3.455	3.4	0		0
+575545	StructuralColumns	M_Concrete-Rectangular-Column		C04-ST03	Story2		CONCRETE			0.918	3.84	3.4	0		0
+575548	StructuralColumns	M_Concrete-Rectangular-Column		C04-ST02	Story1		CONCRETE			1.02	4.04	3.4	0		0
+575552	StructuralColumns	M_Concrete-Rectangular-Column		C04-ST01	Foundation Top		CONCRETE			0.81	5.27	3.7	0		0
+575556	StructuralColumns	M_Concrete-Square-Column		C05-ST07	Story6		CONCRETE			0.448	2.4	2.8	0		0
+575559	StructuralColumns	M_Concrete-Rectangular-Column		C05-ST06	Story5		CONCRETE			0.8415	3.6475	3.4	0		0
+575562	StructuralColumns	M_Concrete-Rectangular-Column		C05-ST05	Story4		CONCRETE			0.8415	3.6475	3.4	0		0
+575566	StructuralColumns	M_Concrete-Rectangular-Column		C05-ST04	Story3		CONCRETE			0.918	3.84	3.4	0		0
+575570	StructuralColumns	M_Concrete-Rectangular-Column		C05-ST03	Story2		CONCRETE			1.02	4.04	3.4	0		0
+575574	StructuralColumns	M_Concrete-Rectangular-Column		C05-ST02	Story1		CONCRETE			1.02	4.04	3.4	0		0
+575578	StructuralColumns	M_Concrete-Rectangular-Column		C05-ST01	Foundation Top		CONCRETE			1.295	4.79	3.7	0		0
+575966	StructuralColumns	M_Concrete-Square-Column		C06-ST07	Story6		CONCRETE			0.448	2.4	2.8	0		0
+576080	StructuralColumns	M_Concrete-Square-Column		C06-ST07	Story6		CONCRETE			0.448	2.4	2.8	0		0
+576211	StructuralColumns	M_Concrete-Square-Column		SC01-ST02	Story1		CONCRETE			0.1995	1.089	0.985	0		0
+576214	StructuralColumns	M_Concrete-Square-Column		SC01-ST02	Story1		CONCRETE			0.1995	1.089	0.985	0		0
+576219	StructuralColumns	M_Concrete-Square-Column		SC01-ST01	Foundation Top		CONCRETE			0.1446	1.5902	1.285	0		0
+576222	StructuralColumns	M_Concrete-Square-Column		SC01-ST01	Foundation Top		CONCRETE			0.1446	1.5902	1.285	0		0
+588161	StructuralColumns	M_Concrete-Rectangular-Column		C01-ST02	Story1		CONCRETE			0.8297	3.6336	3.4	0		0
+588163	StructuralColumns	M_Concrete-Rectangular-Column		C01-ST01	Foundation Top		CONCRETE			0.729	4.905	3.7	0		0
+588399	StructuralColumns	M_Concrete-Rectangular-Column		C01-ST02	Story1		CONCRETE			0.8415	3.6475	3.4	0		0
+588401	StructuralColumns	M_Concrete-Rectangular-Column		C01-ST01	Foundation Top		CONCRETE			0.729	4.905	3.7	0		0
+680444	StructuralColumns	M_Concrete-Square-Column		SC01-ST03	Story2		CONCRETE			0.1995	1.089	0.985	0		0
+680446	StructuralColumns	M_Concrete-Square-Column		SC01-ST03	Story2		CONCRETE			0.1995	1.089	0.985	0		0
+680479	StructuralColumns	M_Concrete-Square-Column		SC01-ST04	Story3		CONCRETE			0.1995	1.089	0.985	0		0
+680481	StructuralColumns	M_Concrete-Square-Column		SC01-ST04	Story3		CONCRETE			0.1995	1.089	0.985	0		0
+680487	StructuralColumns	M_Concrete-Square-Column		SC01-ST05	Story4		CONCRETE			0.1995	1.089	0.985	0		0
+680489	StructuralColumns	M_Concrete-Square-Column		SC01-ST05	Story4		CONCRETE			0.1995	1.089	0.985	0		0
+680495	StructuralColumns	M_Concrete-Square-Column		SC01-ST06	Story5		CONCRETE			0.1995	1.089	0.985	0		0
+680497	StructuralColumns	M_Concrete-Square-Column		SC01-ST06	Story5		CONCRETE			0.1995	1.089	0.985	0		0
+575582	StructuralFraming	M_Concrete-Rectangular Beam		B01-ST06	Story6		CONCRETE			1.0522	4.7295	4.8003	0		0
+575585	StructuralFraming	M_Concrete-Rectangular Beam		B01-ST05	Story5		CONCRETE			1.0522	4.7295	4.8003	0		0
+575588	StructuralFraming	M_Concrete-Rectangular Beam		B01-ST04	Story4		CONCRETE			1.1574	4.992	4.8003	0		0
+575591	StructuralFraming	M_Concrete-Rectangular Beam		B01-ST03	Story3		CONCRETE			1.1574	4.992	4.8003	0		0
+575594	StructuralFraming	M_Concrete-Rectangular Beam		B01-ST02	Story2		CONCRETE			1.1574	4.992	4.8003	0		0
+575600	StructuralFraming	M_Concrete-Rectangular Beam		B01-ST06	Story6		CONCRETE			0.8491	3.8734	3.9002	0		0
+575603	StructuralFraming	M_Concrete-Rectangular Beam		B01-ST05	Story5		CONCRETE			0.8491	3.8734	3.9002	0		0
+575606	StructuralFraming	M_Concrete-Rectangular Beam		B01-ST04	Story4		CONCRETE			0.934	4.0909	3.9002	0		0
+575609	StructuralFraming	M_Concrete-Rectangular Beam		B01-ST03	Story3		CONCRETE			0.934	4.0909	3.9002	0		0
+575612	StructuralFraming	M_Concrete-Rectangular Beam		B01-ST02	Story2		CONCRETE			0.934	4.0909	3.9002	0		0
+575618	StructuralFraming	M_Concrete-Rectangular Beam		B01-ST06	Story6		CONCRETE			0.8326	3.7403	3.9503	0		0
+575621	StructuralFraming	M_Concrete-Rectangular Beam		B01-ST05	Story5		CONCRETE			0.8326	3.7403	3.9503	0		0
+575624	StructuralFraming	M_Concrete-Rectangular Beam		B01-ST04	Story4		CONCRETE			0.9472	4.1422	3.9503	0		0
+575627	StructuralFraming	M_Concrete-Rectangular Beam		B01-ST03	Story3		CONCRETE			0.9472	4.1422	3.9503	0		0
+575630	StructuralFraming	M_Concrete-Rectangular Beam		B01-ST02	Story2		CONCRETE			0.9472	4.1422	3.9503	0		0
+575636	StructuralFraming	M_Concrete-Rectangular Beam		B01-ST06	Story6		CONCRETE			1.3501	6.0489	6.2503	0		0
+575639	StructuralFraming	M_Concrete-Rectangular Beam		B01-ST05	Story5		CONCRETE			1.3501	6.0489	6.2503	0		0
+575642	StructuralFraming	M_Concrete-Rectangular Beam		B01-ST04	Story4		CONCRETE			1.5157	6.4411	6.2503	0		0
+575645	StructuralFraming	M_Concrete-Rectangular Beam		B01-ST03	Story3		CONCRETE			1.5157	6.4411	6.2503	0		0
+575648	StructuralFraming	M_Concrete-Rectangular Beam		B01-ST02	Story2		CONCRETE			1.5157	6.4411	6.2503	0		0
+575651	StructuralFraming	M_Concrete-Rectangular Beam		B01-ST01	Story1		CONCRETE			4.173	19.0799	18.9009	0		0
+575654	StructuralFraming	M_Concrete-Rectangular Beam		B02-ST06	Story6		CONCRETE			0.9731	4.3338	4.8	0		0
+575657	StructuralFraming	M_Concrete-Rectangular Beam		B02-ST05	Story5		CONCRETE			0.9731	4.3338	4.8	0		0
+575660	StructuralFraming	M_Concrete-Rectangular Beam		B02-ST04	Story4		CONCRETE			1.0643	4.5475	4.8	0		0
+575663	StructuralFraming	M_Concrete-Rectangular Beam		B02-ST03	Story3		CONCRETE			1.0643	4.5475	4.8	0		0
+575666	StructuralFraming	M_Concrete-Rectangular Beam		B02-ST02	Story2		CONCRETE			1.0519	4.4975	4.8	0		0
+575669	StructuralFraming	M_Concrete-Rectangular Beam		B02-ST01	Story1		CONCRETE			1.0395	4.4475	4.8	0		0
+575672	StructuralFraming	M_Concrete-Rectangular Beam		B02-ST06	Story6		CONCRETE			0.7706	3.4788	3.9	0		0
+575675	StructuralFraming	M_Concrete-Rectangular Beam		B02-ST05	Story5		CONCRETE			0.7706	3.4788	3.9	0		0
+575678	StructuralFraming	M_Concrete-Rectangular Beam		B02-ST04	Story4		CONCRETE			0.8415	3.6475	3.9	0		0
+575681	StructuralFraming	M_Concrete-Rectangular Beam		B02-ST03	Story3		CONCRETE			0.8415	3.6475	3.9	0		0
+575684	StructuralFraming	M_Concrete-Rectangular Beam		B02-ST02	Story2		CONCRETE			0.8291	3.5975	3.9	0		0
+575687	StructuralFraming	M_Concrete-Rectangular Beam		B02-ST01	Story1		CONCRETE			0.8168	3.5475	3.9	0		0
+575690	StructuralFraming	M_Concrete-Rectangular Beam		B02-ST06	Story6		CONCRETE			0.7819	3.5263	3.95	0		0
+575693	StructuralFraming	M_Concrete-Rectangular Beam		B02-ST05	Story5		CONCRETE			0.7819	3.5263	3.95	0		0
+575696	StructuralFraming	M_Concrete-Rectangular Beam		B02-ST04	Story4		CONCRETE			0.8539	3.6975	3.95	0		0
+575699	StructuralFraming	M_Concrete-Rectangular Beam		B02-ST03	Story3		CONCRETE			0.8539	3.6975	3.95	0		0
+575702	StructuralFraming	M_Concrete-Rectangular Beam		B02-ST02	Story2		CONCRETE			0.8415	3.6475	3.95	0		0
+575705	StructuralFraming	M_Concrete-Rectangular Beam		B02-ST01	Story1		CONCRETE			0.8291	3.5975	3.95	0		0
+575708	StructuralFraming	M_Concrete-Rectangular Beam		B02-ST06	Story6		CONCRETE			1.4051	6.1578	6.72	0		0
+575711	StructuralFraming	M_Concrete-Rectangular Beam		B02-ST05	Story5		CONCRETE			1.4051	6.1578	6.72	0		0
+575714	StructuralFraming	M_Concrete-Rectangular Beam		B02-ST04	Story4		CONCRETE			1.5395	6.4675	6.72	0		0
+575717	StructuralFraming	M_Concrete-Rectangular Beam		B02-ST03	Story3		CONCRETE			1.5395	6.4675	6.72	0		0
+575720	StructuralFraming	M_Concrete-Rectangular Beam		B02-ST02	Story2		CONCRETE			1.5271	6.4175	6.72	0		0
+575723	StructuralFraming	M_Concrete-Rectangular Beam		B02-ST01	Story1		CONCRETE			1.5147	6.3675	6.72	0		0
+575726	StructuralFraming	M_Concrete-Rectangular Beam		B08-ST06	Story6		CONCRETE			1.3691	6.0058	6.56	0		0
+575729	StructuralFraming	M_Concrete-Rectangular Beam		B08-ST05	Story5		CONCRETE			1.3691	6.0058	6.56	0		0
+575732	StructuralFraming	M_Concrete-Rectangular Beam		B08-ST04	Story4		CONCRETE			1.4999	6.3075	6.56	0		0
+575735	StructuralFraming	M_Concrete-Rectangular Beam		B08-ST03	Story3		CONCRETE			1.4937	6.2825	6.56	0		0
+575738	StructuralFraming	M_Concrete-Rectangular Beam		B08-ST02	Story2		CONCRETE			1.4875	6.2575	6.56	0		0
+575741	StructuralFraming	M_Concrete-Rectangular Beam		B08-ST01	Story1		CONCRETE			1.4875	6.2575	6.56	0		0
+575744	StructuralFraming	M_Concrete-Rectangular Beam		B03-ST06	Story6		CONCRETE			1.3616	6.0392	6.4075	0		0
+575747	StructuralFraming	M_Concrete-Rectangular Beam		B03-ST05	Story5		CONCRETE			1.3616	6.0392	6.4075	0		0
+575750	StructuralFraming	M_Concrete-Rectangular Beam		B03-ST04	Story4		CONCRETE			1.4918	6.3595	6.4075	0		0
+575753	StructuralFraming	M_Concrete-Rectangular Beam		B03-ST03	Story3		CONCRETE			1.4858	6.3483	6.4075	0		0
+575756	StructuralFraming	M_Concrete-Rectangular Beam		B03-ST02	Story2		CONCRETE			1.4852	6.307	6.4075	0		0
+575759	StructuralFraming	M_Concrete-Rectangular Beam		B03-ST01	Story1		CONCRETE			1.4852	6.307	6.4075	0		0
+575762	StructuralFraming	M_Concrete-Rectangular Beam		B04-ST06	Story6		CONCRETE			1.5139	6.8453	6.46	0		0
+575765	StructuralFraming	M_Concrete-Rectangular Beam		B04-ST05	Story5		CONCRETE			1.5139	6.8453	6.46	0		0
+575768	StructuralFraming	M_Concrete-Rectangular Beam		B04-ST04	Story4		CONCRETE			1.6528	6.5855	6.46	0		0
+575771	StructuralFraming	M_Concrete-Rectangular Beam		B04-ST03	Story3		CONCRETE			1.6528	6.5855	6.46	0		0
+575774	StructuralFraming	M_Concrete-Rectangular Beam		B04-ST02	Story2		CONCRETE			1.6459	6.5593	6.46	0		0
+575777	StructuralFraming	M_Concrete-Rectangular Beam		B04-ST01	Story1		CONCRETE			3.1943	12.9285	12.74	0		0
+575780	StructuralFraming	M_Concrete-Rectangular Beam		B04-ST06	Story6		CONCRETE			1.4688	6.5525	6.28	0		0
+575783	StructuralFraming	M_Concrete-Rectangular Beam		B04-ST05	Story5		CONCRETE			1.4688	6.5525	6.28	0		0
+575786	StructuralFraming	M_Concrete-Rectangular Beam		B04-ST04	Story4		CONCRETE			1.6033	6.3965	6.28	0		0
+575789	StructuralFraming	M_Concrete-Rectangular Beam		B04-ST03	Story3		CONCRETE			1.6033	6.3965	6.28	0		0
+575792	StructuralFraming	M_Concrete-Rectangular Beam		B04-ST02	Story2		CONCRETE			1.5964	6.3703	6.28	0		0
+575798	StructuralFraming	M_Concrete-Rectangular Beam		B03-ST06	Story6		CONCRETE			1.3628	6.0917	6.282	0		0
+575801	StructuralFraming	M_Concrete-Rectangular Beam		B03-ST05	Story5		CONCRETE			1.3628	6.0917	6.282	0		0
+575804	StructuralFraming	M_Concrete-Rectangular Beam		B03-ST04	Story4		CONCRETE			1.472	6.2552	6.282	0		0
+575807	StructuralFraming	M_Concrete-Rectangular Beam		B03-ST03	Story3		CONCRETE			1.472	6.2552	6.282	0		0
+575810	StructuralFraming	M_Concrete-Rectangular Beam		B03-ST02	Story2		CONCRETE			1.4248	6.0044	6.282	0		0
+575813	StructuralFraming	M_Concrete-Rectangular Beam		B03-ST01	Story1		CONCRETE			1.4248	6.0044	6.282	0		0
+575816	StructuralFraming	M_Concrete-Rectangular Beam		B05-ST06	Story6		CONCRETE			1.8325	7.58	7.78	0		0
+575819	StructuralFraming	M_Concrete-Rectangular Beam		B05-ST05	Story5		CONCRETE			1.8325	7.58	7.78	0		0
+575822	StructuralFraming	M_Concrete-Rectangular Beam		B05-ST04	Story4		CONCRETE			2.0158	7.9715	7.78	0		0
+575825	StructuralFraming	M_Concrete-Rectangular Beam		B05-ST03	Story3		CONCRETE			2.0089	7.9453	7.78	0		0
+575828	StructuralFraming	M_Concrete-Rectangular Beam		B05-ST02	Story2		CONCRETE			2.0089	7.9453	7.78	0		0
+575831	StructuralFraming	M_Concrete-Rectangular Beam		B05-ST01	Story1		CONCRETE			2.0048	7.9299	7.78	0		0
+575834	StructuralFraming	M_Concrete-Rectangular Beam		B05-ST06	Story6		CONCRETE			1.1613	5.3225	5.05	0		0
+575837	StructuralFraming	M_Concrete-Rectangular Beam		B05-ST05	Story5		CONCRETE			1.1613	5.3225	5.05	0		0
+575840	StructuralFraming	M_Concrete-Rectangular Beam		B05-ST04	Story4		CONCRETE			1.265	5.105	5.05	0		0
+575843	StructuralFraming	M_Concrete-Rectangular Beam		B05-ST03	Story3		CONCRETE			1.2581	5.0788	5.05	0		0
+575846	StructuralFraming	M_Concrete-Rectangular Beam		B05-ST02	Story2		CONCRETE			1.2581	5.0788	5.05	0		0
+575849	StructuralFraming	M_Concrete-Rectangular Beam		B05-ST01	Story1		CONCRETE			1.2581	5.0788	5.05	0		0
+575852	StructuralFraming	M_Concrete-Rectangular Beam		B06-ST06	Story6		CONCRETE			1.6855	7.3986	7.83	0		0
+575855	StructuralFraming	M_Concrete-Rectangular Beam		B06-ST05	Story5		CONCRETE			1.6855	7.3986	7.83	0		0
+575858	StructuralFraming	M_Concrete-Rectangular Beam		B06-ST04	Story4		CONCRETE			1.8541	7.8013	7.83	0		0
+575861	StructuralFraming	M_Concrete-Rectangular Beam		B06-ST03	Story3		CONCRETE			1.8541	7.8013	7.83	0		0
+575864	StructuralFraming	M_Concrete-Rectangular Beam		B06-ST02	Story2		CONCRETE			1.8479	7.7763	7.83	0		0
+575867	StructuralFraming	M_Concrete-Rectangular Beam		B06-ST01	Story1		CONCRETE			1.8163	7.8336	7.83	0		0
+575870	StructuralFraming	M_Concrete-Rectangular Beam		B06-ST06	Story6		CONCRETE			1.035	4.595	5.05	0		0
+575873	StructuralFraming	M_Concrete-Rectangular Beam		B06-ST05	Story5		CONCRETE			1.035	4.595	5.05	0		0
+575876	StructuralFraming	M_Concrete-Rectangular Beam		B06-ST04	Story4		CONCRETE			1.1385	4.8475	5.05	0		0
+575879	StructuralFraming	M_Concrete-Rectangular Beam		B06-ST03	Story3		CONCRETE			1.1385	4.8475	5.05	0		0
+575882	StructuralFraming	M_Concrete-Rectangular Beam		B06-ST02	Story2		CONCRETE			1.1323	4.8225	5.05	0		0
+575885	StructuralFraming	M_Concrete-Rectangular Beam		B06-ST01	Story1		CONCRETE			1.1323	4.8225	5.05	0		0
+575888	StructuralFraming	M_Concrete-Rectangular Beam		B06-ST07	Story7		CONCRETE			0.704	3.68	4.8	0		0
+575891	StructuralFraming	M_Concrete-Rectangular Beam		B07-ST06	Story6		CONCRETE			0.9675	4.31	4.8	0		0
+575894	StructuralFraming	M_Concrete-Rectangular Beam		B07-ST05	Story5		CONCRETE			0.9675	4.31	4.8	0		0
+575897	StructuralFraming	M_Concrete-Rectangular Beam		B07-ST04	Story4		CONCRETE			1.0519	4.4975	4.8	0		0
+575900	StructuralFraming	M_Concrete-Rectangular Beam		B07-ST03	Story3		CONCRETE			1.0395	4.4475	4.8	0		0
+575903	StructuralFraming	M_Concrete-Rectangular Beam		B07-ST02	Story2		CONCRETE			1.0395	4.4475	4.8	0		0
+575906	StructuralFraming	M_Concrete-Rectangular Beam		B07-ST01	Story1		CONCRETE			1.0271	4.3975	4.8	0		0
+575909	StructuralFraming	M_Concrete-Rectangular Beam		B07-ST06	Story6		CONCRETE			1.6481	7.1838	7.85	0		0
+575912	StructuralFraming	M_Concrete-Rectangular Beam		B07-ST05	Story5		CONCRETE			1.6481	7.1838	7.85	0		0
+575915	StructuralFraming	M_Concrete-Rectangular Beam		B07-ST04	Story4		CONCRETE			1.8068	7.5475	7.85	0		0
+575918	StructuralFraming	M_Concrete-Rectangular Beam		B07-ST03	Story3		CONCRETE			1.8068	7.5475	7.85	0		0
+575921	StructuralFraming	M_Concrete-Rectangular Beam		B07-ST02	Story2		CONCRETE			1.8068	7.5475	7.85	0		0
+575924	StructuralFraming	M_Concrete-Rectangular Beam		B07-ST01	Story1		CONCRETE			1.6028	7.4975	7.85	0		0
+575927	StructuralFraming	M_Concrete-Rectangular Beam		B09-ST06	Story6		CONCRETE			1.6538	7.2075	7.85	0		0
+575930	StructuralFraming	M_Concrete-Rectangular Beam		B09-ST05	Story5		CONCRETE			1.6538	7.2075	7.85	0		0
+575933	StructuralFraming	M_Concrete-Rectangular Beam		B09-ST04	Story4		CONCRETE			1.8191	7.5975	7.85	0		0
+575936	StructuralFraming	M_Concrete-Rectangular Beam		B09-ST03	Story3		CONCRETE			1.8191	7.5975	7.85	0		0
+575939	StructuralFraming	M_Concrete-Rectangular Beam		B09-ST02	Story2		CONCRETE			1.8191	7.5975	7.85	0		0
+575942	StructuralFraming	M_Concrete-Rectangular Beam		B09-ST01	Story1		CONCRETE			1.8191	7.5975	7.85	0		0
+575945	StructuralFraming	M_Concrete-Rectangular Beam		B08-ST07	Story7		CONCRETE			0.704	3.68	4.8	0		0
+575948	StructuralFraming	M_Concrete-Rectangular Beam		B10-ST06	Story6		CONCRETE			0.9731	4.3338	4.8	0		0
+575951	StructuralFraming	M_Concrete-Rectangular Beam		B10-ST05	Story5		CONCRETE			0.9731	4.3338	4.8	0		0
+575954	StructuralFraming	M_Concrete-Rectangular Beam		B10-ST04	Story4		CONCRETE			1.0704	4.5725	4.8	0		0
+575957	StructuralFraming	M_Concrete-Rectangular Beam		B10-ST03	Story3		CONCRETE			1.0704	4.5725	4.8	0		0
+575960	StructuralFraming	M_Concrete-Rectangular Beam		B10-ST02	Story2		CONCRETE			1.0704	4.5725	4.8	0		0
+575963	StructuralFraming	M_Concrete-Rectangular Beam		B10-ST01	Story1		CONCRETE			1.0704	4.5725	4.8	0		0
+576082	StructuralFraming	M_Concrete-Rectangular Beam		B10-ST07	Story7		CONCRETE			0.4248	2.284	3.055	0		0
+576085	StructuralFraming	M_Concrete-Rectangular Beam		B12-ST07	Story7		CONCRETE			0.4248	2.284	3.055	0		0
+576158	StructuralFraming	M_Concrete-Rectangular Beam		B11-ST06	Story6		CONCRETE			1.035	4.595	5.05	0		0
+576161	StructuralFraming	M_Concrete-Rectangular Beam		B12-ST06	Story6		CONCRETE			1.2158	5.4141	5.74	0		0
+612725	StructuralFraming	تیرچه و یونولیت222		JSL01-ST01	Story1				Φ10 (ادکا، منفی، پیوستگی)	0.6435	6.19	5.6975	0		0
+612727	StructuralFraming	تیرچه و یونولیت222		JSL01-ST01	Story1				Φ10 (ادکا، منفی، پیوستگی)	0.6442	6.1959	5.7029	0		0
+612729	StructuralFraming	تیرچه و یونولیت222		JSL01-ST01	Story1				Φ10 (ادکا، منفی، پیوستگی)	0.6448	6.2018	5.7082	0		0
+612731	StructuralFraming	تیرچه و یونولیت222		JSL01-ST01	Story1				Φ10 (ادکا، منفی، پیوستگی)	0.6455	6.2077	5.7136	0		0
+612733	StructuralFraming	تیرچه و یونولیت222		JSL01-ST01	Story1				Φ10 (ادکا، منفی، پیوستگی)	0.6461	6.2136	5.719	0		0
+612735	StructuralFraming	تیرچه و یونولیت222		JSL01-ST01	Story1				Φ10 (ادکا، منفی، پیوستگی)	0.6468	6.2195	5.7244	0		0
+612737	StructuralFraming	تیرچه و یونولیت222		JSL01-ST01	Story1				Φ10 (ادکا، منفی، پیوستگی)	0.6494	6.241	5.7276	0		0
+612739	StructuralFraming	تیرچه و یونولیت222		JSL01-ST01	Story1				Φ10 (ادکا، منفی، پیوستگی)	0.6481	6.2312	5.7351	0		0
+612741	StructuralFraming	تیرچه و یونولیت222		JSL01-ST01	Story1				Φ10 (ادکا، منفی، پیوستگی)	0.6488	6.2371	5.7405	0		0
+612743	StructuralFraming	تیرچه و یونولیت222		JSL01-ST01	Story1				Φ10 (ادکا، منفی، پیوستگی)	0.6495	6.243	5.7459	0		0
+612745	StructuralFraming	تیرچه و یونولیت222		JSL01-ST01	Story1				Φ10 (ادکا، منفی، پیوستگی)	0.6501	6.2489	5.7512	0		0
+612747	StructuralFraming	تیرچه و یونولیت222		JSL01-ST01	Story1				Φ10 (ادکا، منفی، پیوستگی)	0.6508	6.2548	5.7566	0		0
+612749	StructuralFraming	تیرچه و یونولیت222		JSL01-ST01	Story1				Φ10 (ادکا، منفی، پیوستگی)	0.6514	6.2607	5.762	0		0
+428753	StructuralFoundation	Structural Foundations	WF_A_1800x900	FT-L(1-2)	نامشخص					21.8231	24.2479	0	0		0
+431871	StructuralFoundation	Structural Foundations	WF_A_1800x900	FT-L(2-3)	نامشخص					21.7554	24.1727	0	0		0
+444129	StructuralFoundation	Structural Foundations	WF_A_1800x900	FT-L(3-4)	نامشخص					21.6192	24.0213	0	0		0
+444793	StructuralFoundation	Structural Foundations	WF_A_1800x900	FT-L(5-6)	نامشخص					21.5423	23.9359	0	0		0
+459577	StructuralFoundation	Structural Foundations	WF_B_2000x900	FT-T(A-B)-1	نامشخص					4.32	4.8	0	0		0
+459588	StructuralFoundation	Structural Foundations	WF_B_2000x900	FT-T(A-B)-2	نامشخص					11.9611	13.2901	0	0		0
+459599	StructuralFoundation	Structural Foundations	WF_B_2000x900	FT-T(A-B)-3	نامشخص					6.955	7.7278	0	0		0
+459618	StructuralFoundation	Structural Foundations	WF_A_1800x900	FT-T(B-C)-1	نامشخص					3.888	4.32	0	0		0
+459637	StructuralFoundation	Structural Foundations	WF_A_1800x900	FT-T(B-C)-2	نامشخص					10.773	11.97	0	0		0
+459656	StructuralFoundation	Structural Foundations	WF_A_1800x900	FT-T(B-C)-3	نامشخص					6.6039	7.3376	0	0		0
+459671	StructuralFoundation	Structural Foundations	WF_A_1800x900	FT-T(C-D)-3	نامشخص					6.9362	7.7069	0	0		0
+459690	StructuralFoundation	Structural Foundations	WF_A_1800x900	FT-T(C-D)-2	نامشخص					10.773	11.97	0	0		0
+459709	StructuralFoundation	Structural Foundations	WF_A_1800x900	FT-T(C-D)-1	نامشخص					3.888	4.32	0	0		0
+460481	StructuralFoundation			LC-01	Foundation Top				بتن مگر زیر پی عیار 150	18.6517	186.5172	0	0		0
+428584	Walls			FT-W01	Foundation Top				صوری	8.0826	40.4131	13.471	80.8263		0
+431758	Walls			FT-W01	Foundation Top				صوری	8.0576	40.2878	13.4293	80.5755		0
+435885	Walls			FT-W01	Ground Floor				صوری	7.8094	39.2351	13.3452	104.0924		0
+436083	Walls			FT-W01	Ground Floor				صوری	1.3835	7.1945	2.4	18.72		0
+436133	Walls			FT-W01	Ground Floor				صوری	0.8544	4.3914	1.2	9.36		0
+436461	Walls			FT-W01	Ground Floor				صوری	7.671	38.5435	13.3452	104.0924		0
+441669	Walls			FT-W01	Foundation Top				صوری	8.0071	40.0355	13.3452	80.071		0
+444693	Walls			FT-W01	Foundation Top				صوری	7.9786	39.8932	13.2977	79.7863		0
+447229	Walls			FT-W01	Foundation Top				صوری	1.44	7.2	2.4	14.4		0
+447550	Walls			FT-W01	Foundation Top				صوری	1.44	7.2	2.4	14.4		0
+447805	Walls			FT-W01	Foundation Top				صوری	1.44	7.2	2.4	14.4		0
+452829	Walls			FT-W01	Foundation Top				صوری	3.9902	19.9511	6.6504	39.9023		0
+453191	Walls			FT-W01	Foundation Top				صوری	3.99	19.95	6.65	39.9		0
+453533	Walls			FT-W01	Foundation Top				صوری	3.99	19.95	6.65	39.9		0
+455580	Walls			FT-W01	Foundation Top				صوری	2.3269	11.6343	3.8781	23.2686		0
+455896	Walls			FT-W01	Foundation Top				صوری	2.4508	12.2538	4.0846	24.5076		0
+459262	Walls			FT-W01	Foundation Top				صوری	2.5744	12.8719	4.2906	25.7439		0
+483557	Walls			FT-W01	Foundation Top				صوری	8.0826	40.4131	13.471	80.8263		0
+702614	Walls			FT-W01	Ground Floor				صوری	10.5074	52.5371	13.471	105.0741		0
+702812	Walls			FT-W01	Ground Floor				صوری	2.652	13.26	3.4	26.52		0
+576421	Floors			SL01-ST01	Story1					2.1034	10.5169	0	10.5169		0
+663831	Floors			JSL-TOP01-ST01	Story1					2.5792	51.5837	0	51.5837		0
+626662	Stairs	Stairs	Monolithic Stair IRAN	STR01-ST01	نامشخص					0	0	0	0		0
+630068	Stairs	Stairs	Monolithic Stair IRAN	STR01-ST02	نامشخص					0	0	0	0		0
+															
+# مجموع	تعداد کل المان‌ها:	279													

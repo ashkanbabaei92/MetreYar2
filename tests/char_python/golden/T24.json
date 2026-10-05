@@ -1,0 +1,18 @@
+{
+  "lean_concrete": {
+    "kind": "lean_concrete",
+    "confidence": 0.97
+  },
+  "structural_concrete": {
+    "kind": "structural_concrete",
+    "confidence": 0.97
+  },
+  "formwork_foundation": {
+    "kind": "formwork_foundation",
+    "confidence": 0.97
+  },
+  "joist_floor": {
+    "kind": "joist_floor",
+    "confidence": 0.97
+  }
+}

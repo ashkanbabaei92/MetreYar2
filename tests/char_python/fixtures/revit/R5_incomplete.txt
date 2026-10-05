@@ -1,0 +1,5 @@
+"جدول ریزمتره بتن سازه‌ای","","",""
+"Category","Family and Type"
+"Floors","Floor: Slab20"
+"Stairs","Cast-In-Place Stair"
+"Grand total: 2","","","400"

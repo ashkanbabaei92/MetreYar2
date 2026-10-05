@@ -1,0 +1,31 @@
+{
+  "settings_keys": [
+    "waste",
+    "joistSpacing",
+    "haulDistanceKm",
+    "surchargeRebarDensity",
+    "surchargeReinforcedConcrete",
+    "surchargeThinConcrete",
+    "concreteStrengthMpa",
+    "leanCementKg",
+    "joistBlockThicknessCm",
+    "joistBlockConcreteMpa",
+    "joistBlockTopThicknessCm",
+    "contractCoef",
+    "overheadCoef",
+    "regionalCoef",
+    "floorsCoef",
+    "siteSetupPct",
+    "materialsDiffPct",
+    "insurancePct",
+    "taxPct",
+    "goodJobPct",
+    "advancePayment",
+    "currency",
+    "rounding",
+    "manualCodes",
+    "priceOverrides",
+    "excluded"
+  ],
+  "note": "Full parity test requires demo data via computeProject()"
+}

@@ -1,0 +1,40 @@
+{
+  "file": "جدول ریزمتره آرماتورها - Structural Rebar Schedule.txt",
+  "title": "جدول ریزمتره آرماتورها",
+  "kind": "rebar_detailed",
+  "kind_conf": 0.93,
+  "headers": [
+    "Schedule Mark",
+    "Host Mark",
+    "Host Category",
+    "Type",
+    "Bar Diameter",
+    "Shape",
+    "Material",
+    "Quantity",
+    "Spacing",
+    "Total Bar Length",
+    "Reinforcement Volume",
+    "Weight (kg)"
+  ],
+  "rows_count": 117,
+  "subtotal_count": 0,
+  "grand_total_keys": [
+    "col7",
+    "length",
+    "volume",
+    "weight"
+  ],
+  "warnings": [],
+  "col_map": {
+    "hostMark": 1,
+    "hostCategory": 2,
+    "diameter": 4,
+    "shape": 5,
+    "material": 6,
+    "spacing": 8,
+    "length": 9,
+    "volume": 10,
+    "weight": 11
+  }
+}

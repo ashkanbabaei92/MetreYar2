@@ -1,0 +1,53 @@
+# ── وابستگی‌ها ──
+node_modules/
+package-lock.json.bak
+
+# ── خروجی‌های بیلد ──
+dist/
+build/
+*.tsbuildinfo
+
+# ── پایتون ──
+__pycache__/
+*.pyc
+*.pyo
+.venv/
+venv/
+.coverage
+.pytest_cache/
+coverage/
+htmlcov/
+
+# ── کشِ تست/ابزار ──
+.vitest/
+.freebuff
+
+# ── فایل‌های موقت/پشتیبان/splice ──
+*.tmp
+*.temp
+*.bak
+*.backup
+*.orig
+*.copy
+*_old.*
+*_tmp.*
+splice_*
+*~
+
+# ── خروجی‌های Excel تولیدی (fixtureهای تست استثنا هستند) ──
+*.xlsx
+*.xls
+!tests/**/fixtures/*.xlsx
+!examples/**/*.xlsx
+
+# ─<arg_value> سیستم‌عامل/ویرایشگر ──
+Thumbs.db
+desktop.ini
+.idea/
+.vscode/
+*.swp
+.DS_Store
+
+# ── پروفایل پروژهٔ تولیدی (دادهٔ کاربر) ──
+MetreYarProfile_*.json
+SooratVaziat_*.xlsx

@@ -1,0 +1,24 @@
+{
+  "file": "جدول ریزمتره آرماتورهای اتصال تیرچه - Joist Connection Rebar Schedule.txt",
+  "title": "جدول ریزمتره آرماتورهای اتصال تیرچه",
+  "kind": "rebar_connection",
+  "kind_conf": 0.96,
+  "headers": [
+    "Mark",
+    "Length",
+    "وزن آرماتورهای اتصال (kg)",
+    "قطر میلگرد"
+  ],
+  "rows_count": 13,
+  "subtotal_count": 0,
+  "grand_total_keys": [
+    "weight"
+  ],
+  "warnings": [],
+  "col_map": {
+    "mark": 0,
+    "length": 1,
+    "weight": 2,
+    "diameter": 3
+  }
+}

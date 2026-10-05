@@ -1,0 +1,17 @@
+{
+  "r1_headers": [
+    "Mark",
+    "Family and Type",
+    "Volume"
+  ],
+  "r2_headers": [
+    "Mark",
+    "Family and Type",
+    "Volume"
+  ],
+  "r1_kind": "lean_concrete",
+  "r2_kind": "lean_concrete",
+  "r1_rows": 2,
+  "r2_rows": 2,
+  "identical": true
+}

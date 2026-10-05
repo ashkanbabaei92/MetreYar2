@@ -1,0 +1,75 @@
+{
+  "file_name": "test_R2.txt",
+  "title": "جدول ریزمتره حجم بتن سازه‌ای",
+  "headers": [
+    "Category",
+    "Family and Type",
+    "Material: Name",
+    "Material: Volume"
+  ],
+  "rows": [
+    {
+      "cells": [
+        "Floors",
+        "Floor: Slab20",
+        "CONCRETE",
+        "13.95 m³"
+      ],
+      "values": {
+        "volume": 13.95
+      },
+      "texts": {
+        "category": "Floors",
+        "familyType": "Floor: Slab20",
+        "material": "CONCRETE"
+      },
+      "is_subtotal": false
+    },
+    {
+      "cells": [
+        "Stairs",
+        "Cast-In-Place Stair",
+        "CONCRETE",
+        "4.21 m³"
+      ],
+      "values": {
+        "volume": 4.21
+      },
+      "texts": {
+        "category": "Stairs",
+        "familyType": "Cast-In-Place Stair",
+        "material": "CONCRETE"
+      },
+      "is_subtotal": false
+    },
+    {
+      "cells": [
+        "Structural Columns",
+        "M_Concrete-Rectangular-Column: C45X50-14F16",
+        "CONCRETE",
+        "11.76 m³"
+      ],
+      "values": {
+        "volume": 11.76
+      },
+      "texts": {
+        "category": "Structural Columns",
+        "familyType": "M_Concrete-Rectangular-Column: C45X50-14F16",
+        "material": "CONCRETE"
+      },
+      "is_subtotal": false
+    }
+  ],
+  "grand_total": {
+    "volume": 35.71
+  },
+  "kind": "structural_concrete",
+  "kind_conf": 0.97,
+  "col_map": {
+    "category": 0,
+    "familyType": 1,
+    "material": 2,
+    "volume": 3
+  },
+  "warnings": []
+}

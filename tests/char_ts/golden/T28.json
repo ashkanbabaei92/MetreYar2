@@ -1,0 +1,14 @@
+{
+  "۱۲٫۵۰": {
+    "toEnDigits": "12٫50",
+    "normalize": "12٫50"
+  },
+  "۱۲۳": {
+    "toEnDigits": "123",
+    "normalize": "123"
+  },
+  "۰": {
+    "toEnDigits": "0",
+    "normalize": "0"
+  }
+}
