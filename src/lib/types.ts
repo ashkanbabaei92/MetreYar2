@@ -561,6 +561,10 @@ export interface ProjectSettings {
   tadilDelayDate: string; // تاریخ تحویل قرارداد (حالت تأخیر)
   tadilAllowNegative: boolean; // اجازهٔ تعدیل منفی
   tadilApproved: boolean; // تا تأیید، خروجی «پیش‌نویس» است
+  // ── فاز E-10.1 §۳: حالتِ ارائه ──
+  /** demo_mode: واترمارکِ «نسخهٔ نمایشی» روی همهٔ خروجیِ Excel و UI.
+   * پروژهٔ نمونه (examples/sample_project) به‌صورتِ پیش‌فرض روشن است. */
+  demoMode?: boolean;
   // ── موتور ۲ — برآورد به‌هنگام: A_new = Σ_c A_c × It_c/Io_c (بدون k) ──
   baravordIoPeriod: string;
   baravordItPeriod: string;
@@ -802,6 +806,7 @@ export interface ProjectMeta {
   periodStart: string; // تاریخ شروع دورهٔ صورت‌وضعیت (شمسی)
   periodEnd: string; // تاریخ پایان دورهٔ صورت‌وضعیت (شمسی)
   draftBanner?: string; // فاز E-10 §۲: واترمارکِ پیش‌نویسِ دورهٔ کارکرد روی همهٔ شیت‌ها
+  demoBanner?: string; // فاز E-10.1 §۳: واترمارکِ «نسخهٔ نمایشی» روی همهٔ شیت‌ها
 }
 
 /** رکورد ذخیره‌شدهٔ یک صورت‌وضعیت در سوابق (برای محاسبهٔ تجمعی) */

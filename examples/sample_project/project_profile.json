@@ -1,7 +1,7 @@
 {
  "kind": "metreyar_project_profile",
  "version": 1,
- "exported_at": "2026-10-05T14:14:29.983272",
+ "exported_at": "2026-10-07T02:01:11.435328",
  "meta": {
   "project_name": "پروژهٔ نمونهٔ نمایشی",
   "employer": "کارفرمای نمونه",
@@ -68,6 +68,7 @@
   "tadil_coef": 0.95,
   "completed_within_term": null,
   "coef_rounding_2080": true,
+  "negative_coef_rounding": "away_from_zero",
   "base_index_method": "proposal_period",
   "final_offer_date": "",
   "contract_duration_months": null,
@@ -107,6 +108,7 @@
   "price_project_file": "",
   "fehrest_year": "۱۴۰۴",
   "fehrest_db_year": "۱۴۰۴",
-  "price_overrides": {}
+  "price_overrides": {},
+  "demo_mode": true
  }
 }

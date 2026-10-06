@@ -77,6 +77,7 @@ export const SETTING_LABELS: Record<string, string> = {
   baravordApproved: "تأیید موتور برآورد",
   workPeriodStart: "شروع دورهٔ انجام کار",
   workPeriodEnd: "پایان دورهٔ انجام کار",
+  demoMode: "حالتِ نمایشی (واترمارکِ «نسخهٔ نمایشی»)",
 };
 
 export const META_LABELS: Record<string, string> = {

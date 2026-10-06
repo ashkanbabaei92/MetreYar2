@@ -24,6 +24,7 @@ import {
   diffAuditEntries,
 } from "./lib/auditDiff";
 import { copyProject, loadProjectProfileJson } from "./lib/manualEntries";
+import { DEMO_BANNER } from "./lib/exporters";
 
 const HISTORY_KEY = "metreyar_status_history_v1";
 
@@ -190,6 +191,8 @@ export default function App() {
       table: parseRevitFile(d.name, d.text),
     }));
     setFiles(loaded);
+    // فاز E-10.1 §۳ — دادهٔ نمایشی در حالتِ ارائه باز می‌شود (واترمارک).
+    setSettings((s) => ({ ...s, demoMode: true }));
     setDemoLoaded(true);
     setStep("upload");
   }
@@ -222,6 +225,17 @@ export default function App() {
         />
 
         <main className="flex-1 min-w-0 px-6 lg:px-10 py-8 app-chrome">
+          {settings.demoMode && (
+            // فاز E-10.1 §۳ — بنرِ حالتِ نمایشی روی همهٔ مراحل (آینهٔ
+            // st.warning در app.py؛ واترمارکِ Excel در exporters.ts می‌نشیند).
+            <div
+              className="flex items-center gap-2 rounded-xl bg-amber/[0.07] border border-amber/30 p-3 mb-5 text-amber leading-6"
+              role="status"
+            >
+              <span aria-hidden>🎭</span>
+              <span className="font-semibold">{DEMO_BANNER}</span>
+            </div>
+          )}
           <AnimatePresence mode="wait">
             <motion.div
               key={step}

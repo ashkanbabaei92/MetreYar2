@@ -35,6 +35,11 @@ import {
   MPX_VERSION_LABEL,
 } from "./manualEntries";
 
+// فاز E-10.1 §۳ — حالتِ ارائه. وقتی demoMode روشن است، این واترمارک روی
+// همهٔ خروجیِ Excel و همهٔ صفحاتِ UI می‌نشیند تا هر کسی که خروجی را می‌بیند
+// بداند با صورت‌وضعیتِ تأییدشدهٔ واقعی اعتبارسنجی نشده است.
+export const DEMO_BANNER = "نسخهٔ نمایشی – اعتبارسنجی‌نشده با صورت‌وضعیت تأییدشده";
+
 // ── ارجاع بهای ردیف‌ها (ایراد ۲ و ۴ مرحلهٔ ۱۳) — هم‌سان با PRICE_REFS در
 // app.py. شمارهٔ ردیف در شیت «Fehrest» فایل Excel فهرست‌بهای پایهٔ ابنیه
 // ۱۴۰۴. وضعیت: استخراج‌شده — نیازمند تأیید کاربر. ──
@@ -194,6 +199,10 @@ function headerBlock(meta: ProjectMeta): (string | number)[][] {
   if (meta.draftBanner) {
     rows.splice(rows.length - 1, 0, [meta.draftBanner]);
   }
+  // فاز E-10.1 §۳ — واترمارکِ «نسخهٔ نمایشی» هم همین‌جا می‌نشیند.
+  if (meta.demoBanner) {
+    rows.splice(rows.length - 1, 0, [meta.demoBanner]);
+  }
   return rows;
 }
 
@@ -232,6 +241,11 @@ export function exportWorkbook(
   // فاز E-10 §۲ — واترمارکِ پیش‌نویسِ دورهٔ کارکرد روی همهٔ شیت‌ها
   if (_wpMissing) {
     meta = { ...meta, draftBanner: "پیش‌نویس – دورهٔ کارکرد وارد نشده" };
+  }
+  // فاز E-10.1 §۳ — حالتِ ارائه: واترمارکِ «نسخهٔ نمایشی» روی همهٔ
+  // شیت‌ها. خروجیِ دمو هرگز بدون این واترمارک ساخته نمی‌شود.
+  if (settings.demoMode) {
+    meta = { ...meta, demoBanner: DEMO_BANNER };
   }
 
   // ── برگه ۱: خلاصهٔ مالی ──

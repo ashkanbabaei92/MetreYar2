@@ -150,6 +150,8 @@ export function defaultSettings(): ProjectSettings {
     baravordApproved: false,
     workPeriodStart: "",
     workPeriodEnd: "",
+    // ── فاز E-10.1 §۳: حالتِ ارائه ──
+    demoMode: false,
   };
 }
 

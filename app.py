@@ -33,6 +33,11 @@ _logger = logging.getLogger("MetreYar")
 APP_NAME = "متره‌یار — دفتر فنی هوشمند"
 APP_VERSION = "4.0.0"
 
+# فاز E-10.1 §۳ — حالتِ ارائه. وقتی demo_mode روشن است، این واترمارک روی
+# همهٔ خروجیِ Excel و همهٔ صفحاتِ UI می‌نشیند تا هر کسی که خروجی را می‌بیند
+# بداند با صورت‌وضعیتِ تأییدشدهٔ واقعی اعتبارسنجی نشده است.
+DEMO_BANNER = "نسخهٔ نمایشی – اعتبارسنجی‌نشده با صورت‌وضعیت تأییدشده"
+
 # ════════════════════════════════════════════════════════════════
 # توابع دست‌نویس سطح مدول (بدون هیچ کتابخانهٔ خارجی)
 # ════════════════════════════════════════════════════════════════
@@ -5455,11 +5460,12 @@ class ExcelExporter:
         # فاز E-10 §۲ — واترمارکِ «پیش‌نویس – دورهٔ کارکرد وارد نشده» روی
         # همهٔ شیت‌ها: وقتی دورهٔ کارکرد خالی است، خروجیِ نهایی ممنوع است و
         # فقط پیش‌نویس مجاز می‌شود.
-        _banner = meta.get("draft_banner")
-        if _banner:
-            ws.merge_range(4, 0, 4, ncols - 1, str(_banner), F["warn_y"])
-            return 6
-        return 5
+        # فاز E-10.1 §۳ — واترمارکِ «نسخهٔ نمایشی» هم همین‌جا می‌نشیند.
+        _banners = [b for b in (meta.get("draft_banner"),
+                                meta.get("demo_banner")) if b]
+        for _i, _b in enumerate(_banners):
+            ws.merge_range(4 + _i, 0, 4 + _i, ncols - 1, str(_b), F["warn_y"])
+        return 5 + len(_banners)
 
     @staticmethod
     def _row(ws, r, values, fmts):
@@ -5494,6 +5500,11 @@ class ExcelExporter:
             meta = {**meta,
                     "report_type": f"پیش‌نویس — {meta.get('report_type') or 'موقت'}",
                     "draft_banner": "پیش‌نویس – دورهٔ کارکرد وارد نشده"}
+
+        # فاز E-10.1 §۳ — حالتِ ارائه: واترمارکِ «نسخهٔ نمایشی» روی همهٔ
+        # شیت‌ها. خروجیِ دمو هرگز بدون این واترمارک ساخته نمی‌شود.
+        if settings.get("demo_mode"):
+            meta = {**meta, "demo_banner": DEMO_BANNER}
 
         # اگر ردیفی «نیازمند ورود» است، خروجی «پیش‌نویس» است (§۱۵-۴ بند ۶)
         if (result.get("needs_price_entry") or 0) > 0 and \
@@ -7626,6 +7637,10 @@ def default_settings() -> dict:
         "fehrest_db_year": "۱۴۰۴",       # سال فهرستِ بارگذاری‌شده (تب «فهرست‌بها»)
         #legacy
         "price_overrides": {},
+        # ── فاز E-10.1 §۳: حالتِ ارائه ──
+        # demo_mode: واترمارکِ «نسخهٔ نمایشی» روی همهٔ خروجیِ Excel و UI.
+        # پروژهٔ نمونه (examples/sample_project) به‌صورتِ پیش‌فرض روشن است.
+        "demo_mode": False,
     }
 
 
@@ -7739,6 +7754,7 @@ SETTING_LABELS = {
     "price_diff_warn_pct": "آستانهٔ هشدار اختلاف قیمت",
     "fehrest_year": "سال فهرست‌بهای پروژه",
     "fehrest_db_year": "سال فهرست بارگذاری‌شده",
+    "demo_mode": "حالتِ نمایشی (واترمارکِ «نسخهٔ نمایشی»)",
 }
 
 META_LABELS = {
@@ -10242,6 +10258,11 @@ def main():
 
     st.title("🏗️ متره‌یار — سامانهٔ جامع دفتر فنی هوشمند")
     st.caption(f"نسخهٔ {APP_VERSION} · Revit/Dynamo → فهرست‌بهای ابنیه ۱۴۰۴ → صورت‌وضعیت رسمی")
+
+    # فاز E-10.1 §۳ — بنرِ حالتِ نمایشی روی همهٔ تب‌ها (یاترمارکِ Excel
+    # در ExcelExporter می‌نشیند؛ این برای خودِ UI است).
+    if st.session_state.settings.get("demo_mode"):
+        st.warning(DEMO_BANNER, icon="🎭")
 
     tabs = st.tabs([
         "📊 داشبورد",
