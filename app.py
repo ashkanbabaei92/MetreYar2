@@ -3719,22 +3719,39 @@ class TechnicalOfficeEngine:
                 "ref": "فاز E — بند ۴ بخشنامهٔ ۱۴۴۳۷۳",
             })
 
-        # ── فاز E — بند ۵: جدول اختیاری دستورالعمل ۱۴۰۳/۷۴۴۳۱۷ ──
+        # ── فاز E-10 §۰ — دامنهٔ ۷۴۴۳۱۷: فقط بهره‌برداری/نگهداری/خدماتی ──
         _i744 = (INDEX_BULLETINS or {}).get("instructions_744317") or {}
-        if not (_i744.get("chapters_abnieh") or _i744.get("disciplines")) \
-                and (out["tadil"] or out["baravord"]):
-            warns.append({
-                "level": "اطلاع", "category": "شاخص‌های ۱۴۰۴",
-                "item": "instructions_744317",
-                "message": "جدول شاخص‌های دستورالعمل ۱۴۰۳/۷۴۴۳۱۷ "
-                           "(۱۴۰۳/۱۲/۲۹) وارد نشده است؛ شاخص‌های پیوست ۳ "
-                           "بخشنامهٔ ۱۴۰۵/۱۵۵۲۳۳ ملاک محاسبه‌ها هستند.",
-                "action": "در صورت در دسترس بودن، جدول را در بخش "
-                          "instructions_744317 فایل config/index_bulletins.json "
-                          "وارد کنید (برای دوره‌های مشترک، ماکزیمم دو شاخص "
-                          "ملاک است).",
-                "ref": "فاز E — بند ۵، دستورالعمل ۱۴۰۳/۷۴۴۳۱۷",
-            })
+        _i744_cov = {_d.get("name")
+                     for _d in (_i744.get("disciplines") or [])}
+        if (out["tadil"] or out["baravord"]):
+            _pd = self._project_discipline()
+            if _pd in _i744_cov:
+                warns.append({
+                    "level": "اطلاع", "category": "شاخص‌های ۱۴۰۴",
+                    "item": "instructions_744317_pending_d",
+                    "message": "رشتهٔ «%s» مشمول دستورالعمل ۱۴۰۳/۷۴۴۳۱۷ "
+                               "است؛ ولی محاسبهٔ شاخصِ آن نیازمندِ عددِ d "
+                               "(درصد رشد حداقل دستمزد روزانهٔ مصوب شورای "
+                               "عالی کار) است که هنوز وارد نشده. تا آن زمان "
+                               "شاخص‌های پیوست ۳ بخشنامهٔ ۱۴۰۵/۱۵۵۲۳۳ ملاک "
+                               "محاسبه‌ها هستند." % _pd,
+                    "action": "عدد d را در بخش instructions_744317 فایل "
+                              "config/index_bulletins.json وارد کنید.",
+                    "ref": "فاز E-10 §۰ — بخشنامهٔ ۷۴۴۳۱۷، صفحه ۲، بند ۵",
+                })
+            else:
+                warns.append({
+                    "level": "اطلاع", "category": "شاخص‌های ۱۴۰۴",
+                    "item": "instructions_744317_na",
+                    "message": "دستورالعمل ۱۴۰۳/۷۴۴۳۱۷ شامل رشتهٔ «%s» "
+                               "نمی‌شود (بند ۲: صرفاً رشته‌های بهره‌برداری، "
+                               "نگهداری و خدماتی مشمول آن‌اند). قاعدهٔ "
+                               "ماکزیمم (بند ۵ بخشنامهٔ ۶۶۶۳۱۲) برای این "
+                               "پروژه N/A است و شاخص‌های پیوست ۳ بخشنامهٔ "
+                               "۱۴۰۵/۱۵۵۲۳۳ ملاک محاسبه‌ها هستند." % _pd,
+                    "action": "—",
+                    "ref": "فاز E-10 §۰ — بخشنامهٔ ۷۴۴۳۱۷، صفحه ۱، بند ۲",
+                })
 
         return out
 
@@ -3957,6 +3974,16 @@ class TechnicalOfficeEngine:
         return {"row": row, "dp": dp, "dp_def": dp_def,
                 "dp_095": dp_095}
 
+    def _project_discipline(self):
+        """رشتهٔ پروژه — پیش‌فرض «ابنیه».
+
+        فاز E-10 §۰: این مقدار برای تشخیصِ دامنهٔ دستورالعمل ۷۴۴۳۱۷
+        (فقط رشته‌های بهره‌برداری/نگهداری/خدماتی) به‌کار می‌رود.
+        """
+        _d = ((self.s.get("regional_selection") or {}).get("discipline")
+              or "ابنیه")
+        return (_d or "ابنیه").strip() or "ابنیه"
+
     def _tadil_engine(self, ctx, warns):
         """موتور ۱ — تعدیل پیمان، فصل به فصل با شاخص هر فصل.
 
@@ -3969,8 +3996,7 @@ class TechnicalOfficeEngine:
         pending = []
         # ── فاز E-6 Part C گام ۶ (حرف b): مسیر شاخص (بندهای ۲-۱/۲-۲) ──
         _chain, _chain_src = self._chain_method(s, warns)
-        _disc = (((s.get("regional_selection") or {}).get("discipline")
-                  or "ابنیه").strip() or "ابنیه")
+        _disc = self._project_discipline()
         # ── فاز E-6 Part C گام ۵: کارهای جدید (بندهای ۳-۱..۳-۵) ──
         new_work_row = None
         _new_base_amt = 0.0
@@ -4816,8 +4842,7 @@ class TechnicalOfficeEngine:
         pending = []
         # ── فاز E-6 Part C گام ۶: مسیر شاخص (بندهای ۲-۱/۲-۲) — مثلِ موتور ۱ ──
         _chain, _chain_src = self._chain_method(s, warns)
-        _disc = (((s.get("regional_selection") or {}).get("discipline")
-                  or "ابنیه").strip() or "ابنیه")
+        _disc = self._project_discipline()
         # ── فاز E-6 Part C گام ۵: کارهای جدید (بندهای ۳-۱..۳-۵) ──
         new_work_row = None
         _new_base_amt = 0.0

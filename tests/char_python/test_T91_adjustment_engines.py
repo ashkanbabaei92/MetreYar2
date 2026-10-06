@@ -886,9 +886,15 @@ def test_T91_bund4_baravord_status_provisional():
 
 
 def test_T91_bund5_info_warning_when_engines_on():
+    # فاز E-10 §۰: دامنهٔ ۷۴۴۳۱۷ فقط رشته‌های بهره‌برداری/نگهداری/خدماتی
+    # است؛ رشتهٔ پیش‌فرضِ پروژهٔ مرجع «ابنیه» است و مشمول نیست ⇒ هشدار N/A
     out, warns = _adj(_on())
-    assert any(x["item"] == "instructions_744317" and x["level"] == "اطلاع"
-               for x in warns)
+    _w = [x for x in warns if x["item"] == "instructions_744317_na"
+          and x["level"] == "اطلاع"]
+    assert _w, "هشدارِ N/A برای رشتهٔ ابنیه باید ظاهر شود"
+    assert "ابنیه" in _w[0]["message"]
+    assert "N/A" in _w[0]["message"]
+    assert all(x["item"] != "instructions_744317" for x in warns)
 
 
 def test_T91_excel_sheet_renamed_and_has_sections():

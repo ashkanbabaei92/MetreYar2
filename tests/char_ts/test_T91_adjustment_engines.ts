@@ -646,11 +646,17 @@ describe("T91 فاز E — بندهای ۴ و ۵: هشدارها", () => {
   });
 
   it("بند ۵: موتور روشن ⇒ هشدار اطلاع", () => {
+    // فاز E-10 §۰: دامنهٔ ۷۴۴۳۱۷ فقط بهره‌برداری/نگهداری/خدماتی؛
+    // رشتهٔ پیش‌فرض «ابنیه» مشمول نیست ⇒ هشدار N/A
     const w: Warning[] = [];
     runAdjustment(on({}), ctx(), w);
-    expect(
-      w.some((x) => x.item === "instructions_744317" && x.level === "اطلاع"),
-    ).toBe(true);
+    const na = w.filter(
+      (x) => x.item === "instructions_744317_na" && x.level === "اطلاع",
+    );
+    expect(na.length).toBe(1);
+    expect(na[0].message).toContain("ابنیه");
+    expect(na[0].message).toContain("N/A");
+    expect(w.some((x) => x.item === "instructions_744317")).toBe(false);
   });
 });
 

@@ -1452,6 +1452,12 @@ function disciplineAmountRow(
   };
   return { row, dp, dpDef, dp095 };
 }
+/** رشتهٔ پروژه — پیش‌فرض «ابنیه».
+ * فاز E-10 §۰: برای تشخیصِ دامنهٔ دستورالعمل ۷۴۴۳۱۷
+ * (فقط رشته‌های بهره‌برداری/نگهداری/خدماتی) به‌کار می‌رود. */
+export function projectDiscipline(s: ProjectSettings): string {
+  return (s.regionalSelection?.discipline ?? "ابنیه").trim() || "ابنیه";
+}
 
 export function tadilEngine(
   s: ProjectSettings,
@@ -1461,7 +1467,7 @@ export function tadilEngine(
   const pending: AdjPending[] = [];
   // ── فاز E-6 Part C گام ۶ (حرف b): مسیر شاخص (بندهای ۲-۱/۲-۲) ──
   const [chainMethodResolved, chainMethodSource] = chainMethod(s, warns);
-  const disc = (s.regionalSelection?.discipline ?? "ابنیه").trim() || "ابنیه";
+  const disc = projectDiscipline(s);
   // ── فاز E-6 Part C گام ۵: کارهای جدید (بندهای ۳-۱..۳-۵) ──
   let newWorkRow: AdjSetupRow | null = null;
   let newBaseAmt = 0;
@@ -2467,7 +2473,7 @@ export function baravordEngine(
   const pending: AdjPending[] = [];
   // ── فاز E-6 Part C گام ۶: مسیر شاخص (بندهای ۲-۱/۲-۲) — مثلِ موتور ۱ ──
   const [chainMethodResolved, chainMethodSource] = chainMethod(s, warns);
-  const disc = (s.regionalSelection?.discipline ?? "ابنیه").trim() || "ابنیه";
+  const disc = projectDiscipline(s);
   // ── فاز E-6 Part C گام ۵: کارهای جدید (بندهای ۳-۱..۳-۵) ──
   let newWorkRow: AdjSetupRow | null = null;
   let newBaseAmt = 0;
@@ -2989,25 +2995,46 @@ export function runAdjustment(
         "پس از اعلام بخشنامهٔ قطعی، شاخص‌ها را در بخش definitive_1405 فایل config/index_bulletins.json وارد کنید.",
       ref: "فاز E — بند ۴ بخشنامهٔ ۱۴۴۳۷۳",
     });
-  }
-
-  // ── فاز E — بند ۵: جدول اختیاری دستورالعمل ۱۴۰۳/۷۴۴۳۱۷ ──
+  }  // ── فاز E-10 §۰ — دامنهٔ ۷۴۴۳۱۷: فقط بهره‌برداری/نگهداری/خدماتی ──
   const i744 = (CFG["instructions_744317"] ?? {}) as Record<string, any>;
-  if (
-    !((i744["chapters_abnieh"] as any[]) ?? []).length &&
-    !((i744["disciplines"] as any[]) ?? []).length &&
-    (out.tadil || out.baravord)
-  ) {
-    warns.push({
-      level: "اطلاع",
-      category: "شاخص‌های ۱۴۰۴",
-      item: "instructions_744317",
-      message:
-        "جدول شاخص‌های دستورالعمل ۱۴۰۳/۷۴۴۳۱۷ (۱۴۰۳/۱۲/۲۹) وارد نشده است؛ شاخص‌های پیوست ۳ بخشنامهٔ ۱۴۰۵/۱۵۵۲۳۳ ملاک محاسبه‌ها هستند.",
-      action:
-        "در صورت در دسترس بودن، جدول را در بخش instructions_744317 فایل config/index_bulletins.json وارد کنید (برای دوره‌های مشترک، ماکزیمم دو شاخص ملاک است).",
-      ref: "فاز E — بند ۵، دستورالعمل ۱۴۰۳/۷۴۴۳۱۷",
-    });
+  const i744Cov = new Set<string>(
+    ((i744["disciplines"] as Array<{ name: string }>) ?? []).map(
+      (d) => d.name,
+    ),
+  );
+  if (out.tadil || out.baravord) {
+    const pd = projectDiscipline(s);
+    if (i744Cov.has(pd)) {
+      warns.push({
+        level: "اطلاع",
+        category: "شاخص‌های ۱۴۰۴",
+        item: "instructions_744317_pending_d",
+        message:
+          `رشتهٔ «${pd}» مشمول دستورالعمل ۱۴۰۳/۷۴۴۳۱۷ است؛ ولی ` +
+          "محاسبهٔ شاخصِ آن نیازمندِ عددِ d (درصد رشد حداقل دستمزد " +
+          "روزانهٔ مصوب شورای عالی کار) است که هنوز وارد نشده. تا " +
+          "آن زمان شاخص‌های پیوست ۳ بخشنامهٔ ۱۴۰۵/۱۵۵۲۳۳ ملاک محاسبه‌ها " +
+          "هستند.",
+        action:
+          "عدد d را در بخش instructions_744317 فایل " +
+          "config/index_bulletins.json وارد کنید.",
+        ref: "فاز E-10 §۰ — بخشنامهٔ ۷۴۴۳۱۷، صفحه ۲، بند ۵",
+      });
+    } else {
+      warns.push({
+        level: "اطلاع",
+        category: "شاخص‌های ۱۴۰۴",
+        item: "instructions_744317_na",
+        message:
+          `دستورالعمل ۱۴۰۳/۷۴۴۳۱۷ شامل رشتهٔ «${pd}» نمی‌شود (بند ۲: ` +
+          "صرفاً رشته‌های بهره‌برداری، نگهداری و خدماتی مشمول آن‌اند). " +
+          "قاعدهٔ ماکزیمم (بند ۵ بخشنامهٔ ۶۶۶۳۱۲) برای این پروژه N/A " +
+          "است و شاخص‌های پیوست ۳ بخشنامهٔ ۱۴۰۵/۱۵۵۲۳۳ ملاک محاسبه‌ها " +
+          "هستند.",
+        action: "—",
+        ref: "فاز E-10 §۰ — بخشنامهٔ ۷۴۴۳۱۷، صفحه ۱، بند ۲",
+      });
+    }
   }
 
   return out;
