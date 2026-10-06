@@ -15,6 +15,7 @@ x گروه‌بندی می‌شوند و هر گروه برای خواندنِ �
 اجرا:  python tools/verify_bulletins.py
 خروجی: گزارشِ تطبیق + کدِ خروج (۰ = همه مطابق).
 """
+import hashlib
 import json
 import os
 import re
@@ -358,10 +359,89 @@ def verify_m_table(prov):
     return errors, warnings
 
 
+# ═══════ فاز E-10.1 §۲ — مانیفستِ sha256ِ منابعِ رسمی ═══════
+#
+# هر فایلِ PDF رسمی که پروژه به آن استناد می‌کند، در
+# docs/sources/BULLETINS_MANIFEST.md با sha256 ثبت شده است. قبل از هر
+# تطبیقی هش‌ها چک می‌شوند تا جایگزینی یا خرابیِ یک فایلِ رسمی فوراً
+# خودش را نشان دهد: فایلِ مفقود یا هشِ نامطبابق → خطای صریح و توقف.
+BULL_DIR = os.path.join(ROOT, "docs", "sources", "bulletins")
+MANIFEST = {
+    "248865_Tadil-bahrebardari-nagahdari-khadamati.pdf":
+        "5205897e8775adbc5f08ee108bac932d16cf3ffe50db6cc9f7e0acc38df023ed",
+    "CPI-1404-amar.org.ir.pdf":
+        "098aa74f330f2c71d3f53bdb03ea4d013123a5da75b23d04641b1fb4cb774125",
+    "CPI-1405-amar.org.ir.pdf":
+        "35ccef320806ecff3690fa9481689bd1ae30c11fc28c14eca946f0e262bc5660",
+    "Tadil-Movaghat-1405-1@metror-ir.pdf":
+        "4cfc68d11880e74c2945bdb73b6592ced6573255bc2da6927068de4de75587e8",
+    "Tadil-Total-1404-14050407@metror-ir.pdf":
+        "91afa2d4a4a2b1ac6a05df65f80e905c907f547288d87eb2dd128ed4cbda38cb",
+    "Tadil1404-34.pdf":
+        "3f97a208eb609862fa731b8b1ee923633c7a882916c2d4db0fac386958322b6c",
+    "temporary-adjustment-index-q3-q4-1404.pdf":
+        "ad39425d9b6099c95b1ff092e07d7882a7b8777ca360fc40f942c1f121fbc70d",
+    "شاخص تعدیل 1405/شاخص تعدیل 1405/temporary-adjustment-index-q1-1405.pdf":
+        "4f6190adc7cd34f48115b9b44abf0f72be7e42530790cc0521014953d4cdec9d",
+    "شاخص تعدیل 1405/شاخص تعدیل 1405/شاخص قیمت مصرف کننده اردیبهشت 1405.pdf":
+        "9feaaa0c4d44e8e4d38b6111228ddd7fe9c1477698cd29fb9e7ca32350766089",
+    "شاخص تعدیل 1405/شاخص تعدیل 1405/شاخص قیمت مصرف کننده اسفند 1404.pdf":
+        "9ccc4877a16cdbffb63f6b7aab7f80f4e4dc4db4825c52994ba9923a7cf67f6a",
+    "شاخص تعدیل 1405/شاخص تعدیل 1405/شاخص قیمت مصرف کننده بهمن 1404.pdf":
+        "c111d7d5518b96fac5d00896e02013302c37343dd2aa70251cdabcdc29c676f5",
+    "شاخص تعدیل 1405/شاخص تعدیل 1405/شاخص قیمت مصرف کننده دی 1404.pdf":
+        "d0ed6139852c57b688ed90b5a4e69a28a3039c50097d5ffc7e46329e248b3b5d",
+}
+
+
+def _sha256(path):
+    """sha256 یک فایل (بدون بارگذاری کامل در حافظه)."""
+    h = hashlib.sha256()
+    with open(path, "rb") as fh:
+        for chunk in iter(lambda: fh.read(1 << 20), b""):
+            h.update(chunk)
+    return h.hexdigest()
+
+
+def verify_hashes(manifest=None, base_dir=None):
+    """ابتدا sha256 همهٔ فایل‌های مانیفست چک شود (قبل از هر تطبیقی).
+
+    خروجی: فهرستِ خطاها (خالی = همه چیز مطابق).
+    """
+    manifest = MANIFEST if manifest is None else manifest
+    base_dir = BULL_DIR if base_dir is None else base_dir
+    errors = []
+    n_ok = 0
+    for rel, want in sorted(manifest.items()):
+        p = os.path.join(base_dir, *rel.split("/"))
+        if not os.path.exists(p):
+            errors.append("فایل مفقود: %s" % rel)
+            continue
+        got = _sha256(p)
+        if got != want:
+            errors.append("sha256 نامطبابق: %s\n    مانیفست: %s\n    فایل:    %s"
+                          % (rel, want, got))
+        else:
+            n_ok += 1
+            print("OK   sha256  %s" % rel)
+    if errors:
+        print("خطا در مانیفستِ منابع (%d مورد):" % len(errors))
+        for e in errors:
+            print("  ✗", e)
+    else:
+        print("مانیفستِ منابع: PASS — %d فایل مطابق." % n_ok)
+    return errors
+
+
 if __name__ == "__main__":
-    sys = __import__("sys")
-    if "--indexes" in sys.argv:
-        sys.exit(main())
+    sysmod = __import__("sys")
+    # فاز E-10.1 §۲ — ابتدا sha256 فایل‌های رسمی بررسی شود
+    errs = verify_hashes()
+    if errs:
+        sysmod.exit(2)
+    print()
+    if "--indexes" in sysmod.argv:
+        sysmod.exit(main())
     if "--cpi" in sys.argv:
         errs = verify_cpi_and_prov()
         if errs:
