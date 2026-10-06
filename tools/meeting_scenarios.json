@@ -1,0 +1,80 @@
+{
+ "date": "۱۴۰۵/۰۷/۱۴",
+ "rev_date": "۱۴۰۵/۰۷/۱۵",
+ "baseline": {
+  "base_total": 23218381337.011536,
+  "grand_total": 31391251567.6396,
+  "delta_p": 9984277408.21705,
+  "delta_p_definitive": 7761045209.936075,
+  "baravord": 45437742820.32315
+ },
+ "scenarios": {
+  "S1": {
+   "base_total": 23218381337.011536,
+   "grand_total": 31391251567.6396,
+   "delta_p": 9984277408.21705,
+   "delta_p_definitive": 7761045209.936075,
+   "baravord": 45437742820.32315
+  },
+  "S2": {
+   "base_total": 23218381337.011536,
+   "grand_total": 31391251567.6396,
+   "delta_p": 10224815159.576689,
+   "delta_p_definitive": 8296754608.208858,
+   "baravord": 46172170291.96744
+  },
+  "S3": {
+   "base_total": 23218381337.011536,
+   "grand_total": 31391251567.6396,
+   "delta_p": 9984277408.21705,
+   "delta_p_definitive": 7761045209.936075,
+   "baravord": 45437742820.32315
+  }
+ },
+ "conditional_d01": {
+  "base_total": 23218381337.011536,
+  "grand_total": 31391251567.6396,
+  "delta_p": 10489594369.074144,
+  "delta_p_definitive": 8639178278.91072,
+  "baravord": 45437742820.32315
+ },
+ "envelope": {
+  "E-min-dp": {
+   "name": "کمینهٔ ΔP",
+   "metric": "d_delta_p",
+   "delta_p": 9713574401.597855,
+   "baravord": 46172170291.96744,
+   "flips": [
+    "D-03",
+    "D-13"
+   ]
+  },
+  "E-max-dp": {
+   "name": "بیشینهٔ ΔP",
+   "metric": "d_delta_p",
+   "delta_p": 10814958446.744047,
+   "baravord": 46908603903.783905,
+   "flips": [
+    "D-01",
+    "D-14 [FIX]"
+   ]
+  },
+  "E-min-bar": {
+   "name": "کمینهٔ برآورد",
+   "metric": "d_baravord",
+   "delta_p": 9984277408.21705,
+   "baravord": 45437742820.32315,
+   "flips": []
+  },
+  "E-max-bar": {
+   "name": "بیشینهٔ برآورد",
+   "metric": "d_baravord",
+   "delta_p": 10035784617.983482,
+   "baravord": 47643031375.42819,
+   "flips": [
+    "D-13",
+    "D-14 [FIX]"
+   ]
+  }
+ }
+}

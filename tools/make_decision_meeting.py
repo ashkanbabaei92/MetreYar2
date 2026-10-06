@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-"""tools/make_decision_meeting.py — فاز E-10 §۵.
+"""tools/make_decision_meeting.py — فاز E-10 §۵ (بازبانیِ فاز E-10.1 §۱).
 
 بستهٔ جلسهٔ تصمیم را می‌سازد:
   - docs/DECISION_MEETING.md
@@ -12,12 +12,12 @@
   - اجرای سه سناریوی ترکیبی روی پروژهٔ مرجع با همان موتور
 
 ساختارِ سند:
-  ۱) مقدمه + اعدادِ پایه
-  ۲) ۵ تصمیمِ اول (بیشترین |اثر|) در یک صفحهٔ جدا
-  ۳) همهٔ تصمیم‌ها — مرتب بر اساس max |اثر|
-  ۴) تحلیل حساسیت — سه سناریو + بازهٔ کمینه تا بیشینه (ریال + درصد)
-  ۵) نمودار tornado
-
+   ۱) مقدمه + اعدادِ پایه
+   ۲) ۵ تصمیمِ اول (بیشترین |اثر|) در یک صفحهٔ جدا
+   ۳) همهٔ تصمیم‌ها — مرتب بر اساس max |اثر| + منبعِ هر توصیه
+   ۴) تحلیل حساسیت — سه سناریو + یادداشتِ هم‌کنش
+   ۵) بازهٔ حساسیتِ واقعی (envelope) — چهار سناریوی اجرای همزمان (فاز E-10.1 §۱)
+   ۶) نمودار tornado
 اجرا:  python tools/make_decision_meeting.py
 """
 import json
@@ -116,7 +116,8 @@ def effect_channels(res):
 # ── سناریوهای فرضیِ کارِ جدید (تزریقِ ۱ میلیارد ریال) — [FIX] ──
 FIX_IDS = ("D-14", "D-15", "D-16")
 
-DATE = "۱۴۰۵/۰۷/۱۴"
+DATE = "۱۴۰۵/۰۷/۱۴"          # فاز E-10 §۵
+REV_DATE = "۱۴۰۵/۰۷/۱۵"      # فاز E-10.1 §۱ (بازهٔ حساسیت)
 
 
 def pct(part, whole):
@@ -125,16 +126,16 @@ def pct(part, whole):
     return fa_num(100.0 * part / whole, 2)
 
 
-def build_markdown(base_m, scen_results, rows, results):
+def build_markdown(base_m, scen_results, rows, results, envelope):
     L = []
     a = L.append
     a("# بستهٔ جلسهٔ تصمیم — پروژهٔ MetreYar2")
     a("")
     a("<!-- default-label: [REF] -->")
     a("")
-    a("**تاریخ:** %s (فاز E-10 §۵). این سند با `tools/make_decision_meeting.py` "
+    a("**تاریخِ اولیه:** %s (فاز E-10 §۵)؛ **بازبینی:** %s (فاز E-10.1 §۱ — بازهٔ حساسیت و منبعِ توصیه‌ها). این سند با `tools/make_decision_meeting.py` "
       "از یک منبعِ واحد ساخته شده و با `docs/PENDING_DECISIONS.md` و "
-      "`docs/DECISION_IMPACT.md` هم‌خوان است." % DATE)
+      "`docs/DECISION_IMPACT.md` هم‌خوان است." % (DATE, REV_DATE))
     a("")
     a("> **قاعدهٔ طلایی:** هیچ عددی در این سند حدس زده نشده است. هر عدد "
       "یا با اجرای واقعیِ موتور روی پروژهٔ مرجع به‌دست آمده، یا مستقیم از "
@@ -162,6 +163,8 @@ def build_markdown(base_m, scen_results, rows, results):
         if r["channels"]:
             a("- **کانال‌ها:** %s" % "؛ ".join(r["channels"]))
         a("- **توصیهٔ ما:** %s" % r["recommendation"])
+        _lbl, _det = r["rec_source"]
+        a("- **منبع توصیه:** [%s] %s" % (_lbl, _det))
         a("")
     a("---")
     a("")
@@ -172,15 +175,15 @@ def build_markdown(base_m, scen_results, rows, results):
       "ریالی‌اند [FIX] — روی پروژهٔ مرجع کارِ جدیدی وجود ندارد و این "
       "اعداد فقط برای مقیاس‌دادن به اثرِ تصمیم نشان داده می‌شوند.")
     a("")
-    a("| رتبه | شناسه | موضوع | گزینهٔ ب | max |اثر| (ریال) | کانال | توصیه |")
-    a("|---|---|---|---|---|---|---|")
+    a("| رتبه | شناسه | موضوع | گزینهٔ ب | max \|اثر\| (ریال) | کانال | توصیه | منبع |")
+    a("|---|---|---|---|---|---|---|---|")
     for r in rows:
         star = " *" if r["id"] in FIX_IDS else ""
-        a("| %d | %s%s | %s | %s | %s | %s | %s |"
+        a("| %d | %s%s | %s | %s | %s | %s | %s | [%s] |"
           % (r["rank"], r["id"], star, r["subject"], r["option_b"],
              fa_num(r["max_effect"]) if r["max_effect"] is not None else "—",
              "، ".join(r["channels"]) if r["channels"] else "—",
-             r["recommendation"]))
+             r["recommendation"], r["rec_source"][0]))
     a("")
     a("---")
     a("")
@@ -228,6 +231,69 @@ def build_markdown(base_m, scen_results, rows, results):
     a("---")
     a("")
     # ── ۴) tornado ──
+    # ── ۴-ب) بازهٔ حساسیتِ واقعی (فاز E-10.1 §۱) ──
+    a("## بازهٔ حساسیتِ واقعی (envelope)")
+    a("")
+    a("برای هر سنجه، سناریوی کمینه و بیشینه با **اجرای همزمان** "
+      "گزینه‌هایی که سنجه را در جهتِ دلخواه حرکت می‌دهند ساخته شده‌اند "
+      "(جمع‌زدنِ اثرهای فردی ممنوع است — بالا ببینید). تصمیم‌های با اثرِ "
+      "صفر روی پروژهٔ مرجع (D-04، D-08، D-09، D-10) در هیچ سناریویی چیزی "
+      "را تغییر نمی‌دهند.")
+    a("")
+    a("| سناریو | ΔP (ریال) | برآورد (ریال) | تصمیم‌های اعمال‌شده |")
+    a("|---|---|---|---|")
+    for e in ENVELOPE:
+        m = envelope[e["id"]]
+        a("| **%s** | %s | %s | %s |"
+          % (e["name"], fa_num(m["delta_p"]), fa_num(m["baravord"]),
+             "، ".join(m["flips"]) if m["flips"] else "هیچ (همهٔ الف)"))
+    a("")
+    _lo = min(envelope["E-min-dp"]["delta_p"], envelope["E-max-dp"]["delta_p"])
+    _hi = max(envelope["E-min-dp"]["delta_p"], envelope["E-max-dp"]["delta_p"])
+    _w = _hi - _lo
+    a("**پهنای بازهٔ ΔP:** از %s تا %s ریال یعنی %s ریال (= %s٪ از ΔPِ "
+      "فعلی)." % (fa_num(_lo), fa_num(_hi), fa_num(_w),
+                  pct(_w, base_m["delta_p"])))
+    _lo2 = min(envelope["E-min-bar"]["baravord"],
+               envelope["E-max-bar"]["baravord"])
+    _hi2 = max(envelope["E-min-bar"]["baravord"],
+               envelope["E-max-bar"]["baravord"])
+    _w2 = _hi2 - _lo2
+    a("**پهنای بازهٔ برآورد:** از %s تا %s ریال یعنی %s ریال (= %s٪ از "
+      "برآوردِ فعلی)." % (fa_num(_lo2), fa_num(_hi2), fa_num(_w2),
+                          pct(_w2, base_m["baravord"])))
+    a("")
+    _fixd = [f for f in envelope["E-max-dp"]["flips"] if "[FIX]" in f]
+    _fix_name = _fixd[0].split(" ")[0] if _fixd else "هیچ"
+    a("> **تفاوت با بازهٔ S1–S2:** این بازه شاملِ سناریوهای فرضیِ کارِ جدید "
+      "[FIX] هم می‌شود (فقط در سناریوهای بیشینه). اگر فقط گزینه‌های واقعیِ "
+      "پروژهٔ مرجع مدّ نظر باشد، بازه همان S1 تا S2 در جدولِ بالاست.")
+    a("")
+    a("### چرا D-14/D-15 در بازهٔ برآوردِ E-10 نبودند — و حالا هستند")
+    a("")
+    a("در فاز E-10 §۵ بازهٔ برآورد فقط سناریوهای S1/S2/S3 را در بر "
+      "می‌گرفت و آن‌ها عمداً سناریوی **فرضیِ کارِ جدید** (D-14/D-15/D-16 با "
+      "تزریقِ ۱ میلیارد ریال) را شامل نمی‌شدند، چون روی پروژهٔ مرجع کارِ "
+      "جدیدی وجود ندارد [FIX].")
+    a("")
+    a("> **اصلاحِ یک ادعای E-9:** گزارشِ E-9 اثرِ D-14 روی برآورد را "
+      "«+۲٬۴۷۰٬۸۶۱٬۰۸۳٫۱۳ ریال» و D-15 را «+۲٬۳۳۳٬۴۶۳٬۵۸۰٫۸۴ ریال» نوشته "
+      "است. این دو عدد در **هیچ فایل و هیچ کامیتی** از مخزن وجود ندارند "
+      "(جستجوی دقیق در تمامِ تاریخچهٔ git). همهٔ کامیت‌های E-9 (8f48a01، "
+      "2204d64، ed6d133، 8ca9e21) و اجرایِ مجددِ موتور مقدارهای "
+      "**+۱٬۴۷۰٬۸۶۱٬۰۸۳٫۴۶** (D-14) و **+۱٬۳۳۳٬۴۶۳٬۵۸۰٫۷۳** (D-15) را "
+      "می‌دهند. اختلافِ دقیقاً ۱ میلیارد ریال (= مبلغِ خامِ کارِ جدیدِ "
+      "تزریق‌شده) نشان می‌دهد که اعدادِ ادعا‌شده اصلِ مبلغ را **دو بار** "
+      "حساب کرده‌اند. مقدارِ درست همان ۱٫۴۷ و ۱٫۳۳ میلیارد ریال است.")
+    a("")
+    a("در بازهٔ بالا، سناریوهای «بیشینه» شاملِ بهترین variantِ کارِ جدید "
+      "[FIX] هستند (%s) و سناریوهای «کمینه» شاملِ هیچ کارِ جدیدی نیستند. "
+      "بنابراین D-14 و D-15 حالا در بازه هستند — با برچسبِ صریحِ [FIX] و "
+      "با اعدادِ قابلِ بازتولید." % _fix_name)
+    a("")
+    a("---")
+    a("")
+
     a("## نمودار tornado")
     a("")
     a("هر نوار طولش متناسب با max |اثر| روی ΔP یا برآورد است (D-18 "
@@ -272,7 +338,7 @@ def build_markdown(base_m, scen_results, rows, results):
     return "\n".join(L)
 
 
-def build_docx(path, base_m, scen_results, rows, results):
+def build_docx(path, base_m, scen_results, rows, results, envelope):
     from docx import Document
     from docx.enum.text import WD_ALIGN_PARAGRAPH
     from docx.oxml import OxmlElement
@@ -348,10 +414,10 @@ def build_docx(path, base_m, scen_results, rows, results):
     para("ردیف‌های * سناریوی فرضیِ کارِ جدیدِ ۱ میلیارد ریالی‌اند [FIX].",
          size=8)
     doc.add_paragraph()
-    t = doc.add_table(rows=1, cols=7)
+    t = doc.add_table(rows=1, cols=8)
     t.style = "Table Grid"
     hdr = ["رتبه", "شناسه", "موضوع", "گزینهٔ ب", "max |اثر| (ریال)",
-           "کانال", "توصیه"]
+           "کانال", "توصیه", "منبع"]
     for i, h in enumerate(hdr):
         p = t.rows[0].cells[i].paragraphs[0]
         rtl(p)
@@ -364,7 +430,7 @@ def build_docx(path, base_m, scen_results, rows, results):
         vals = [str(r["rank"]), r["id"] + star, r["subject"], r["option_b"],
                 fa_num(r["max_effect"]) if r["max_effect"] is not None else "—",
                 "، ".join(r["channels"]) if r["channels"] else "—",
-                r["recommendation"]]
+                r["recommendation"], r["rec_source"][0]]
         for i, v in enumerate(vals):
             p = c[i].paragraphs[0]
             rtl(p)
@@ -418,6 +484,50 @@ def build_docx(path, base_m, scen_results, rows, results):
     doc.add_page_break()
 
     # ── ۵) نمودار tornado ──
+    # ── ۴-ب) بازهٔ حساسیت (فاز E-10.1 §۱) ──
+    para("بازهٔ حساسیتِ واقعی (envelope)", bold=True, size=15)
+    doc.add_paragraph()
+    t = doc.add_table(rows=1, cols=4)
+    t.style = "Table Grid"
+    for i2, h in enumerate(["سناریو", "ΔP (ریال)", "برآورد (ریال)",
+                            "تصمیم‌های اعمال‌شده"]):
+        p2 = t.rows[0].cells[i2].paragraphs[0]
+        rtl(p2)
+        r_ = p2.add_run(h)
+        r_.bold = True
+    for e in ENVELOPE:
+        m = envelope[e["id"]]
+        c = t.add_row().cells
+        _fl = "، ".join(m["flips"]) if m["flips"] else "هیچ (همهٔ الف)"
+        for i2, v in enumerate([e["name"], fa_num(m["delta_p"]),
+                                fa_num(m["baravord"]), _fl]):
+            p2 = c[i2].paragraphs[0]
+            rtl(p2)
+            p2.add_run(v).font.size = Pt(9)
+    doc.add_paragraph()
+    _lo_dp = min(envelope["E-min-dp"]["delta_p"],
+                 envelope["E-max-dp"]["delta_p"])
+    _hi_dp = max(envelope["E-min-dp"]["delta_p"],
+                 envelope["E-max-dp"]["delta_p"])
+    _w_dp = _hi_dp - _lo_dp
+    para("پهنای بازهٔ ΔP: از %s تا %s ریال یعنی %s ریال (= %s٪ از ΔPِ فعلی)"
+         % (fa_num(_lo_dp), fa_num(_hi_dp), fa_num(_w_dp),
+            pct(_w_dp, base_m["delta_p"])), bold=True)
+    _lo_br = min(envelope["E-min-bar"]["baravord"],
+                 envelope["E-max-bar"]["baravord"])
+    _hi_br = max(envelope["E-min-bar"]["baravord"],
+                 envelope["E-max-bar"]["baravord"])
+    _w_br = _hi_br - _lo_br
+    para("پهنای بازهٔ برآورد: از %s تا %s ریال یعنی %s ریال (= %s٪ از "
+          "برآوردِ فعلی)" % (fa_num(_lo_br), fa_num(_hi_br), fa_num(_w_br),
+                             pct(_w_br, base_m["baravord"])), bold=True)
+    para("نکته: سناریوهای بیشینه شاملِ بهترین variantِ کارِ جدیدِ فرضی "
+          "[FIX] هستند (تزریقِ ۱ میلیارد ریال) و سناریوهای کمینه شاملِ هیچ "
+          "کارِ جدیدی نیستند. D-14/D-15 در بازهٔ فاز E-10 §۵ نبودند چون "
+          "فرضی‌اند — توضیحِ کامل در نسخهٔ .md.", size=8)
+    doc.add_page_break()
+
+
     para("نمودار tornado", bold=True, size=15)
     para("طولِ نوار ∝ max |اثر| روی ΔP یا برآورد. D-18 مستثنی است "
           "(اختلافِ سقفِ پذیرش = %s ریال — مقیاسِ متفاوت)."
@@ -510,6 +620,108 @@ RECOMMENDATIONS = {
 }
 
 
+# ── فاز E-10.1 §۱ — منبعِ هر توصیه ──
+# هر توصیه یا از نصِّ بخشنامه می‌آید [متن بخشنامه]، یا یک رویهٔ رایج است که
+# نیازمند تأییدِ مشاور است [رویهٔ رایج، نیازمند تأیید مشاور]، یا یک انتخابِ
+# مهندسی در جایی است که بخشنامه ساکت است [انتخاب مهندسی]. توصیه‌هایی که
+# فقط «وضعیتِ فعلی» را تکرار می‌کنند با همان برچسب علامت می‌خورند. D-01 یک
+# توصیه نیست — یک دادهٔ ورودیِ الزامی است.
+REC_SOURCE = {
+    "D-01": ("دادهٔ ورودی — واقعیتِ پروژه",
+             "بند ۱-۸ + تبصرهٔ ۲: ضریب k از یک واقعیتِ پروژه (اتمام کار در "
+             "مدتِ پیمان) مشتق می‌شود، نه از یک انتخابِ طراحی."),
+    "D-03": ("متن بخشنامه",
+             "بند ۸-۲: ضریبِ هر سه‌ماهه با ۳ رقم اعشار حساب و سپس به ۲ رقم "
+             "اعشار گرد می‌شود."),
+    "D-04": ("انتخاب مهندسی",
+             "بخشنامه دربارهٔ جهتِ گردکردنِ ضرایبِ منفی ساکت است؛ گردکردنِ "
+             "روی قدر مطلق بی‌طرفانه است."),
+    "D-08": ("انتخاب مهندسی",
+             "بند ۷ کسر را مقرر کرده ولی دربارهٔ ΔPِ منفی ساکت است؛ کسر از "
+             "عددِ منفی منطقی نیست."),
+    "D-09": ("رویهٔ رایج، نیازمند تأیید مشاور",
+             "تفسیرِ بند ۲-۶: رفتارِ اتمیک ساده‌تر و قابلِ بازبینی است."),
+    "D-10": ("وضعیت فعلی",
+             "تمدیدِ مجازی در پروژهٔ مرجع ثبت نشده؛ توصیه‌ای جز گزینهٔ الف "
+             "معنا ندارد."),
+    "D-13": ("متن بخشنامه",
+             "بند ۲-۲: پیمان‌های «۳۰۰ میلیون ریال و بیشتر» از مسیرِ گروهی "
+             "استفاده می‌کنند."),
+    "D-14": ("متن بخشنامه",
+             "بند ۳-۵: کارِ جدید «مثلِ سایر ردیف‌ها تعدیل می‌شود»."),
+    "D-15": ("متن بخشنامه",
+             "بندهای ۳-۲/۳-۳: دورهٔ شاخصِ مبنا باید وارد شود؛ حدس زدنش "
+             "مجاز نیست."),
+    "D-16": ("رویهٔ رایج، نیازمند تأیید مشاور",
+             "ادامه با یک پیش‌فرضِ مکتوب بهتر از توقفِ موتور است."),
+    "D-18": ("متن بخشنامه",
+             "نامه-۶ صریحاً «بر اساس قیمت‌های پایه» می‌گوید."),
+    "D-19": ("وضعیت فعلی",
+             "تا رسیدنِ دادهٔ شاخصِ کلیِ مستقل تعیین نمی‌شود؛ گزینهٔ الف "
+             "موقت است."),
+    "D-20": ("وضعیت فعلی",
+             "تا رسیدنِ دادهٔ مصالحِ پای‌کار تعیین نمی‌شود؛ گزینهٔ الف "
+             "موقت است."),
+}
+
+# ── فاز E-10.1 §۱ — بازهٔ حساسیتِ واقعی (envelope) ──
+# برای هر سنجه (ΔP / برآورد)، سناریوی کمینه و بیشینه با انتخابِ گزینه‌هایی
+# که سنجه را در جهتِ دلخواه حرکت می‌دهند (از روی اندازه‌گیریِ فردیِ هر
+# تصمیم) و سپس اجرای همزمانِ همهٔ آن‌ها ساخته می‌شود — جمع‌زدن ممنوع است.
+# تصمیم‌های با اثرِ صفر در هیچ سناریویی چیزی را تغییر نمی‌دهند.
+ENVELOPE = [
+    {"id": "E-min-dp", "name": "کمینهٔ ΔP", "metric": "d_delta_p",
+     "want_max": False},
+    {"id": "E-max-dp", "name": "بیشینهٔ ΔP", "metric": "d_delta_p",
+     "want_max": True},
+    {"id": "E-min-bar", "name": "کمینهٔ برآورد", "metric": "d_baravord",
+     "want_max": False},
+    {"id": "E-max-bar", "name": "بیشینهٔ برآورد", "metric": "d_baravord",
+     "want_max": True},
+]
+
+# variantهای فرضیِ کارِ جدید [FIX]: D-14 (فهرست پیمان) و D-15 (قیمت روز).
+# توجه: D-15 و D-16 هر دو به یک تنظیمات (قیمت روز) ختم می‌شوند و فقط در
+# مبنای مقایسه‌شان تفاوت دارند، پس یک variant نمایندهٔ هر دو است.
+FIX_VARIANT_IDS = ("D-14", "D-15")
+
+
+def envelope_overrides(payload, metric, want_max):
+    """گزینه‌های extremum را از روی اندازه‌گیریِ فردی برمی‌گزیند.
+
+    خروجی: (تنظیماتِ ترکیب‌شده، فهرستِ شناسه‌های انتخاب‌شده).
+    """
+    results = payload["results"]
+    flips = {}
+    chosen = []
+    for sc in payload["scenarios"]:
+        if sc["kind"] != "setting" or sc["id"] in FIX_IDS:
+            continue
+        d = (results.get(sc["id"]) or {}).get(metric)
+        if d is None:
+            continue
+        if (want_max and d > 0) or (not want_max and d < 0):
+            flips.update(sc["flip"])
+            chosen.append(sc["id"])
+    # گروهِ کارِ جدید [FIX]: فقط یک variant قابلِ اعمال است (تنظیماتِ مشترک)
+    best_v, best_flip, best_id = None, None, None
+    for fid in FIX_VARIANT_IDS:
+        sc = next((x for x in payload["scenarios"] if x["id"] == fid), None)
+        if sc is None:
+            continue
+        v = (results.get(fid) or {}).get(metric)
+        if v is None:
+            continue
+        if best_v is None or (want_max and v > best_v) or \
+                (not want_max and v < best_v):
+            best_v, best_flip, best_id = v, sc["flip"], fid
+    if best_v is not None and \
+            ((want_max and best_v > 0.0) or (not want_max and best_v < 0.0)):
+        flips.update(best_flip)
+        chosen.append(best_id + " [FIX]")
+    return flips, chosen
+
+
 def main():
     payload = load_measured()
     base_m = payload["baseline_metrics"]
@@ -523,6 +735,21 @@ def main():
         print("  %s done" % s["id"])
     scen_results["S3+D01"] = run(tables, map_df, D01_CONDITIONAL["flips"])
     print("  S3+D01 done")
+
+    # ── فاز E-10.1 §۱ — بازهٔ حساسیت: چهار سناریوی اجرای همزمان ──
+    envelope = {}
+    for e in ENVELOPE:
+        e_flips, e_chosen = envelope_overrides(payload, e["metric"],
+                                               e["want_max"])
+        e_m = run(tables, map_df, e_flips)
+        envelope[e["id"]] = {
+            "name": e["name"], "metric": e["metric"],
+            "delta_p": e_m["delta_p"], "baravord": e_m["baravord"],
+            "flips": e_chosen,
+        }
+        print("  %s done (%s)" % (e["id"], "، ".join(e_chosen)
+                                  if e_chosen else "هیچ"))
+
 
     # ── ردیف‌های مرتب بر اساس max |اثر| ──
     scored = []
@@ -542,6 +769,7 @@ def main():
             "max_effect": mx,
             "channels": effect_channels(res),
             "recommendation": RECOMMENDATIONS.get(sc["id"], "—"),
+            "rec_source": REC_SOURCE.get(sc["id"], ("—", "")),
             "kind": sc["kind"],
         })
     # شکافِ رتبه‌بندی برای ردیف‌های بی‌اثر هم حفظ می‌شود (رتبهٔ یکتا)
@@ -572,13 +800,28 @@ def main():
         r["tornado_units"] = abs(v)
 
     # ── خروجی‌ها ──
-    md = build_markdown(base_m, scen_results, rows, results)
+
+    # ── فاز E-10.1 §۱ — سناریوها و بازه در یک منبعِ واحد (آزمونِ T130) ──
+    meeting_path = os.path.join(os.path.dirname(__file__),
+                                "meeting_scenarios.json")
+    with open(meeting_path, "w", encoding="utf-8") as fh:
+        json.dump({
+            "date": DATE, "rev_date": REV_DATE,
+            "baseline": base_m,
+            "scenarios": {s["id"]: scen_results[s["id"]] for s in SCENARIOS},
+            "conditional_d01": scen_results["S3+D01"],
+            "envelope": envelope,
+        }, fh, ensure_ascii=False, indent=1)
+    print("نوشته شد:", meeting_path)
+
+
+    md = build_markdown(base_m, scen_results, rows, results, envelope)
     md_path = os.path.join(ROOT, "docs", "DECISION_MEETING.md")
     with open(md_path, "w", encoding="utf-8") as fh:
         fh.write(md)
     print("نوشته شد:", md_path, len(md), "bytes")
     docx_path = os.path.join(ROOT, "docs", "DECISION_MEETING.docx")
-    build_docx(docx_path, base_m, scen_results, rows, results)
+    build_docx(docx_path, base_m, scen_results, rows, results, envelope)
     print("نوشته شد:", docx_path, os.path.getsize(docx_path), "bytes")
 
     # خلاصهٔ سریع برای کنسول

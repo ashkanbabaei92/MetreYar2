@@ -62,6 +62,7 @@ def test_T129_sections():
               "## ۵ تصمیمِ اول — بیشترین |اثر|",
               "## همهٔ تصمیم‌ها — مرتب بر اساس max |اثر|",
               "## تحلیل حساسیت — سه سناریو",
+              "## بازهٔ حساسیتِ واقعی (envelope)",
               "## نمودار tornado",
               "## تصمیم‌های ردشده، ادغام‌شده و منتظر داده"):
         assert h in t, h
@@ -70,13 +71,16 @@ def test_T129_sections():
 def test_T129_docx_structure():
     from docx import Document
     d = Document(DOCX)
-    assert len(d.tables) == 3, "سه جدول: تصمیم‌ها، حساسیت، tornado"
-    # جدولِ تصمیم‌ها: هدر + ۱۳ تصمیمِ باز/داده
-    dec_t, sens_t, tor_t = d.tables
+    # چهار جدول: تصمیم‌ها، حساسیت، بازهٔ envelope، tornado
+    assert len(d.tables) == 4
+    dec_t, sens_t, env_t, tor_t = d.tables
+    # جدولِ تصمیم‌ها: هدر + ۱۳ تصمیمِ باز/داده، ۸ ستون (ستونِ «منبع» اضافه شد)
     assert len(dec_t.rows) == 14
+    assert len(dec_t.columns) == 8
     assert len(sens_t.rows) == 5   # هدر + S1 + S2 + S3 + شرطی
+    assert len(env_t.rows) == 5, "بازه: هدر + ۴ سناریو"
     assert len(tor_t.columns) >= 40, "tornado باید حداقل ۴۰ ستون داشته باشد"
-    assert d.element.xml.count('w:type="page"') >= 5, "هر بخش یک صفحهٔ جدا"
+    assert d.element.xml.count('w:type="page"') >= 6, "هر بخش یک صفحهٔ جدا"
 
 
 # ── ۲) ترتیب بر اساس max |اثر| ──
