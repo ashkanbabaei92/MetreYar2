@@ -16,6 +16,8 @@ export function ExportStep({
   history: StatusReportRecord[];
 }) {
   const [done, setDone] = useState<string | null>(null);
+  const [draftMode, setDraftMode] = useState(false);
+  const [errMsg, setErrMsg] = useState<string | null>(null);
 
   if (!result || !result.lines.length) {
     return (
@@ -31,6 +33,10 @@ export function ExportStep({
     setDone(msg);
     setTimeout(() => setDone(null), 3200);
   };
+
+  // فاز E-10 §۲ — قفلِ خروجیِ نهاییِ تعدیل: دورهٔ کارکرد خالی ⇒ فقط پیش‌نویس
+  const tadilRes = result.adjustment?.tadil;
+  const wpMissing = !!(tadilRes && tadilRes.work_period_missing);
 
   return (
     <div className="space-y-6">
@@ -49,15 +55,54 @@ export function ExportStep({
           <p className="text-ink-dim text-[12px] mt-2 leading-6 mb-5">
             ۵ برگه با محاسبات نهایی · راست‌به‌چپ · آماده برای صورت‌وضعیت‌های دوره‌ای
           </p>
+          {wpMissing ? (
+            <div className="mb-4 rounded-lg border border-red-200 bg-red-50 p-3 text-right text-[12px] leading-6 text-red-700">
+              دورهٔ کارکرد (دورهٔ انجامِ کار) وارد نشده است — خروجیِ نهاییِ
+              Excel ساخته نمی‌شود، چون موتورِ تعدیل تمامِ کارکرد را به
+              آخرین شاخصِ قطعی منتسب می‌کند و مبلغِ تعدیل با حالتِ «شاخصِ
+              هر سه‌ماهه» متفاوت است. «تاریخ شروع/پایان دورهٔ صورت‌وضعیت» را
+              در تنظیمات وارد کنید.
+              <label className="mt-2 flex cursor-pointer items-center gap-2">
+                <input
+                  type="checkbox"
+                  checked={draftMode}
+                  onChange={(e) => setDraftMode(e.target.checked)}
+                />
+                خروجیِ پیش‌نویس (واترمارک «پیش‌نویس – دورهٔ کارکرد وارد نشده»
+                روی همهٔ شیت‌ها)
+              </label>
+            </div>
+          ) : null}
+          {errMsg ? (
+            <div className="mb-4 rounded-lg border border-red-200 bg-red-50 p-3 text-right text-[12px] leading-6 text-red-700">
+              {errMsg}
+            </div>
+          ) : null}
           <button
             onClick={() => {
-              exportWorkbook(meta, result, settings, history);
-              flash("فایل Excel با موفقیت دانلود شد.");
+              try {
+                exportWorkbook(
+                  wpMissing && draftMode
+                    ? { ...meta, reportType: `پیش‌نویس — ${meta.reportType || "موقت"}` }
+                    : meta,
+                  result,
+                  settings,
+                  history,
+                );
+                setErrMsg(null);
+                flash(
+                  wpMissing && draftMode
+                    ? "فایل Excel پیش‌نویس دانلود شد."
+                    : "فایل Excel با موفقیت دانلود شد.",
+                );
+              } catch (e) {
+                setErrMsg(e instanceof Error ? e.message : String(e));
+              }
             }}
             className="w-full px-5 py-3 rounded-xl bg-emerald text-[#062018] font-extrabold text-[13px] hover:brightness-110 transition-all flex items-center justify-center gap-2"
           >
             <Download size={16} />
-            دانلود Excel (.xlsx)
+            {wpMissing && draftMode ? "دانلود Excel پیش‌نویس" : "دانلود Excel (.xlsx)"}
           </button>
         </Card>
 

@@ -4187,6 +4187,9 @@ class TechnicalOfficeEngine:
                            "proposal_date": prop, "provisional_coef": None},
                 "incomplete": True, "missing": [], "draft": True,
                 "pending": pending,
+                "k_status": k_status,
+                "k_provisional": s.get("completed_within_term") is None,
+                "work_period_missing": False,
                 "source": "فاز E — ۱۴۴۳۷۴ (توقف: شاخص ماهانهٔ خرداد ۱۴۰۵)",
             }
         # ── هشدار: Io بعد از It (بند ۱-۷: شاخص دورهٔ انجام کار باید
@@ -4233,6 +4236,9 @@ class TechnicalOfficeEngine:
                            "proposal_date": prop, "provisional_coef": None},
                 "incomplete": True, "missing": [], "draft": True,
                 "pending": pending,
+                "k_status": k_status,
+                "k_provisional": s.get("completed_within_term") is None,
+                "work_period_missing": False,
                 "source": "فاز B — پیوست ۳، بند ۱-۲ (توقف: تاریخ تسلیم الزامی)",
             }
 
@@ -4269,6 +4275,11 @@ class TechnicalOfficeEngine:
         split = self._work_split(
             wstart, wend,
             delay_date if delay_mode == "مستثنی کردن دورهٔ تأخیر" else None)
+        # فاز E-10 §۲ — قفلِ خروجیِ نهاییِ تعدیل: وقتی دورهٔ کارکرد خالی
+        # است، موتور تمامِ کارکرد را به آخرین شاخصِ قطعی منتسب می‌کند و ΔP
+        # متفاوتی از حالتِ «شاخصِ هر سه‌ماهه» می‌دهد. Excel نهایی نباید ساخته
+        # شود — فقط «پیش‌نویس» با واترمارک (قاعدهٔ طلایی: هدایت به فیلد).
+        _wp_missing = not split
         if not split:
             _it_fb = (self._PERIOD_QUARTERS.get(s.get("tadil_it_period") or "q4")
                       or "1404Q4")
@@ -4441,6 +4452,9 @@ class TechnicalOfficeEngine:
                            "proposal_date": prop, "provisional_coef": None},
                 "incomplete": True, "missing": [], "draft": True,
                 "pending": pending,
+                "k_status": k_status,
+                "k_provisional": s.get("completed_within_term") is None,
+                "work_period_missing": _wp_missing,
                 "source": "فاز E — ۱۴۴۳۷۳ پیوست ص۱ (توقف: CPI موقت ناموجود)",
             }
 
@@ -4822,6 +4836,9 @@ class TechnicalOfficeEngine:
             "k_diff": k_diff if cwt else 0.0,
             "coef_rounding": do_round,
             "completed_within_term": cwt,
+            "k_status": k_status,
+            "k_provisional": s.get("completed_within_term") is None,
+            "work_period_missing": _wp_missing,
             "contract_status": _c_status,
             "deduction_fault": deduction_fault,
             "incomplete": incomplete, "missing": missing,
@@ -5429,6 +5446,13 @@ class ExcelExporter:
         ws.merge_range(3, 0, 3, ncols - 1,
                        "مبنای قیمت‌گذاری: فهرست‌بهای واحد پایهٔ رشتهٔ ابنیه سال ۱۴۰۴ (سازمان برنامه و بودجه)    واحد پول: ریال",
                        F["hsub"])
+        # فاز E-10 §۲ — واترمارکِ «پیش‌نویس – دورهٔ کارکرد وارد نشده» روی
+        # همهٔ شیت‌ها: وقتی دورهٔ کارکرد خالی است، خروجیِ نهایی ممنوع است و
+        # فقط پیش‌نویس مجاز می‌شود.
+        _banner = meta.get("draft_banner")
+        if _banner:
+            ws.merge_range(4, 0, 4, ncols - 1, str(_banner), F["warn_y"])
+            return 6
         return 5
 
     @staticmethod
@@ -5443,6 +5467,27 @@ class ExcelExporter:
         buf = io.BytesIO()
         wb = xlsxwriter.Workbook(buf, {"in_memory": True, "default_date_format": "yyyy/mm/dd"})
         F = self._formats(wb)
+
+        # فاز E-10 §۲ — قفلِ خروجیِ نهاییِ «تعدیل صورت‌وضعیت»: وقتی دورهٔ
+        # کارکرد خالی است، موتور تمامِ کارکرد را به آخرین شاخصِ قطعی منتسب
+        # می‌کند و ΔP با حالتِ «شاخصِ هر سه‌ماهه» متفاوتی می‌دهد (روی
+        # پروژهٔ مرجع: ۱۳٬۳۲۰٬۳۶۰٬۹۵۷٫۱۲ به‌جای ۹٬۹۸۴٬۲۷۷٬۴۰۸٫۲۲). خروجیِ
+        # نهایی نباید ساخته شود — فقط «پیش‌نویس» با واترمارک مجاز است.
+        _tadil_res = (result.get("adjustment") or {}).get("tadil") or {}
+        if _tadil_res.get("work_period_missing"):
+            if "پیش‌نویس" not in (meta.get("report_type") or ""):
+                raise ValueError(
+                    "خطا — خروجیِ نهایی ساخته نمی‌شود: «تاریخ شروع دورهٔ "
+                    "صورت‌وضعیت» و «تاریخ پایان دورهٔ صورت‌وضعیت» (دورهٔ "
+                    "انجامِ کار) در تنظیماتِ پروژه وارد نشده‌اند. موتورِ "
+                    "تعدیل در این حالت تمامِ کارکرد را به آخرین شاخصِ قطعی "
+                    "منتسب می‌کند و مبلغِ تعدیل با حالتِ «شاخصِ هر سه‌ماهه» "
+                    "متفاوت است. یا آن دو تاریخ را وارد کنید، یا خروجی را "
+                    "به‌صورتِ «پیش‌نویس» بگیرید (واترمارکِ «پیش‌نویس – دورهٔ "
+                    "کارکرد وارد نشده» روی همهٔ شیت‌ها می‌نشیند).")
+            meta = {**meta,
+                    "report_type": f"پیش‌نویس — {meta.get('report_type') or 'موقت'}",
+                    "draft_banner": "پیش‌نویس – دورهٔ کارکرد وارد نشده"}
 
         # اگر ردیفی «نیازمند ورود» است، خروجی «پیش‌نویس» است (§۱۵-۴ بند ۶)
         if (result.get("needs_price_entry") or 0) > 0 and \
@@ -5904,8 +5949,15 @@ class ExcelExporter:
                                           "این خروجی رسمی نیست."] + [""] * 7, [F["warn_y"]] * 8)
             row = self._row(ws, row, ["فرمول قانونی تعدیل پیمان", _tadil.get("formula", "")]
                                      + [""] * 6, [F["chapter"]] + [F["cell"]] * 7)
+            _k_note = "پیش‌فرض اپ — منبع تصویری بخشنامه ۲۰۸۰، نیازمند تأیید"
+            # فاز E-10 §۲ — برچسبِ علی‌الحساب وقتی وضعیتِ اتمامِ کار در مدتِ
+            # پیمان نامشخص است (k = ۰٫۹۵ — بند ۱-۸). خروجی مجاز است ولی
+            # «علی‌الحساب – k = ۰٫۹۵» می‌ماند تا تکلیفِ قطعی روشن شود.
+            if _tadil.get("k_provisional"):
+                _k_note = ("علی‌الحساب — k = ۰٫۹۵: وضعیتِ اتمامِ کار در مدتِ "
+                           "پیمان نامشخص است (بند ۱-۸). " + _k_note)
             row = self._row(ws, row, ["ضریب قانونی (k)", fa_float(_tadil.get("coef") or 0, 2),
-                                      "پیش‌فرض اپ — منبع تصویری بخشنامه ۲۰۸۰، نیازمند تأیید",
+                                      _k_note,
                                       "", "", "", "", ""],
                                      [F["label"], F["money"], F["warn_y"]] + [F["cell"]] * 5)
             row = self._row(ws, row, ["دورهٔ مبنا (Io)", _io_label(_tadil),
@@ -9810,6 +9862,19 @@ def render_tab_statement():
             st.markdown('<div class="warn-y">پیش‌نویس — مقادیر استخراج‌شده/منبع '
                         'تصویری هنوز تأیید نشده‌اند. این خروجی تا تأیید شما '
                         'رسمی نیست.</div>', unsafe_allow_html=True)
+        # فاز E-10 §۲ — واترمارکِ «پیش‌نویس – دورهٔ کارکرد وارد نشده» روی UI
+        if _eng_key == "tadil" and _e.get("work_period_missing"):
+            st.markdown('<div class="warn-y">پیش‌نویس – دورهٔ کارکرد وارد '
+                        'نشده. موتورِ تعدیل تمامِ کارکرد را به آخرین شاخصِ '
+                        'قطعی منتسب می‌کند و ΔP با حالتِ «شاخصِ هر سه‌ماهه» '
+                        'متفاوت است؛ خروجیِ نهاییِ Excel ساخته نمی‌شود '
+                        '(فقط پیش‌نویس).</div>', unsafe_allow_html=True)
+        # فاز E-10 §۲ — برچسبِ «علی‌الحساب – k = ۰٫۹۵»
+        if _eng_key == "tadil" and _e.get("k_provisional"):
+            st.markdown('<div class="warn-y">علی‌الحساب – k = ۰٫۹۵ — '
+                        'وضعیتِ اتمامِ کار در مدتِ پیمان نامشخص است (بند ۱-۸ '
+                        'بخشنامهٔ ۲۰۸۰). خروجی مجاز است، ولی تا مشخص‌شدنِ '
+                        'تکلیفِ قطعی، علی‌الحساب می‌ماند.</div>', unsafe_allow_html=True)
         # زنجیرهٔ مبلغ پایه (A) — قدم‌به‌قدم و دقیق تا ریال
         st.markdown(_fin_chain_html(
             [(_lbl, _amt, "base") for _lbl, _amt, _n in _e["chain"]],
@@ -10039,15 +10104,37 @@ def render_tab_export():
     s = st.session_state.settings
     cur = s["currency"]
 
+    # فاز E-10 §۲ — قفلِ خروجیِ نهاییِ «تعدیل صورت‌وضعیت»: وقتی دورهٔ
+    # کارکرد خالی است، خروجیِ نهاییِ Excel نباید ساخته شود؛ فقط
+    # «پیش‌نویس» با واترمارکِ «پیش‌نویس – دورهٔ کارکرد وارد نشده».
+    _tadil_out = (result.get("adjustment") or {}).get("tadil") or {}
+    _wp_missing = bool(_tadil_out.get("work_period_missing"))
     c1, c2 = st.columns(2)
     with c1:
         st.markdown("##### کتاب‌کار Excel کامل (.xlsx)")
         st.caption("شش برگه راست‌به‌چپ با هدر رسمی، فرمول‌های جمع زنده و قالب‌بندی فارسی.")
+        _draft_req = False
+        if _wp_missing:
+            st.error("دورهٔ کارکرد (دورهٔ انجامِ کار) وارد نشده است — "
+                     "خروجیِ نهاییِ Excel ساخته نمی‌شود، چون موتورِ تعدیل "
+                     "تمامِ کارکرد را به آخرین شاخصِ قطعی منتسب می‌کند و "
+                     "مبلغِ تعدیل با حالتِ «شاخصِ هر سه‌ماهه» متفاوت است. "
+                     "«تاریخ شروع دورهٔ صورت‌وضعیت» و «تاریخ پایان دورهٔ "
+                     "صورت‌وضعیت» را در تنظیماتِ پروژه وارد کنید.")
+            _draft_req = st.checkbox(
+                "در عوض، خروجیِ پیش‌نویس می‌خواهم (واترمارک «پیش‌نویس – "
+                "دورهٔ کارکرد وارد نشده» روی همهٔ شیت‌ها و خلاصهٔ مالی)",
+                key="te-wp-draft")
+            _meta = ({**meta,
+                      "report_type": "پیش‌نویس — %s" % (meta.get("report_type") or "موقت")}
+                     if _draft_req else meta)
+        else:
+            _meta = meta
         try:
-            data = ExcelExporter().export(meta, result, s, st.session_state.history)
+            data = ExcelExporter().export(_meta, result, s, st.session_state.history)
             stamp = datetime.now().strftime("%Y%m%d")
             st.download_button(
-                "دانلود Excel صورت‌وضعیت",
+                "دانلود Excel صورت‌وضعیت%s" % (" — پیش‌نویس" if _draft_req else ""),
                 data=data,
                 file_name=f"SooratVaziat_Sh{convert_persian_digits(meta['report_no'] or '0')}_{stamp}.xlsx",
                 mime="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",

@@ -1049,8 +1049,9 @@ describe("T91 شیت‌های Excel موتورها", () => {
   }, 120000);
 
   it("رجیستری مقادیر منتظر تأیید: شاخص فصول ابنیه", () => {
-    const res = pipeline(on());
-    const wb = exportWb(res, on());
+    // E-10 §۲: خروجیِ نهایی نیاز به دورهٔ کارکرد دارد (قفلِ fallback).
+    const res = pipeline(on(XLS_EXTRA));
+    const wb = exportWb(res, on(XLS_EXTRA));
     const strs = allStrings(wb);
     expect(strs.some((s) => s.includes("شاخص فصول ابنیه"))).toBe(true);
     expect(strs.some((s) => s.includes("فصل ۶ — شاخص اسفند ۱۴۰۳ (مبنا)"))).toBe(true);

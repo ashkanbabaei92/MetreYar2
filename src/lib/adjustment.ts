@@ -1655,6 +1655,9 @@ export function tadilEngine(
       k_diff: 0,
       coef_rounding: !!s.coefRounding2080,
       completed_within_term: s.completedWithinTerm === true,
+      k_status: kStatus,
+      k_provisional: s.completedWithinTerm === null || s.completedWithinTerm === undefined,
+      work_period_missing: false,
       contract_status: s.contractStatus ?? "فعال",
       deduction_fault: 0,
       io_q: ioQ,
@@ -1706,6 +1709,9 @@ export function tadilEngine(
       k_diff: 0,
       coef_rounding: !!s.coefRounding2080,
       completed_within_term: s.completedWithinTerm === true,
+      k_status: kStatus,
+      k_provisional: s.completedWithinTerm === null || s.completedWithinTerm === undefined,
+      work_period_missing: false,
       contract_status: s.contractStatus ?? "فعال",
       deduction_fault: 0,
       io_q: null,
@@ -1782,6 +1788,11 @@ export function tadilEngine(
     wend,
     delayMode === "مستثنی کردن دورهٔ تأخیر" ? delayDate : null,
   );
+  // فاز E-10 §۲ — قفلِ خروجیِ نهاییِ تعدیل: وقتی دورهٔ کارکرد خالی است،
+  // موتور تمامِ کارکرد را به آخرین شاخصِ قطعی منتسب می‌کند و ΔP متفاوتی از
+  // حالتِ «شاخصِ هر سه‌ماهه» می‌دهد. Excel نهایی نباید ساخته شود — فقط
+  // «پیش‌نویس» با واترمارک (قاعدهٔ طلایی: هدایت به فیلد).
+  const wpMissing = split.length === 0;
   if (split.length === 0) {
     const itFb = PERIOD_QUARTERS[s.tadilItPeriod ?? "q4"] ?? "1404Q4";
     split = [[itFb, 1]];
@@ -1939,6 +1950,9 @@ export function tadilEngine(
       k_diff: 0,
       coef_rounding: !!s.coefRounding2080,
       completed_within_term: s.completedWithinTerm === true,
+      k_status: kStatus,
+      k_provisional: s.completedWithinTerm === null || s.completedWithinTerm === undefined,
+      work_period_missing: wpMissing,
       contract_status: s.contractStatus ?? "فعال",
       deduction_fault: 0,
       io_q: ioQ,
@@ -2428,6 +2442,9 @@ export function tadilEngine(
     k_diff: cwt ? kDiff : 0,
     coef_rounding: doRound,
     completed_within_term: cwt,
+    k_status: kStatus,
+    k_provisional: s.completedWithinTerm === null || s.completedWithinTerm === undefined,
+    work_period_missing: wpMissing,
     contract_status: cStatus,
     deduction_fault: deductionFault,
     io_q: ioQ,

@@ -704,6 +704,9 @@ export interface TadilResult {
   k_diff: number; // فاز E-6: مابه‌التفاوت k = ۰٫۹۵ → ۱ (تبصرهٔ ۲ + بند ۸-۴)
   coef_rounding: boolean;
   completed_within_term: boolean;
+  k_status: string; // فاز E-10 §۲: برچسبِ قطعی/علی‌الحسابِ k (بند ۱-۸)
+  k_provisional: boolean; // فاز E-10 §۲: completed_within_term نامشخص ⇒ k=۰٫۹۵ علی‌الحساب
+  work_period_missing: boolean; // فاز E-10 §۲: دورهٔ کارکرد خالی ⇒ قفلِ خروجیِ نهایی
   contract_status: string; // فاز E-6 Part C گام ۴ (بندهای ۶ و ۷)
   deduction_fault: number; // کسر ۵٪ در فسخ با قصور (بند ۷) — عددِ منفی
   io_q: string | null;
@@ -796,6 +799,7 @@ export interface ProjectMeta {
   reportType: string; // نوع صورت‌وضعیت (در خروجیِ پیش‌نویس پیشوند «پیش‌نویس — » می‌گیرد)
   periodStart: string; // تاریخ شروع دورهٔ صورت‌وضعیت (شمسی)
   periodEnd: string; // تاریخ پایان دورهٔ صورت‌وضعیت (شمسی)
+  draftBanner?: string; // فاز E-10 §۲: واترمارکِ پیش‌نویسِ دورهٔ کارکرد روی همهٔ شیت‌ها
 }
 
 /** رکورد ذخیره‌شدهٔ یک صورت‌وضعیت در سوابق (برای محاسبهٔ تجمعی) */

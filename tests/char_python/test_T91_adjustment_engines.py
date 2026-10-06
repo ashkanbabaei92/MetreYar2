@@ -568,7 +568,9 @@ def test_T91_excel_no_engine_sheets_by_default():
 
 
 def test_T91_excel_pending_registry_has_chapter_indices():
-    res = _pipeline(_on())
+    # E-10 §۲: خروجیِ نهایی نیاز به دورهٔ کارکرد دارد (قفلِ fallback).
+    res = _pipeline(_on(work_period_start="۱۴۰۴/۰۱/۰۱",
+                        work_period_end="۱۴۰۵/۰۲/۱۵"))
     data = ExcelExporter().export(META, res, _on(), [])
     shared = zipfile.ZipFile(io.BytesIO(data)).read("xl/sharedStrings.xml").decode("utf-8")
     assert "شاخص فصول ابنیه" in shared

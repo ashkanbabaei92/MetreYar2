@@ -186,6 +186,29 @@ function TadilCard({ t }: { t: TadilResult }) {
       ) : (
         <>
           {t.draft && <DraftBanner label="موتور تعدیل پیمان" />}
+          {/* فاز E-10 §۲ — واترمارکِ «پیش‌نویس – دورهٔ کارکرد وارد نشده» */}
+          {t.work_period_missing && (
+            <div className="mb-4 flex items-start gap-2.5 rounded-xl border border-red-300/40 bg-red-50 px-3.5 py-2.5">
+              <AlertTriangle size={14} className="mt-0.5 shrink-0 text-red-600" />
+              <span className="text-[11.5px] leading-5 text-red-700">
+                <b>پیش‌نویس – دورهٔ کارکرد وارد نشده.</b> موتورِ تعدیل تمامِ
+                کارکرد را به آخرین شاخصِ قطعی منتسب می‌کند و ΔP با حالتِ
+                «شاخصِ هر سه‌ماهه» متفاوت است؛ خروجیِ نهاییِ Excel ساخته
+                نمی‌شود (فقط پیش‌نویس).
+              </span>
+            </div>
+          )}
+          {/* فاز E-10 §۲ — برچسبِ «علی‌الحساب – k = ۰٫۹۵» */}
+          {t.k_provisional && (
+            <div className="mb-4 flex items-start gap-2.5 rounded-xl border border-gold/30 bg-gold/[0.06] px-3.5 py-2.5">
+              <AlertTriangle size={14} className="mt-0.5 shrink-0 text-gold" />
+              <span className="text-[11.5px] leading-5 text-gold/95">
+                <b>علی‌الحساب – k = ۰٫۹۵</b> — وضعیتِ اتمامِ کار در مدتِ پیمان
+                نامشخص است (بند ۱-۸ بخشنامهٔ ۲۰۸۰). خروجی مجاز است، ولی تا
+                مشخص‌شدنِ تکلیفِ قطعی، علی‌الحساب می‌ماند.
+              </span>
+            </div>
+          )}
           <ChainTable rows={t.chain} />
 
           <div className="grid md:grid-cols-3 gap-3 mb-4">

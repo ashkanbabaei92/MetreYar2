@@ -16,6 +16,7 @@ const SLOW_TS = [
   "test_T110_inputs_status_panel",
   "test_T113_baravord_reference_numbers",
   "test_T126_reference_pin",
+  "test_T125_tadil_final_lock",
   "test_T114_excel_currency_units",
   "test_T56_fehrest_unit_fix",
   "test_T62_demo_dataset",
