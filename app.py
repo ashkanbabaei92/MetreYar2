@@ -3873,8 +3873,8 @@ class TechnicalOfficeEngine:
                 "خودکار: مبلغ اولیه وارد نشده — مسیر گروهی (۲-۲)")
 
     def _discipline_amount_row(self, amount, d_io, split, delay, prov,
-                              disc, d_it_m, do_round, k, missing, label,
-                              status, src, span26=None, ov26=None):
+                              disc, d_it_m, do_round, neg_tz, k, missing,
+                              label, status, src, span26=None, ov26=None):
         """ردیفِ مبلغی که با شاخصِ رشته تعدیل می‌شود (فاز E-6 Part C).
 
         تجهیز/برچیدن (بند ۴) و کارهای جدید (بندهای ۳-۱..۳-۵) هر دو از
@@ -3953,14 +3953,14 @@ class TechnicalOfficeEngine:
             ratio = float(d_it_v) / float(d_io)
             # بند ۸-۲: گردکردن ضریب
             _raw = float(k) * (ratio - 1.0)
-            _used = round_coef_2080(_raw) if do_round else _raw
+            _used = round_coef_2080(_raw, neg_tz) if do_round else _raw
             dp += _used * amount * f
             if _d_base_st == "قطعی" and not (
                     _ov is not None and _ov["rule"] == "تعیین‌نشده"):
                 dp_def += _used * amount * f
             # مبنای تبصرهٔ ۲
             _raw9 = TADIL_K_2080 * (ratio - 1.0)
-            _used9 = round_coef_2080(_raw9) if do_round else _raw9
+            _used9 = round_coef_2080(_raw9, neg_tz) if do_round else _raw9
             dp_095 += _used9 * amount * f
             coef_rows.append((q, _raw, _used))
             it_w += float(d_it_v) * f
@@ -4022,6 +4022,8 @@ class TechnicalOfficeEngine:
         k, k_status, k_source = _tadil_k(s)
         cwt = s.get("completed_within_term") is True
         do_round = bool(s.get("coef_rounding_2080"))
+        # فاز E-10 §۳ — D-04 گزینهٔ ب: گردکردنِ ضرایبِ منفی به‌سمتِ صفر
+        neg_tz = s.get("negative_coef_rounding") == "toward_zero"
         pending.append(self._adj_pending(
             "ضریب قانونی تعدیل (k)", float(k),
             k_source, "بند ۱-۸" + (" + تبصرهٔ ۲" if cwt else ""),
@@ -4632,7 +4634,7 @@ class TechnicalOfficeEngine:
                 ratio = float(it_v) / float(io_v)
                 # بند ۸-۲: ضریب با ۳ رقم اعشار حساب، سپس به ۲ رقم گرد می‌شود
                 _raw = float(k) * (ratio - 1.0)
-                _used = round_coef_2080(_raw) if do_round else _raw
+                _used = round_coef_2080(_raw, neg_tz) if do_round else _raw
                 dp_c += _used * amt * f
                 # قطعی: شاخص قطعی باشد و علی‌الحساب (۲-۵-۳) نباشد
                 if _base_st == "قطعی" and not (
@@ -4640,7 +4642,7 @@ class TechnicalOfficeEngine:
                     dp_c_def += _used * amt * f
                 # مبنای تبصرهٔ ۲: همان محاسبه با k = ۰٫۹۵
                 _raw9 = TADIL_K_2080 * (ratio - 1.0)
-                _used9 = round_coef_2080(_raw9) if do_round else _raw9
+                _used9 = round_coef_2080(_raw9, neg_tz) if do_round else _raw9
                 dp_c_095 += _used9 * amt * f
                 coef_rows.append((q, _raw, _used))
                 it_w += float(it_v) * f
@@ -4675,7 +4677,7 @@ class TechnicalOfficeEngine:
         if setup > 0 and d_io:
             _sr = self._discipline_amount_row(
                 setup, d_io, split, _delay, prov, _disc, d_it_m, do_round,
-                k, missing, "تجهیز", "رشته‌ای (بند ۴)",
+                neg_tz, k, missing, "تجهیز", "رشته‌ای (بند ۴)",
                 "پیوست ۳، ردیف ۱" + (" — صفحهٔ %s" % fa(d_io_page)
                                      if d_io_page else ""),
                 _span26, _ov26)
@@ -4732,7 +4734,7 @@ class TechnicalOfficeEngine:
                     _new_amt_b == 0 or _io_new is not None):
                 _nr = self._discipline_amount_row(
                     _new_base, d_io, split, _delay, prov, _disc, d_it_m,
-                    do_round, k, missing, "کار جدید",
+                    do_round, neg_tz, k, missing, "کار جدید",
                     "کار جدید (%s)" % _new_method,
                     "بخشنامهٔ ۲۰۸۰، بندهای ۳-۱..۳-۵", _span26, _ov26)
                 new_work_row = _nr["row"]
@@ -7417,7 +7419,7 @@ def _tadil_k(s):
     return TADIL_K_2080, _lbl, TADIL_K_SOURCE
 
 
-def round_coef_2080(x):
+def round_coef_2080(x, neg_toward_zero=False):
     """گردکردن ضریب تعدیل طبق بند ۸-۲ بخشنامهٔ ۲۰۸۰.
 
     ضریب اول با ۳ رقم اعشار حساب می‌شود؛ اگر رقم سوم >= ۵ باشد رقم دوم
@@ -7426,6 +7428,11 @@ def round_coef_2080(x):
     نکته: متن بخشنامه دربارهٔ ضرایب منفی (It < Io) ساکتی است؛ طبق تصمیم
     فاز E-۶ عمل روی قدر مطلق انجام می‌شود (گرد به‌سمت بزرگتر) و علامت
     حفظ می‌شود. این تصمیم صراحتاً در ACCEPTANCE §۱۸ ثبت شده است.
+
+    فاز E-10 §۳ (D-04 گزینهٔ ب): با neg_toward_zero=True گردکردنِ ضرایبِ
+    منفی به‌سمتِ صفر انجام می‌شود (−۰٫۱۲۵۰ → −۰٫۱۲)؛ پیش‌فرض False یعنی
+    گزینهٔ الف (−۰٫۱۲۵۰ → −۰٫۱۳). مقدارِ این پرچم از تنظیماتِ
+    negative_coef_rounding خوانده می‌شود.
     """
     from decimal import Decimal, ROUND_DOWN, ROUND_HALF_UP, ROUND_UP
     if x is None:
@@ -7439,8 +7446,11 @@ def round_coef_2080(x):
     # ۲) رقم سوم اعشار تصمیم می‌گیرد: >= ۵ => رقم دوم بالا می‌رود،
     #    در غیر این صورت رقم سوم حذف می‌شود.
     third = int((r3 * 1000) % 10)
-    scaled = (r3 * 100).quantize(Decimal("1"),
-                                 rounding=ROUND_UP if third >= 5 else ROUND_DOWN)
+    _dir = ROUND_UP if third >= 5 else ROUND_DOWN
+    if neg and neg_toward_zero and third >= 5:
+        # D-04 گزینهٔ ب: ضریبِ منفی به‌سمتِ صفر گرد می‌شود
+        _dir = ROUND_DOWN
+    scaled = (r3 * 100).quantize(Decimal("1"), rounding=_dir)
     r2 = scaled / 100
     if neg:
         r2 = -r2
@@ -7535,6 +7545,10 @@ def default_settings() -> dict:
         "completed_within_term": None,
         # گردکردن ضریب تعدیل به ۲ رقم اعشار (بند ۸-۲ بخشنامه ۲۰۸۰).
         "coef_rounding_2080": True,
+        # فاز E-10 §۳ — D-04: جهتِ گردکردنِ ضرایبِ منفی (بخشنامه ساکت است).
+        #   away_from_zero = روی قدر مطلق (−۰٫۱۲۵۰ → −۰٫۱۳) — گزینهٔ الف
+        #   toward_zero    = مستقیمِ منفی (−۰٫۱۲۵۰ → −۰٫۱۲) — گزینهٔ ب
+        "negative_coef_rounding": "away_from_zero",
         # ═══ فاز E-6 Part C: ورودی‌های قرارداد (بخشنامهٔ ۲۰۸۰) ═══
         # روش تعیین شاخص مبنا (پیوست — بندهای ۱-۶-۱ و ۱-۶-۲):
         #   proposal_period = دورهٔ تسلیم پیشنهاد (روش دوم؛ رفتار فعلی)
@@ -7684,6 +7698,7 @@ SETTING_LABELS = {
     "tadil_coef": "ضریب k تعدیل",
     "completed_within_term": "وضعیت اتمام کار در مدت پیمان (الزامی — تبصرهٔ ۲)",
     "coef_rounding_2080": "گردکردن ضریب تعدیل (بند ۸-۲)",
+    "negative_coef_rounding": "جهت گردکردن ضرایب منفی (D-04 — بخشنامه ساکت است)",
     "base_index_method": "روش شاخص مبنا (بند ۱-۶)",
     "final_offer_date": "تاریخ پیشنهاد نهایی (ترک تشریفات)",
     "contract_duration_months": "مدت اولیهٔ پیمان (ماه — بند ۲-۵)",
@@ -8695,6 +8710,13 @@ def render_sidebar():
                 "گردکردن ضریب تعدیل به ۲ رقم اعشار (بند ۸-۲ بخشنامهٔ ۲۰۸۰)",
                 value=bool(s.get("coef_rounding_2080")),
                 key="sb-coef-round-2080")
+            # فاز E-10 §۳ — D-04: جهتِ گردکردنِ ضرایبِ منفی (بخشنامه ساکت است)
+            s["negative_coef_rounding"] = (
+                "toward_zero" if st.checkbox(
+                    "گردکردن ضرایبِ منفی به‌سمتِ صفر (D-04 — −۰٫۱۲۵۰ → −۰٫۱۲)؛ "
+                    "خاموش: روی قدرِ مطلق (−۰٫۱۲۵۰ → −۰٫۱۳)",
+                    value=s.get("negative_coef_rounding") == "toward_zero",
+                    key="sb-neg-coef-round") else "away_from_zero")
             st.caption("k = ۰٫۹۵ (بند ۱-۸) یا ۱ (تبصرهٔ ۲) — مشتق از "
                        "بخشنامهٔ ۲۰۸۰ (docs/sources/2080.pdf). "
                        "مابه‌التفاوت ۰٫۹۵ → ۱ طبق بند ۸-۴ همزمان "

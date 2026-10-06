@@ -120,6 +120,8 @@ export function defaultSettings(): ProjectSettings {
     tadilCoef: 0.95, // فقط سازگاری پروفایل‌های قدیمی — k اکنون مشتق می‌شود
     completedWithinTerm: null,
     coefRounding2080: true,
+    // فاز E-10 §۳ (D-04): جهتِ گردکردنِ ضرایبِ منفی (بخشنامه ساکت است)
+    negativeCoefRounding: "away_from_zero",
     // فاز E-6 Part C: ورودی‌های قرارداد (بخشنامهٔ ۲۰۸۰)
     baseIndexMethod: "proposal_period", // بند ۱-۶-۱ دوم (رفتار فعلی)
     finalOfferDate: "", // ترک تشریفات: پیشنهاد نهایی کتبی (۱-۶-۱ دوم)

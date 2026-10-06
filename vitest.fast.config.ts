@@ -18,6 +18,7 @@ const SLOW_TS = [
   "test_T126_reference_pin",
   "test_T125_tadil_final_lock",
   "test_T114_excel_currency_units",
+  "test_T117_decision_impact",
   "test_T56_fehrest_unit_fix",
   "test_T62_demo_dataset",
   "test_T65_excel_formula_parity",

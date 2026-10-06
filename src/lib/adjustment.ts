@@ -1214,9 +1214,15 @@ export function tadilK(s: ProjectSettings): [number, string, string] {
  * یکی بالا می‌رود وگرنه رقم سوم حذف می‌شود (ضریب نهایی با ۲ رقم اعشار).
  * معادل app.py:round_coef_2080 (Decimal) — بدون خطای شناور، روی
  * کوتاه‌ترین نمایش دهدهی عدد. ضرایب منفی روی قدر مطلق عمل می‌کنند. */
-export function roundCoef2080(x: number): number;
-export function roundCoef2080(x: number | null | undefined): number | null;
-export function roundCoef2080(x: number | null | undefined): number | null {
+export function roundCoef2080(x: number, negTowardZero?: boolean): number;
+export function roundCoef2080(
+  x: number | null | undefined,
+  negTowardZero?: boolean,
+): number | null;
+export function roundCoef2080(
+  x: number | null | undefined,
+  negTowardZero = false,
+): number | null {
   if (x === null || x === undefined) return null;
   const neg = x < 0;
   const a = neg ? -x : x;
@@ -1231,7 +1237,9 @@ export function roundCoef2080(x: number | null | undefined): number | null {
   if (parseInt(fp.slice(3, 4), 10) >= 5) r3 += 1;
   // ۲) رقم سوم اعشار تصمیم می‌گیرد: >= ۵ => رقم دوم بالا می‌رود
   const third = ((r3 % 10) + 10) % 10;
-  const scaled = third >= 5 ? Math.ceil(r3 / 10) : Math.floor(r3 / 10);
+  // فاز E-10 §۳ — D-04 گزینهٔ ب: ضرایبِ منفی به‌سمتِ صفر گرد شوند
+  const away = third >= 5 && !(neg && negTowardZero);
+  const scaled = away ? Math.ceil(r3 / 10) : Math.floor(r3 / 10);
   const r2 = scaled / 100;
   return neg ? -r2 : r2;
 }
@@ -1304,6 +1312,7 @@ function disciplineAmountRow(
   disc: string,
   dItM: number | null,
   doRound: boolean,
+  negTz: boolean,
   k: number,
   missing: [string, string, string][],
   label: string,
@@ -1424,14 +1433,14 @@ function disciplineAmountRow(
     const ratio = dItV / dIo;
     // بند ۸-۲: گردکردن ضریب
     const raw = k * (ratio - 1);
-    const used = doRound ? roundCoef2080(raw) : raw;
+    const used = doRound ? roundCoef2080(raw, negTz) : raw;
     dp += used * amount * f;
     if (dBaseSt === "قطعی" && !(ov && ov.rule === "تعیین‌نشده")) {
       dpDef += used * amount * f;
     }
     // مبنای تبصرهٔ ۲
     const raw9 = TADIL_K_2080 * (ratio - 1);
-    const used9 = doRound ? roundCoef2080(raw9) : raw9;
+    const used9 = doRound ? roundCoef2080(raw9, negTz) : raw9;
     dp095 += used9 * amount * f;
     coefRows.push([q, raw, used]);
     dItW += dItV * f;
@@ -1496,6 +1505,8 @@ export function tadilEngine(
   const [k, kStatus, kSource] = tadilK(s);
   const cwt = s.completedWithinTerm === true;
   const doRound = !!s.coefRounding2080;
+  // فاز E-10 §۳ — D-04 گزینهٔ ب: گردکردنِ ضرایبِ منفی به‌سمتِ صفر
+  const negTz = s.negativeCoefRounding === "toward_zero";
   pending.push(
     adjPending(
       "ضریب قانونی تعدیل (k)",
@@ -2213,7 +2224,7 @@ export function tadilEngine(
       const ratio = itV / ioV!;
       // بند ۸-۲: ضریب با ۳ رقم اعشار حساب، سپس به ۲ رقم گرد می‌شود
       const raw = k * (ratio - 1);
-      const used = doRound ? roundCoef2080(raw) : raw;
+      const used = doRound ? roundCoef2080(raw, negTz) : raw;
       dpC += used * amt * f;
       // قطعی: شاخص قطعی باشد و علی‌الحساب (۲-۵-۳) نباشد
       if (baseSt === "قطعی" && !(ov && ov.rule === "تعیین‌نشده")) {
@@ -2221,7 +2232,7 @@ export function tadilEngine(
       }
       // مبنای تبصرهٔ ۲: همان محاسبه با k = ۰٫۹۵
       const raw9 = TADIL_K_2080 * (ratio - 1);
-      const used9 = doRound ? roundCoef2080(raw9) : raw9;
+      const used9 = doRound ? roundCoef2080(raw9, negTz) : raw9;
       dpC095 += used9 * amt * f;
       coefRows.push([q, raw, used]);
       itW += itV * f;
@@ -2267,6 +2278,7 @@ export function tadilEngine(
       disc,
       dItM,
       doRound,
+      negTz,
       k,
       missing,
       "تجهیز",
@@ -2339,6 +2351,7 @@ export function tadilEngine(
         disc,
         dItM,
         doRound,
+        negTz,
         k,
         missing,
         "کار جدید",

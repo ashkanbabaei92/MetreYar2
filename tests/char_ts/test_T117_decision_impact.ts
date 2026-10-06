@@ -58,6 +58,8 @@ const SCENARIOS: Scenario[] = [
     expDp: 10489594369.074144, expBar: 45437742820.323151 },
   { id: "D-03", flip: { coefRounding2080: false },
     expDp: 9937407877.639488, expBar: 45437742820.323151 },
+  { id: "D-04", flip: { negativeCoefRounding: "toward_zero" },
+    expDp: 9984277408.217051, expBar: 45437742820.323151 },
   { id: "D-08", flip: { faultDeductionOnNegative: true },
     expDp: 9984277408.217051, expBar: 45437742820.323151 },
   { id: "D-09", flip: { provisionalDiffMethod: "own_period" },
@@ -88,6 +90,7 @@ const SCENARIOS: Scenario[] = [
 const EFFECTS: Record<string, [number, number]> = {
   "D-01": [505316960.86, 0.0],
   "D-03": [-46869530.58, 0.0],
+  "D-04": [0.0, 0.0],
   "D-08": [0.0, 0.0],
   "D-09": [0.0, 0.0],
   "D-10": [0.0, 0.0],

@@ -38,6 +38,8 @@ SCENARIOS = [
      10489594369.074144, 45437742820.323151),
     ("D-03", dict(coef_rounding_2080=False), None,
      9937407877.639488, 45437742820.323151),
+    ("D-04", dict(negative_coef_rounding="toward_zero"), None,
+     9984277408.217051, 45437742820.323151),
     ("D-08", dict(fault_deduction_on_negative=True), None,
      9984277408.217051, 45437742820.323151),
     ("D-09", dict(provisional_diff_method="own_period"), None,
@@ -65,6 +67,7 @@ SCENARIOS = [
 EFFECTS = {
     "D-01": (505316960.86, 0.0),
     "D-03": (-46869530.58, 0.0),
+    "D-04": (0.0, 0.0),
     "D-08": (0.0, 0.0),
     "D-09": (0.0, 0.0),
     "D-10": (0.0, 0.0),

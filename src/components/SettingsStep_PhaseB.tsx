@@ -514,6 +514,17 @@ export function PhaseBCard({
               <label className="flex items-center gap-2.5 text-[12px] text-ink-dim cursor-pointer">
                 <input
                   type="checkbox"
+                  checked={settings.negativeCoefRounding === "toward_zero"}
+                  onChange={(e) =>
+                    patch("negativeCoefRounding", e.target.checked ? "toward_zero" : "away_from_zero")
+                  }
+                  className="accent-gold w-4 h-4"
+                />
+                گردکردن ضرایبِ منفی به‌سمتِ صفر (D-04)
+              </label>
+              <label className="flex items-center gap-2.5 text-[12px] text-ink-dim cursor-pointer">
+                <input
+                  type="checkbox"
                   checked={settings.tadilApproved}
                   onChange={(e) => patch("tadilApproved", e.target.checked)}
                   className="accent-emerald w-4 h-4"

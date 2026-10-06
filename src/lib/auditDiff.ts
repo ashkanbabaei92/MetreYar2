@@ -54,6 +54,7 @@ export const SETTING_LABELS: Record<string, string> = {
   tadilCoef: "ضریب k تعدیل",
   completedWithinTerm: "وضعیت اتمام کار در مدت پیمان (الزامی — تبصرهٔ ۲)",
   coefRounding2080: "گردکردن ضریب تعدیل (بند ۸-۲)",
+  negativeCoefRounding: "جهت گردکردن ضرایب منفی (D-04 — بخشنامه ساکت است)",
   baseIndexMethod: "روش شاخص مبنا (بند ۱-۶)",
   finalOfferDate: "تاریخ پیشنهاد نهایی (ترک تشریفات)",
   contractDurationMonths: "مدت اولیهٔ پیمان (ماه — بند ۲-۵)",

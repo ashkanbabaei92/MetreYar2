@@ -521,6 +521,8 @@ export interface ProjectSettings {
   tadilCoef: number;
   completedWithinTerm: boolean | null; // فاز E-6: اتمام کار در مدت پیمان (تبصرهٔ ۲ بند ۱-۸)
   coefRounding2080: boolean; // فاز E-6: گردکردن ضریب به ۲ رقم اعشار (بند ۸-۲)
+  /** فاز E-10 §۳ (D-04): جهتِ گردکردنِ ضرایبِ منفی — بخشنامه ساکت است */
+  negativeCoefRounding: "away_from_zero" | "toward_zero";
   // ── فاز E-6 Part C: ورودی‌های قرارداد (بخشنامهٔ ۲۰۸۰) ──
   /** روش شاخص مبنا (بندهای ۱-۶-۱/۱-۶-۲): proposal_period | fehrest_period | no_base_list */
   baseIndexMethod: "proposal_period" | "fehrest_period" | "no_base_list";
