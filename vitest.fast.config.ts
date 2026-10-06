@@ -15,6 +15,7 @@ const SLOW_TS = [
   "test_T106_e6_new_work_excel",
   "test_T110_inputs_status_panel",
   "test_T113_baravord_reference_numbers",
+  "test_T126_reference_pin",
   "test_T114_excel_currency_units",
   "test_T56_fehrest_unit_fix",
   "test_T62_demo_dataset",

@@ -43,6 +43,7 @@ DOCS = [
     "docs/DECISION_SHEET.md",
     "docs/DECISION_IMPACT.md",
     "docs/DATA_REQUEST.md",
+    "docs/REFERENCE_NUMBERS.md",
 ]
 
 LABEL = r"\[(?:REF|FIX|SRC:[^\]]+)\]"
