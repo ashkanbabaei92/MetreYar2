@@ -3640,14 +3640,18 @@ class TechnicalOfficeEngine:
         cfg = PROVISIONAL_M
         meta = cfg.get("meta") or {}
         m_table = cfg.get("m_by_discipline") or {}
+        # فاز E-10 §۴ — هر دو املا پذیرفته می‌شود: نامِ رسمیِ PDF
+        # (کلیدِ m_aliases = canonical) یا کلیدِ config (alias).
+        aliases = cfg.get("m_aliases") or {}
+        key = discipline if discipline in m_table else aliases.get(discipline, discipline)
         # استثنا (مثلاً «به جز فصل ۱۵» برای راه و راهداری)
         if chapter is not None:
             for exc in cfg.get("exceptions") or []:
                 if (str(chapter) == str(exc.get("chapter"))
-                        and discipline in (exc.get("disciplines") or [])
+                        and key in (exc.get("disciplines") or [])
                         and exc.get("apply") is False):
                     return None, "استثنا", {"reason": exc.get("note", "")}
-        m = m_table.get(discipline)
+        m = m_table.get(key)
         if m is None:
             return None, "ناموجود", {
                 "reason": "ضریب m برای رشتهٔ %s در provisional_m.json نیست"
@@ -3664,7 +3668,7 @@ class TechnicalOfficeEngine:
         mean_d = sum(d_vs) / float(len(d_vs))
         coef = 1.0 + float(m) * (n_v / mean_d - 1.0)
         trace = {
-            "discipline": discipline, "m": float(m),
+            "discipline": discipline, "discipline_key": key, "m": float(m),
             "numerator_label": num.get("label", ""), "numerator": n_v,
             "denominator_labels": [d.get("label", "") for d in den],
             "denominator_values": d_vs,

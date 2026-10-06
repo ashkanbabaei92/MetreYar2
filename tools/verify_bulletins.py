@@ -330,10 +330,18 @@ def verify_m_table(prov):
             else:
                 print("✓ جدولِ m (ص۵): mهای %s مطابقِ config" % got)
         # تطبیقِ نام‌ها (فازی) — فقط هشدار
+        #
+        # فاز E-10 §۴: نامِ ۱۱ رشته در PDF با املایِ متفاوتی از کلیدهای
+        # config ظاهر می‌شود و در config/provisional_m.json تحتِ کلیدِ
+        # m_aliases (canonical → alias) ثبت شده‌اند. استخراجِ PDF نام‌هایی
+        # را که میانِ چند span یا چند سطر شکسته می‌شوند نمی‌تواند یک‌جا
+        # بازسازی کند، پس تطبیقِ فازی برای این نام‌ها همیشه شکست می‌خورد.
+        # این نام‌ها از هشدار مستثنی می‌شوند و در عوض زیر می‌آیند.
+        aliased = set((prov.get("m_aliases") or {}).values())
         missing = []
         for d in want_discs:
             nd = _norm_fa(d)
-            if nd in cands:
+            if nd in cands or d in aliased:
                 continue
             best = max(cands, key=lambda c: difflib.SequenceMatcher(None, nd, c).ratio(), default=None)
             ratio = difflib.SequenceMatcher(None, nd, best).ratio() if best else 0.0
@@ -343,6 +351,10 @@ def verify_m_table(prov):
             warnings.append(
                 "صفحهٔ %d: نامِ این رشته‌ها در config با PDF مطابق نیست — "
                 "نیازمند بررسیِ دستی: %s" % (pi + 1, [m[0] for m in missing]))
+        n_alias = len([d for d in want_discs if d in aliased])
+        if n_alias:
+            print("✓ صفحهٔ %d: %d نام با املایِ رسمیِ PDF در m_aliases پوشش "
+                  "داده شده‌اند" % (pi + 1, n_alias))
     return errors, warnings
 
 

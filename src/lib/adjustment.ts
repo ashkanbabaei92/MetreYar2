@@ -685,6 +685,7 @@ const PROVISIONAL_M = PROVISIONAL_M_RAW as unknown as {
     denominator_months?: Array<{ year: string | number; month: string | number; label?: string }>;
   };
   m_by_discipline: Record<string, number>;
+  m_aliases?: Record<string, string>;
   exceptions?: Array<{
     disciplines: string[];
     chapter: string | number;
@@ -695,6 +696,7 @@ const PROVISIONAL_M = PROVISIONAL_M_RAW as unknown as {
 
 export interface ProvisionalTrace {
   discipline: string;
+  discipline_key: string;
   m: number;
   numerator_label: string;
   numerator: number;
@@ -720,19 +722,24 @@ export function provisionalCoef1405q1(
   chapter: string | null = null,
 ): [number | null, string, Record<string, unknown>] {
   const meta = PROVISIONAL_M.meta ?? {};
+  // فاز E-10 §۴ — هر دو املا پذیرفته می‌شود: نامِ رسمیِ PDF
+  // (کلیدِ m_aliases = canonical) یا کلیدِ config (alias).
+  const mTable = PROVISIONAL_M.m_by_discipline ?? {};
+  const aliases = PROVISIONAL_M.m_aliases ?? {};
+  const key = discipline in mTable ? discipline : (aliases[discipline] ?? discipline);
   // استثنا (مثلاً «به جز فصل ۱۵» برای راه و راهداری)
   if (chapter !== null) {
     for (const exc of PROVISIONAL_M.exceptions ?? []) {
       if (
         String(chapter) === String(exc.chapter) &&
-        (exc.disciplines ?? []).includes(discipline) &&
+        (exc.disciplines ?? []).includes(key) &&
         exc.apply === false
       ) {
         return [null, "استثنا", { reason: exc.note ?? "" }];
       }
     }
   }
-  const m = PROVISIONAL_M.m_by_discipline?.[discipline];
+  const m = mTable[key];
   if (m === undefined || m === null) {
     return [
       null,
@@ -770,6 +777,7 @@ export function provisionalCoef1405q1(
   const coef = 1 + m * (nV / meanD - 1);
   const trace: ProvisionalTrace = {
     discipline,
+    discipline_key: key,
     m,
     numerator_label: num.label ?? "",
     numerator: nV,
