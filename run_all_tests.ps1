@@ -5,8 +5,8 @@
 # اعداد مرجع فعلی (baseTotal / grandTotal) را چاپ می‌کند.
 #
 # خروجی مورد انتظار روی دادهٔ مرجع (تنظیمات پیش‌فرض):
-#   Python  : 767 passed + 1 xfailed (768) / 65 files
-#   TS      : 741 passed + 1 expected fail (742) / 64 files
+#   Python  : 894 passed + 1 xfailed (895) / 80 files
+#   TS      : 843 passed + 1 expected fail (844) / 75 files
 #   tsc     : no errors
 #   vite    : build ok
 #   totals  : baseTotal = 23218381337.01 / grandTotal = 31391251567.64
