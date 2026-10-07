@@ -51,3 +51,6 @@ desktop.ini
 # ── پروفایل پروژهٔ تولیدی (دادهٔ کاربر) ──
 MetreYarProfile_*.json
 SooratVaziat_*.xlsx
+
+# خروجی‌های تولیدِ ابزارها (tools/gap_2080_173073.py)
+tools/gap_results.json
