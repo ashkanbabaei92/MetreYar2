@@ -1545,7 +1545,7 @@ class TechnicalOfficeEngine:
         if map_df is None or map_df.empty or "fehrest_code" not in map_df.columns:
             return lines
         codes = map_df["fehrest_code"].astype(str).str.strip()
-        coded = map_df[codes.str.match(r"^\d{6}$", na=False)].assign(fehrest_code=codes)
+        coded = map_df[codes.str.match(r"^[0-9]{6}$", na=False)].assign(fehrest_code=codes)
         if coded.empty:
             return lines
         for (code, src_name), grp_df in coded.groupby([coded["fehrest_code"], coded.get("source_format", "v2")]):
@@ -5579,12 +5579,13 @@ class ExcelExporter:
         row = self._row(ws, row, ["۷", "خالص پرداختی پس از کسورات", round(result["net_payable"])],
                         [F["cell_c"], F["net_l"], F["net"]])
         row += 1
-        row = self._row(ws, row, ["فصل", "شرح فصل", "مبلغ کل (ریال)"], [F["thead"]] * 3)
+        row = self._row(ws, row, ["فصل", "شرح فصل", "مبلغ کل (ریال)", "سهم (٪)"], [F["thead"]] * 4)
         first_ch_row = row
         for cst in result["chapter_sums"]:
             share = (cst["total"] / result["base_total"] * 100) if result["base_total"] else 0
-            row = self._row(ws, row, [f"فصل {fa(cst['chapter'])}", cst["title"], round(cst["total"])],
-                            [F["cell_c"], F["cell"], F["money"]])
+            row = self._row(ws, row, [f"فصل {fa(cst['chapter'])}", cst["title"], round(cst["total"]),
+                                      round(share, 2)],
+                            [F["cell_c"], F["cell"], F["money"], F["num"]])
         # فرمول جمع فصول و سهم — با فرمول زندهٔ Excel
         # مقدار کش‌شده (value) هم نوشته می‌شود تا بیننده‌هایی که محاسبهٔ
         # مجدد نمی‌کنند (pandas/openpyxl data_only) عدد درست ببینند.
@@ -9233,7 +9234,7 @@ def render_tab_mapping():
     sums[3].metric("رکوردهای میلگرد غنی (v1)", fa(enriched))
     coded = 0
     if "fehrest_code" in map_df.columns:
-        coded = int(map_df["fehrest_code"].astype(str).str.match(r"^\d{6}$").sum())
+        coded = int(map_df["fehrest_code"].astype(str).str.match(r"^[0-9]{6}$").sum())
     sums[4].metric("ردیف با کد فهرست‌بها", fa(coded))
 
     with st.expander("پیش‌نمایش دادهٔ ادغام‌شده (۲۰ ردیف نخست)"):
