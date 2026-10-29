@@ -5,13 +5,13 @@ import xml.etree.ElementTree as ET
 
 import xlsxwriter
 sys.path.insert(0, os.path.join(os.path.dirname(__file__), "..", ".."))
-from helper import record
+from helper import assert_golden, record
 from app import ExcelExporter, default_settings, chapter_title
 
 
 def test_T34_excel_sheet_count():
     exporter = ExcelExporter()
-    return record("T34", {"exporter_type": type(exporter).__name__,
+    assert_golden("T34", {"exporter_type": type(exporter).__name__,
                            "has_export": hasattr(exporter, "export"),
                            "has_formats": hasattr(exporter, "_formats")},
                   generate=os.environ.get("GENERATE") == "1")
@@ -49,14 +49,13 @@ def test_T36_excel_formula_capability():
     wb = xlsxwriter.Workbook(io.BytesIO(), {"in_memory": True})
     try:
         fmts = exporter._formats(wb) if hasattr(exporter, "_formats") else {}
-        result = record("T36", {"has_write_formula": hasattr(exporter, "_formats"),
-                                 "format_count": len(fmts),
-                                 "has_net_format": "net" in fmts,
-                                 "note": "Formula injection requires Excel runtime to verify"},
-                        generate=os.environ.get("GENERATE") == "1")
+        assert_golden("T36", {"has_write_formula": hasattr(exporter, "_formats"),
+                              "format_count": len(fmts),
+                              "has_net_format": "net" in fmts,
+                              "note": "Formula injection requires Excel runtime to verify"},
+                      generate=os.environ.get("GENERATE") == "1")
     finally:
         wb.close()
-    return result
 
 
 if __name__ == "__main__":

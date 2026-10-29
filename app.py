@@ -31,7 +31,7 @@ logging.basicConfig(level=logging.INFO, format="%(asctime)s [%(levelname)s] %(me
 _logger = logging.getLogger("MetreYar")
 
 APP_NAME = "متره‌یار — دفتر فنی هوشمند"
-APP_VERSION = "4.0.0"
+APP_VERSION = "v1.0-rc2"
 
 # فاز E-10.1 §۳ — حالتِ ارائه. وقتی demo_mode روشن است، این واترمارک روی
 # همهٔ خروجیِ Excel و همهٔ صفحاتِ UI می‌نشیند تا هر کسی که خروجی را می‌بیند
@@ -1055,8 +1055,8 @@ class DynamoMappingParser:
             if wb is not None:
                 try:
                     wb.close()
-                except Exception:
-                    pass
+                except Exception as exc:
+                    _logger.debug("wb.close() failed during cleanup: %s", exc)
 
     @staticmethod
     def parse_txt_format(text: str, result: dict, filename: str) -> dict:
@@ -5551,7 +5551,7 @@ class ExcelExporter:
             ("۲", _fc_label, result["floors_amount"], False),
             ("۳", f"ضریب بالاسری (× {fa(s['overhead_coef'])})", result["overhead_amount"], False),
             ("۴", f"ضریب منطقه‌ای (× {fa((result.get('coefs', {}).get('regional', {}) or {}).get('value') or 1.0)})", result["regional_amount"], False),
-            ("۵", f"تجهیز و برچیدن کارگاه (مبلغ واردشده)", result["site_setup"], False),
+            ("۵", "تجهیز و برچیدن کارگاه (مبلغ واردشده)", result["site_setup"], False),
             ("۶", "ب) مبلغ ناخالص نهایی قابل پرداخت", result["gross_payable"], True),
         ]
         for no, label, val, bold in chain:

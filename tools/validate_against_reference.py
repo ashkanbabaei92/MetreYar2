@@ -19,8 +19,8 @@ import sys
 # خروجیِ کنسولِ ویندوز cp1252 است؛ UTF-8 می‌کنیم تا پیام‌های فارسی چاپ شوند.
 try:
     sys.stdout.reconfigure(encoding="utf-8")
-except Exception:
-    pass
+except Exception as exc:
+    print(f"stdout reconfigure skipped: {exc}", file=sys.stderr)
 
 # ارقامِ فارسی برای تبدیلِ رشته‌های قالب‌بندی‌شده (داخلِ app.py هم هست)
 FA_DIGITS = str.maketrans("۰۱۲۳۴۵۶۷۸۹", "0123456789")

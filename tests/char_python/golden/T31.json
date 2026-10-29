@@ -20,6 +20,10 @@
     "net_payable",
     "adjustment",
     "index",
+    "price_status_summary",
+    "needs_price_entry",
+    "starred_total",
+    "starred_pct",
     "coefs",
     "warnings",
     "warnings_by_level",
@@ -49,6 +53,16 @@
       "baravord": null
     },
     "index": null,
+    "price_status_summary": {
+      "قطعی": 0,
+      "دستی": 0,
+      "موقت": 0,
+      "پیش‌فرض اپ": 0,
+      "نیازمند ورود": 0
+    },
+    "needs_price_entry": 0,
+    "starred_total": 0,
+    "starred_pct": 0.0,
     "coefs": {
       "floors": {
         "value": 1.0,

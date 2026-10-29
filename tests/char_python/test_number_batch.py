@@ -1,6 +1,6 @@
 import os, sys
 sys.path.insert(0, os.path.join(os.path.dirname(__file__), "..", ".."))
-from helper import record
+from helper import assert_golden, record
 from app import convert_persian_digits
 
 
@@ -10,7 +10,7 @@ def test_T06_T13_number_all():
     for inp in inputs:
         converted = convert_persian_digits(inp)
         results[inp] = {"original": inp, "persian_digits_converted": converted}
-    return record("T06_T13_numbers", {"inputs": results},
+    assert_golden("T06_T13_numbers", {"inputs": results},
                   generate=os.environ.get("GENERATE") == "1")
 
 

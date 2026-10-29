@@ -21,8 +21,8 @@ ROOT = os.path.normpath(os.path.join(os.path.dirname(__file__), ".."))
 sys.path.insert(0, ROOT)
 try:
     sys.stdout.reconfigure(encoding="utf-8")
-except Exception:
-    pass
+except Exception as exc:
+    print(f"stdout reconfigure skipped: {exc}", file=sys.stderr)
 
 from app import (DynamoMappingParser, RevitScheduleParser, TechnicalOfficeEngine,
                  _default_fehrest_db, default_settings)

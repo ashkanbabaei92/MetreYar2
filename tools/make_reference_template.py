@@ -13,6 +13,7 @@
 اجرا:  python tools/make_reference_template.py
 """
 import os
+import sys
 
 from openpyxl import Workbook
 from openpyxl.styles import Alignment, Border, Font, PatternFill, Side
