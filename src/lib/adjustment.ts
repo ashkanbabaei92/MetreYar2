@@ -267,9 +267,7 @@ export function periodLabel(key: string | null | undefined): string {
 /** تجزیهٔ تاریخ شمسی → [سال، ماه، روز] یا null. */
 export function parseJalali(text: string | null | undefined): [number, number, number] | null {
   if (text == null) return null;
-  const m = /^(\d{4})[/.\-](\d{1,2})[/.\-](\d{1,2})$/.exec(
-    String(text).trim().replace(/[۰-۹]/g, (d) => String("۰۱۲۳۴۵۶۷۸۹".indexOf(d))),
-  );
+  const m = /^(\d{4})[/.\-](\d{1,2})[/.\-](\d{1,2})$/.exec(normalizeDigits(text));
   if (!m) return null;
   const y = Number(m[1]);
   const mo = Number(m[2]);
@@ -285,7 +283,7 @@ export function jalaliLeap(y: number): boolean {
 
 // ── کمکّی‌های تاریخ شمسی و تقسیم کارکرد بین سه‌ماهه‌ها ──
 
-import { jalaliToGregorian, fmtMoneyVal } from "./farsi";
+import { jalaliToGregorian, fmtMoneyVal, normalizeDigits } from "./farsi";
 
 /** تبدیل تاریخ شمسی به میلادی — از farsi.ts (جستجوی دودویی روی g2j —
  * ایراد ۱۳). دوباره صادر شده تا یک نقطهٔ ورود واحد برای مصرف‌کنندگانِ

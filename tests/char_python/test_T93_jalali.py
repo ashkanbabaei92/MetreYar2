@@ -16,8 +16,9 @@ import pytest
 sys.path.insert(0, os.path.join(os.path.dirname(__file__), "..", ".."))
 
 from app import (ExcelExporter, TechnicalOfficeEngine, _default_fehrest_db,
-                 default_settings, gregorian_to_jalali, jalali_to_gregorian,
-                 jalali_to_iso, today_jalali)
+                 default_settings, gregorian_to_jalali, is_valid_jalali_date,
+                 jalali_to_gregorian, jalali_to_iso, normalize_digits,
+                 today_jalali)
 
 META = {"project_name": "T93", "employer": "کارفرما", "contractor": "پیمانکار",
         "consultant": "مشاور", "contract_no": "۱", "location": "گرگان",
@@ -165,3 +166,32 @@ def test_T93_excel_history_empty_dates_blank():
         shared = zf.read("xl/sharedStrings.xml").decode("utf-8")
         # هدر ستون‌های میلادی همیشه وجود دارد
         assert "دوره از (میلادی)" in shared
+
+
+# ── PR #3: اعتبارسنجی تاریخ شمسی (سال کبیسه، ارقام عربی، کاراکترهای نامرئی) ──
+
+def test_T93_is_valid_jalali_date_leap_years():
+    # طبق TechnicalOfficeEngine._jalali_leap: سال‌های ۱۳۹۹، ۱۴۰۴ و ۱۴۰۸ کبیسه‌اند (اسفند ۳۰ روزه)
+    assert is_valid_jalali_date("۱۳۹۹/۱۲/۳۰") is True
+    assert is_valid_jalali_date("۱۴۰۴/۱۲/۳۰") is True
+    assert is_valid_jalali_date("1404/12/30") is True
+    assert is_valid_jalali_date("۱۴۰۸/۱۲/۳۰") is True
+    # سال‌های غیرکبیسه (اسفند ۲۹ روزه)
+    assert is_valid_jalali_date("۱۴۰۲/۱۲/۲۹") is True
+    assert is_valid_jalali_date("۱۴۰۲/۱۲/۳۰") is False
+    assert is_valid_jalali_date("۱۴۰۵/۱۲/۳۰") is False
+    assert is_valid_jalali_date("۱۴۰۴/۱۲/۳۱") is False
+
+
+def test_T93_normalize_digits_and_invisible_chars():
+    # ارقام عربی (٠-٩)
+    assert normalize_digits("١٤٠٤/١٢/٣٠") == "1404/12/30"
+    assert is_valid_jalali_date("١٤٠٤/١٢/٣٠") is True
+    # کاراکترهای نامرئی کیبورد فارسی ویندوز (نیم‌فاصله، جهت‌دهی، ممیز فارسی)
+    raw = "\u200e۱۴۰۴\u200c/\u200f۰۷\u202a/۲۵\u2069"
+    assert normalize_digits(raw) == "1404/07/25"
+    assert is_valid_jalali_date(raw) is True
+    # ممیز فارسی (٫) به نقطه تبدیل می‌شود
+    assert is_valid_jalali_date("۱۴۰۴٫۰۳٫۳۱") is True
+    assert TechnicalOfficeEngine._parse_jalali("١٤٠٤\u200c/١٢/٣٠") == (1404, 12, 30)
+

@@ -56,6 +56,12 @@ _CHAR_TRANS = str.maketrans({
 })
 
 
+# کاراکترهای نامرئی کیبورد فارسی ویندوز (نیم‌فاصله، جهت‌دهی‌ها، BOM)
+_INVISIBLE_CHARS_RE = re.compile(
+    r"[\u200b\u200c\u200d\u200e\u200f\u202a-\u202e\u2066-\u2069\ufeff]"
+)
+
+
 def convert_persian_digits(text, to_english: bool = True) -> str:
     """
     تبدیل ارقام فارسی/عربی به انگلیسی (to_english=True) یا بالعکس (False).
@@ -73,6 +79,21 @@ def convert_persian_digits(text, to_english: bool = True) -> str:
             out.append(EN_DIGITS[j] if j >= 0 else ch)
         return "".join(out)
     return "".join(FA_DIGITS[int(c)] if c.isdigit() else c for c in s)
+
+
+def normalize_digits(text) -> str:
+    """
+    نرمال‌سازی رشتهٔ عددی/تاریخی ورودی کاربر:
+    - تبدیل ارقام فارسی (۰-۹) و عربی (٠-٩) به انگلیسی (0-9)
+    - حذف کاراکترهای نامرئی کیبورد فارسی ویندوز (نیم‌فاصله U+200C، جهت‌دهی‌ها و ...)
+    - یکسان‌سازی ممیز فارسی (٫ U+066B) با نقطه (.)
+    """
+    if text is None:
+        return ""
+    s = convert_persian_digits(str(text), to_english=True)
+    s = _INVISIBLE_CHARS_RE.sub("", s)
+    s = s.replace("\u066b", ".")
+    return s.strip()
 
 
 def fa(value) -> str:
@@ -285,13 +306,13 @@ def is_valid_jalali_date(text: str) -> bool:
     """اعتبارسنجی رشتهٔ تاریخ شمسی ورودی کاربر (سال/ماه/روز با جداکنندهٔ / یا -)."""
     if not text or not str(text).strip():
         return False
-    m = re.match(r"^(\d{4})[/.\-](\d{1,2})[/.\-](\d{1,2})$", convert_persian_digits(str(text)).strip())
+    m = re.match(r"^(\d{4})[/.\-](\d{1,2})[/.\-](\d{1,2})$", normalize_digits(text))
     if not m:
         return False
     y, mo, d = int(m.group(1)), int(m.group(2)), int(m.group(3))
     if not (1300 <= y <= 1500 and 1 <= mo <= 12 and d >= 1):
         return False
-    dim = 31 if mo <= 6 else (30 if mo <= 11 else 29)
+    dim = 31 if mo <= 6 else (30 if mo <= 11 else (30 if TechnicalOfficeEngine._jalali_leap(y) else 29))
     return d <= dim
 
 
@@ -3394,7 +3415,7 @@ class TechnicalOfficeEngine:
         if text is None:
             return None
         m = re.match(r"^(\d{4})[/.\-](\d{1,2})[/.\-](\d{1,2})$",
-                     convert_persian_digits(str(text)).strip())
+                     normalize_digits(text))
         if not m:
             return None
         y, mo, d = int(m.group(1)), int(m.group(2)), int(m.group(3))
@@ -8757,11 +8778,11 @@ def render_sidebar():
                     format_func=lambda x: dict(_bim_opts)[x],
                     index=_bim_keys.index(_bim)
                     if _bim in _bim_keys else 0, key="sb-bim")
-                s["final_offer_date"] = st.text_input(
+                s["final_offer_date"] = _jalali_input(
                     "تاریخ تسلیم کتبیِ پیشنهاد نهایی — ترک تشریفات"
                     " (بند ۱-۶-۱ دوم)",
-                    value=s.get("final_offer_date") or "",
-                    key="sb-final-offer")
+                    "sb-final-offer",
+                    s.get("final_offer_date") or "")
                 st.caption("در ترک تشریفاتِ مناقصه، ملاکِ Io این تاریخ "
                            "است. خالی ⇒ مهلت تسلیم، و اگر آن هم نبود، "
                            "تاریخ تسلیم پیشنهاد.")
@@ -8816,10 +8837,10 @@ def render_sidebar():
                     "مدت اولیهٔ پیمان (ماه — بند ۲-۵)", min_value=0,
                     step=1, value=int(_cdm) if isinstance(_cdm, int) and _cdm
                     else 0, key="sb-cdm") or None
-                s["last_provisional_date"] = st.text_input(
+                s["last_provisional_date"] = _jalali_input(
                     "تاریخ آخرین صورت‌وضعیت موقت (بند ۲-۶)",
-                    value=s.get("last_provisional_date") or "",
-                    key="sb-last-prov")
+                    "sb-last-prov",
+                    s.get("last_provisional_date") or "")
                 _pdm_opts = [("average", "میانگین شاخص‌ها (متنِ بند)"),
                              ("own_period",
                               "شاخصِ هر سه‌ماهه (تبصرهٔ ۱)")]
@@ -8898,9 +8919,10 @@ def render_sidebar():
                 for _i in range(int(_ext_n)):
                     _c = _old_ext[_i] if _i < len(_old_ext) else {}
                     _er = st.columns([1.2, 0.7, 1.1, 1.1])
-                    _d = _er[0].text_input("تاریخ تمدید",
-                                           value=_c.get("date") or "",
-                                           key="sb-ext-d-%d" % _i)
+                    _d = _jalali_input("تاریخ تمدید",
+                                       "sb-ext-d-%d" % _i,
+                                       _c.get("date") or "",
+                                       container=_er[0])
                     _m = _er[1].number_input("ماه", min_value=1,
                                              max_value=60,
                                              value=int(_c.get("months") or 1),
@@ -8933,9 +8955,10 @@ def render_sidebar():
                 index=1 if s.get("tadil_delay_mode") == "مستثنی کردن دورهٔ تأخیر" else 0,
                 key="sb-tadil-delay")
             if s["tadil_delay_mode"] == "مستثنی کردن دورهٔ تأخیر":
-                s["tadil_delay_date"] = st.text_input(
-                    "تاریخ تحویل قرارداد (شمسی)", value=s.get("tadil_delay_date") or "",
-                    key="sb-tadil-delay-date")
+                s["tadil_delay_date"] = _jalali_input(
+                    "تاریخ تحویل قرارداد (شمسی)",
+                    "sb-tadil-delay-date",
+                    s.get("tadil_delay_date") or "")
             s["tadil_allow_negative"] = st.checkbox(
                 "تعدیل منفی مجاز است", value=bool(s.get("tadil_allow_negative")),
                 key="sb-tadil-neg")
@@ -9421,10 +9444,11 @@ def render_tab_metre():
                                       key=f"tme-src-{l['id']}")
                 doc_no = pc[2].text_input("شماره سند", value=_mp.get("doc_no", ""),
                                          key=f"tme-doc-{l['id']}")
-                doc_date = pc[3].text_input("تاریخ سند (شمسی)",
-                                            value=_mp.get("doc_date", ""),
-                                            placeholder="۱۴۰۵/۰۴/۱۲",
-                                            key=f"tme-date-{l['id']}")
+                doc_date = _jalali_input("تاریخ سند (شمسی)",
+                                         f"tme-date-{l['id']}",
+                                         _mp.get("doc_date", ""),
+                                         container=pc[3],
+                                         placeholder="۱۴۰۵/۰۴/۱۲")
                 if pc[4].button("ثبت", key=f"tme-save-{l['id']}"):
                     _bad = None
                     if doc_date and not TechnicalOfficeEngine._parse_jalali(doc_date):
@@ -9508,11 +9532,116 @@ def _fin_chain_html(rows, net_label, net_value, words, cur, rounding=True):
     return "".join(parts)
 
 
-def _jalali_input(label: str, key: str, value: str) -> str:
-    """فیلد ورودی تاریخ شمسی با اعتبارسنجی لحظه‌ای (بدون کتابخانه خارجی)."""
-    v = st.text_input(label, value=value, placeholder="۱۴۰۴/۰۳/۳۱", key=key)
+_JALALI_MONTH_NAMES = [
+    "فروردین", "اردیبهشت", "خرداد", "تیر", "مرداد", "شهریور",
+    "مهر", "آبان", "آذر", "دی", "بهمن", "اسفند",
+]
+_JALALI_WEEKDAYS = ["ش", "ی", "د", "س", "چ", "پ", "ج"]
+
+
+def _render_jalali_calendar(target_key: str):
+    """رندر تقویم شمسی تعاملی داخل st.popover (بدون کتابخانهٔ خارجی)."""
+    now = datetime.now()
+    ty, tm, td = gregorian_to_jalali(now.year, now.month, now.day)
+    cur_val = str(st.session_state.get(target_key, "") or "")
+    parsed = TechnicalOfficeEngine._parse_jalali(cur_val)
+    init_y = parsed[0] if parsed and 1380 <= parsed[0] <= 1420 else (ty if 1380 <= ty <= 1420 else 1404)
+    init_m = parsed[1] if parsed else tm
+    sel_day = parsed[2] if parsed else None
+
+    yk = f"{target_key}__cal_y"
+    mk = f"{target_key}__cal_m"
+    if yk not in st.session_state or st.session_state[yk] not in range(1380, 1421):
+        st.session_state[yk] = init_y
+    if mk not in st.session_state or st.session_state[mk] not in range(1, 13):
+        st.session_state[mk] = init_m
+
+    years = list(range(1380, 1421))
+    months = list(range(1, 13))
+
+    def _pick_date(y_val: int, m_val: int, d_val: int):
+        st.session_state[target_key] = fa(f"{y_val}/{m_val:02d}/{d_val:02d}")
+        st.session_state[yk] = y_val
+        st.session_state[mk] = m_val
+
+    hdr = st.columns([1.3, 1.5, 1.0])
+    sel_y = hdr[0].selectbox(
+        "سال",
+        years,
+        format_func=lambda y: fa(str(y)),
+        key=yk,
+        label_visibility="collapsed",
+    )
+    sel_m = hdr[1].selectbox(
+        "ماه",
+        months,
+        format_func=lambda m: f"{fa(m)} - {_JALALI_MONTH_NAMES[m - 1]}",
+        key=mk,
+        label_visibility="collapsed",
+    )
+    hdr[2].button(
+        "امروز",
+        key=f"{target_key}__cal_today",
+        on_click=_pick_date,
+        args=(ty, tm, td),
+        use_container_width=True,
+    )
+
+    # هدر ۷ روز هفته (شنبه تا جمعه)
+    wh = st.columns(7)
+    for idx, wname in enumerate(_JALALI_WEEKDAYS):
+        wh[idx].markdown(
+            f"<div style='text-align:center;font-weight:700;font-size:12px;color:#ffd166'>{wname}</div>",
+            unsafe_allow_html=True,
+        )
+
+    # محاسبهٔ روز هفتهٔ اول ماه (شنبه = ۰ ... جمعه = ۶)
+    g_first = jalali_to_gregorian(sel_y, sel_m, 1)
+    start_wd = (date(*g_first).weekday() + 2) % 7 if g_first else 0
+    dim = (
+        31 if sel_m <= 6
+        else (30 if sel_m <= 11 else (30 if TechnicalOfficeEngine._jalali_leap(sel_y) else 29))
+    )
+
+    cells = [None] * start_wd + list(range(1, dim + 1))
+    while len(cells) % 7 != 0:
+        cells.append(None)
+
+    for r_idx in range(len(cells) // 7):
+        row_cols = st.columns(7)
+        for c_idx in range(7):
+            d_num = cells[r_idx * 7 + c_idx]
+            if d_num is None:
+                row_cols[c_idx].markdown("&nbsp;", unsafe_allow_html=True)
+            else:
+                is_sel = bool(parsed and parsed[0] == sel_y and parsed[1] == sel_m and sel_day == d_num)
+                row_cols[c_idx].button(
+                    fa(str(d_num)),
+                    key=f"{target_key}__cal_d_{sel_y}_{sel_m}_{d_num}",
+                    on_click=_pick_date,
+                    args=(sel_y, sel_m, d_num),
+                    type="primary" if is_sel else "secondary",
+                    use_container_width=True,
+                )
+
+
+def _jalali_input(
+    label: str,
+    key: str,
+    value: str = "",
+    container=None,
+    placeholder: str = "۱۴۰۴/۰۳/۳۱",
+) -> str:
+    """فیلد ورودی تاریخ شمسی با پاپ‌آپ تقویم و اعتبارسنجی لحظه‌ای (بدون کتابخانه خارجی)."""
+    host = container if container is not None else st
+    if key not in st.session_state:
+        st.session_state[key] = value or ""
+    ic = host.columns([4.5, 1.1], vertical_alignment="bottom")
+    v = ic[0].text_input(label, placeholder=placeholder, key=key)
+    with ic[1].popover("📅", use_container_width=True):
+        _render_jalali_calendar(key)
     if v.strip() and not is_valid_jalali_date(v):
-        st.error(f"قالب «{label}» نامعتبر است (نمونهٔ صحیح: ۱۴۰۴/۰۳/۳۱؟) — تصحیح کنید.", icon="⚠️")
+        host.error(f"قالب «{label}» نامعتبر است (نمونهٔ صحیح: {placeholder}؟) — تصحیح کنید.", icon="⚠️")
     return v
 
 
@@ -9660,7 +9789,7 @@ def render_tab_manual_prices():
     # ══ ۳) ردیف‌های ستاره‌دار (غیرفهرستی) ══
     with st.container(border=True):
         st.markdown("**افزودن ردیف ستاره‌دار** (غیرفهرستی — ورود کامل دستی)")
-        with st.form("mp-starred-form", clear_on_submit=True):
+        with st.container():
             f1 = st.columns([1, 3, 1, 1])
             code = f1[0].text_input("کد (اختیاری)", placeholder="۹۹۰۱۰۱",
                                     key="mp-st-code")
@@ -9700,7 +9829,7 @@ def render_tab_manual_prices():
                 st.caption(f"مقدار محاسبه‌شده: **{fmt_num(qty, 2)}** {unit}")
                 note = st.text_input("توضیح محل/کاربرد", key="mp-st-note")
 
-            f2 = st.columns([1.2, 1, 1.1, 1.1, 1])
+            f2 = st.columns([1.2, 1, 1.1, 1.3, 1], vertical_alignment="bottom")
             price = f2[0].number_input(
                 f"بهای واحد ({'تومان' if cur == 'toman' else 'ریال'})*",
                 min_value=0.0, step=1000.0, format="%.0f", key="mp-st-price")
@@ -9709,9 +9838,10 @@ def render_tab_manual_prices():
                                    if x != "ویرایش قدیمی (قبل از مرحلهٔ ۱۳)"],
                                   key="mp-st-src")
             doc_no = f2[2].text_input("شماره سند", key="mp-st-doc")
-            doc_date = f2[3].text_input("تاریخ سند (شمسی)", placeholder="۱۴۰۵/۰۴/۱۲",
-                                        key="mp-st-date")
-            submitted = f2[4].form_submit_button("➕ افزودن ردیف", type="primary")
+            doc_date = _jalali_input("تاریخ سند (شمسی)", "mp-st-date",
+                                     container=f2[3], placeholder="۱۴۰۵/۰۴/۱۲")
+            submitted = f2[4].button("➕ افزودن ردیف", type="primary",
+                                     key="mp-st-submit", use_container_width=True)
 
             if submitted:
                 _errs = []
@@ -9736,6 +9866,14 @@ def render_tab_manual_prices():
                         "at": jalali_now_str()})
                     append_audit(s, code.strip() or "(ستاره‌دار)", "starred_row",
                                  None, f"{qty} × {price}", src)
+                    for _k, _dv in (("mp-st-code", ""), ("mp-st-desc", ""),
+                                    ("mp-st-qty", 0.0), ("mp-st-cnt", 0.0),
+                                    ("mp-st-ln", 0.0), ("mp-st-wd", 0.0),
+                                    ("mp-st-ht", 0.0), ("mp-st-note", ""),
+                                    ("mp-st-price", 0.0), ("mp-st-doc", ""),
+                                    ("mp-st-date", "")):
+                        if _k in st.session_state:
+                            st.session_state[_k] = _dv
                     st.success(f"ردیف ستاره‌دار اضافه شد: {fmt_money(qty * price, cur)}")
                     st.rerun()
 
@@ -9804,7 +9942,7 @@ def render_tab_statement():
     meta["consultant"] = c[0].text_input("نام مشاور", value=meta["consultant"], key="ts-consultant")
     meta["location"] = c[1].text_input("محل اجرا", value=meta["location"], key="ts-location")
     meta["contract_date"] = _jalali_input("تاریخ شروع پیمان (شمسی)", "ts-contract-date",
-                                          meta["contract_date"])
+                                          meta["contract_date"], container=c[2])
     meta["report_type"] = c[3].selectbox("نوع صورت‌وضعیت", ["موقت", "قطعی"],
                                          index=0 if meta["report_type"] == "موقت" else 1,
                                          key="ts-report-type")
@@ -9812,9 +9950,9 @@ def render_tab_statement():
     meta["report_no"] = c[0].text_input("شمارهٔ صورت‌وضعیت", value=meta["report_no"],
                                         key="ts-report-no")
     meta["period_start"] = _jalali_input("تاریخ شروع دورهٔ صورت‌وضعیت (شمسی)", "ts-period-start",
-                                         meta["period_start"])
+                                         meta["period_start"], container=c[1])
     meta["period_end"] = _jalali_input("تاریخ پایان دورهٔ صورت‌وضعیت (شمسی)", "ts-period-end",
-                                       meta["period_end"])
+                                       meta["period_end"], container=c[2])
     c[3].caption(f"امروز به وقت ایران: {today_jalali()}")
     s["work_period_start"] = meta["period_start"]
     s["work_period_end"] = meta["period_end"]
@@ -10306,6 +10444,3 @@ if __name__ == "__main__":
         _logger.exception("خطای بحرانی برنامه")
         st.error(f"خطای غیرمنتظره در اجرای برنامه: {e}")
         st.info("لطفاً فایل‌های ورودی و تنظیمات را بررسی کنید و دوباره تلاش نمایید.")
-
-
-

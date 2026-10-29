@@ -23,8 +23,8 @@ import {
 } from "../lib/types";
 import { cn } from "../utils/cn";
 import { faDigits, fmtNum } from "../lib/normalize";
-import { todayJalali, isValidJalaliDate, moneyToWords } from "../lib/farsi";
-import { validateMeta, jalaliToGregorian } from "../lib/adjustment";
+import { todayJalali, isValidJalaliDate, moneyToWords, g2j, fa } from "../lib/farsi";
+import { validateMeta } from "../lib/adjustment";
 import { IndexTable } from "../lib/indices";
 import { PhaseBCard } from "./SettingsStep_PhaseB";
 import { FloorsTableCard } from "./SettingsStep_Floors";
@@ -643,36 +643,36 @@ export function JalaliInput({
     const parts = iso.split("-").map(Number);
     if (parts.length !== 3 || parts.some((n) => Number.isNaN(n))) return;
     const [gy, gm, gd] = parts;
-    const g = jalaliToGregorian(gy, gm, gd);
-    if (!g) return;
-    const [jy, jm, jd] = g;
-    onChange(`${jy}/${String(jm).padStart(2, "0")}/${String(jd).padStart(2, "0")}`);
+    const [jy, jm, jd] = g2j(gy, gm, gd);
+    onChange(fa(`${jy}/${String(jm).padStart(2, "0")}/${String(jd).padStart(2, "0")}`));
   };
   return (
     <div>
-      <div className="flex gap-1.5">
+      <div className="relative flex gap-1.5">
         <input
           value={value}
           onChange={(e) => onChange(e.target.value)}
           className={cn(inputCls, "num", "flex-1", invalid && "border-rose/60 focus:border-rose")}
           placeholder={placeholder ?? "۱۴۰۴/۰۱/۱۵"}
         />
-        <button
-          type="button"
-          title="انتخاب از تقویم"
-          onClick={() => pickerRef.current?.showPicker?.()}
-          className="shrink-0 px-2.5 rounded-xl border border-line bg-panel-2 text-ink-dim hover:text-gold hover:border-gold/40 transition-colors"
-        >
-          <CalendarDays size={15} />
-        </button>
-        <input
-          ref={pickerRef}
-          type="date"
-          onChange={onPick}
-          className="sr-only"
-          tabIndex={-1}
-          aria-hidden
-        />
+        <div className="relative shrink-0">
+          <button
+            type="button"
+            title="انتخاب از تقویم"
+            onClick={() => pickerRef.current?.showPicker?.()}
+            className="h-full px-2.5 rounded-xl border border-line bg-panel-2 text-ink-dim hover:text-gold hover:border-gold/40 transition-colors"
+          >
+            <CalendarDays size={15} />
+          </button>
+          <input
+            ref={pickerRef}
+            type="date"
+            onChange={onPick}
+            className="absolute inset-0 w-0 h-0 opacity-0 pointer-events-none"
+            tabIndex={-1}
+            aria-hidden
+          />
+        </div>
       </div>
       {invalid && <span className="text-[10.5px] text-rose block mt-1.5">قالب تاریخ نامعتبر است (مثال: ۱۴۰۴/۰۳/۳۱)</span>}
     </div>
