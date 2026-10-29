@@ -59,5 +59,14 @@ def record(test_id, data, generate=False):
     return {"status": "compare", "golden": existing, "actual": data}
 
 
+def assert_golden(test_id, data, generate=False):
+    res = record(test_id, data, generate=generate)
+    if res["status"] == "compare":
+        # Round-trip through JSON with default=str so tuple/float types match golden JSON representation
+        normalized_actual = json.loads(json.dumps(data, ensure_ascii=False, default=str))
+        assert normalized_actual == res["golden"], f"{test_id} golden mismatch"
+    return res
+
+
 def json_default(obj):
     return str(obj)

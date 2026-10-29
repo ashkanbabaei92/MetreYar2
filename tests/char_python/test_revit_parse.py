@@ -1,38 +1,38 @@
 import os, sys
 import pytest
 sys.path.insert(0, os.path.join(os.path.dirname(__file__), "..", ".."))
-from helper import load_fixture, save_json, record
+from helper import assert_golden, load_fixture, save_json, record
 from app import RevitScheduleParser
 
 
 def test_T01_R1_simple():
     text = load_fixture("revit", "R1_simple.txt")
     result = RevitScheduleParser.parse("test_R1.txt", text)
-    return record("T01", result, generate=os.environ.get("GENERATE") == "1")
+    assert_golden("T01", result, generate=os.environ.get("GENERATE") == "1")
 
 
 def test_T02_R2_title_subtitle():
     text = load_fixture("revit", "R2_title_subtitle.txt")
     result = RevitScheduleParser.parse("test_R2.txt", text)
-    return record("T02", result, generate=os.environ.get("GENERATE") == "1")
+    assert_golden("T02", result, generate=os.environ.get("GENERATE") == "1")
 
 
 def test_T03_R3_subtotal():
     text = load_fixture("revit", "R3_subtotal.txt")
     result = RevitScheduleParser.parse("test_R3.txt", text)
-    return record("T03", result, generate=os.environ.get("GENERATE") == "1")
+    assert_golden("T03", result, generate=os.environ.get("GENERATE") == "1")
 
 
 def test_T04_R4_unknown():
     text = load_fixture("revit", "R4_unknown.txt")
     result = RevitScheduleParser.parse("test_R4.txt", text)
-    return record("T04", result, generate=os.environ.get("GENERATE") == "1")
+    assert_golden("T04", result, generate=os.environ.get("GENERATE") == "1")
 
 
 def test_T05_R5_incomplete():
     text = load_fixture("revit", "R5_incomplete.txt")
     result = RevitScheduleParser.parse("test_R5.txt", text)
-    return record("T05", result, generate=os.environ.get("GENERATE") == "1")
+    assert_golden("T05", result, generate=os.environ.get("GENERATE") == "1")
 
 
 def test_T55_doubled_quote_dialect():

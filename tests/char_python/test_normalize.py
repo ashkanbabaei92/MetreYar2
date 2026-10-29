@@ -1,6 +1,6 @@
 import os, sys
 sys.path.insert(0, os.path.join(os.path.dirname(__file__), "..", ".."))
-from helper import record
+from helper import assert_golden, record
 from app import normalize_text, convert_persian_digits, to_si, chapter_title, fuzzy_match, conf_label
 
 
@@ -13,7 +13,7 @@ def test_T24_kind_classification():
                          ("joist_floor", "سقف تیرچه بلوک")]:
         _, conf = RevitScheduleParser._classify(title, ["mark", "volume"])
         results[kind] = {"kind": kind, "confidence": conf}
-    return record("T24", results, generate=os.environ.get("GENERATE") == "1")
+    assert_golden("T24", results, generate=os.environ.get("GENERATE") == "1")
 
 
 def test_T54_normalize_zwnj_classification():
@@ -36,19 +36,19 @@ def test_T54_normalize_zwnj_classification():
 
 def test_T25_si_mm_to_m():
     result = to_si(1000.0, "mm")
-    return record("T25", {"input": (1000.0, "mm"), "result": result},
+    assert_golden("T25", {"input": (1000.0, "mm"), "result": result},
                   generate=os.environ.get("GENERATE") == "1")
 
 
 def test_T26_si_cm_to_m():
     result = to_si(100.0, "cm")
-    return record("T26", {"input": (100.0, "cm"), "result": result},
+    assert_golden("T26", {"input": (100.0, "cm"), "result": result},
                   generate=os.environ.get("GENERATE") == "1")
 
 
 def test_T27_si_ton_to_kg():
     result = to_si(1.0, "ton")
-    return record("T27", {"input": (1.0, "ton"), "result": result},
+    assert_golden("T27", {"input": (1.0, "ton"), "result": result},
                   generate=os.environ.get("GENERATE") == "1")
 
 
@@ -60,7 +60,7 @@ def test_T28_persian_digits():
             "to_en": convert_persian_digits(inp),
             "normalize": normalize_text(inp),
         }
-    return record("T28", results, generate=os.environ.get("GENERATE") == "1")
+    assert_golden("T28", results, generate=os.environ.get("GENERATE") == "1")
 
 
 def test_T29_normalize_stop_words():
@@ -70,7 +70,7 @@ def test_T29_normalize_stop_words():
         tokens = [t for t in normalize_text(inp).split() if t and t not in
                   {"و", "به", "از", "در", "با", "برای", "هر", "نوع", "تا", "مورد"}]
         results[inp] = {"normalized": normalize_text(inp), "tokens": tokens}
-    return record("T29", results, generate=os.environ.get("GENERATE") == "1")
+    assert_golden("T29", results, generate=os.environ.get("GENERATE") == "1")
 
 
 def test_T30_normalize_arabic():
@@ -79,7 +79,7 @@ def test_T30_normalize_arabic():
     for inp in inputs:
         results[inp] = {"original": inp, "normalized": normalize_text(inp),
                         "persian": convert_persian_digits(inp)}
-    return record("T30", results, generate=os.environ.get("GENERATE") == "1")
+    assert_golden("T30", results, generate=os.environ.get("GENERATE") == "1")
 
 
 if __name__ == "__main__":

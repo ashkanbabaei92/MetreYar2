@@ -1,6 +1,6 @@
 import os, sys
 sys.path.insert(0, os.path.join(os.path.dirname(__file__), "..", ".."))
-from helper import load_json, load_json_fixture, record
+from helper import assert_golden, load_json, load_json_fixture, record
 from app import TechnicalOfficeEngine, default_settings, chapter_title, fuzzy_match
 from app import FehrestBahaParser
 
@@ -135,8 +135,9 @@ def test_T15_mapping_exact_match():
                                    "fallback_price": result["price"], "id": "test"})
                 m["input_code"] = code
                 m["row_desc"] = result["desc"]
-                return record("T15", m, generate=os.environ.get("GENERATE") == "1")
-    return record("T15", {"status": "no_valid_rows"}, generate=os.environ.get("GENERATE") == "1")
+                assert_golden("T15", m, generate=os.environ.get("GENERATE") == "1")
+                return
+    assert_golden("T15", {"status": "no_valid_rows"}, generate=os.environ.get("GENERATE") == "1")
 
 
 def test_T16_mapping_fuzzy():
@@ -149,7 +150,7 @@ def test_T16_mapping_fuzzy():
             candidates = FehrestBahaParser.search(db, f"ردیف {code}", top=3, min_score=0.3)
             results.append({"code": code, "candidates": [(candidate["code"], score)
                                                              for candidate, score in candidates]})
-    return record("T16", {"results": results}, generate=os.environ.get("GENERATE") == "1")
+    assert_golden("T16", {"results": results}, generate=os.environ.get("GENERATE") == "1")
 
 
 def test_T17_mapping_estimated():
@@ -162,13 +163,13 @@ def test_T17_mapping_estimated():
             "estimated": row.get("estimated", False),
             "price": row["price"],
         })
-    return record("T17", {"estimated_flags": results}, generate=os.environ.get("GENERATE") == "1")
+    assert_golden("T17", {"estimated_flags": results}, generate=os.environ.get("GENERATE") == "1")
 
 
 def test_T18_mapping_no_match():
     db = FehrestBahaParser.embedded()
     result = fuzzy_match("zzz_no_match_12345", [r["desc"] for r in db], threshold=0.6)
-    return record("T18", {"query": "zzz_no_match_12345", "result": result},
+    assert_golden("T18", {"query": "zzz_no_match_12345", "result": result},
                   generate=os.environ.get("GENERATE") == "1")
 
 
@@ -179,7 +180,7 @@ def test_T19_mapping_manual_override():
     engine = TechnicalOfficeEngine(db, settings)
     m = engine._match({"target": "080201", "query": "test", "unit": "m3",
                         "price": 5000000, "fallback_price": 5000000, "id": "test"})
-    return record("T19", m, generate=os.environ.get("GENERATE") == "1")
+    assert_golden("T19", m, generate=os.environ.get("GENERATE") == "1")
 
 
 if __name__ == "__main__":

@@ -1,6 +1,6 @@
 import os, sys
 sys.path.insert(0, os.path.join(os.path.dirname(__file__), "..", ".."))
-from helper import record
+from helper import assert_golden, record
 from app import rebar_unit_weight, REBAR_UNIT_WEIGHT, TechnicalOfficeEngine
 
 # کد ریزمترهٔ آرماتور بر اساس آستانهٔ قطر (mm): ≤10 → 070201 ، ۱۲–۱۸ → 070202 ، ≥۲۰ → 070203
@@ -9,25 +9,25 @@ def bucket_of(diameter_mm: float, grade: str = "IR-Rebar-Fy4000") -> str:
 
 
 def test_T20_rebar_phi8():
-    return record("T20", {"input": 8, "weight": rebar_unit_weight(8),
+    assert_golden("T20", {"input": 8, "weight": rebar_unit_weight(8),
                           "table_value": REBAR_UNIT_WEIGHT.get(8)},
                   generate=os.environ.get("GENERATE") == "1")
 
 
 def test_T21_rebar_phi14():
-    return record("T21", {"input": 14, "weight": rebar_unit_weight(14),
+    assert_golden("T21", {"input": 14, "weight": rebar_unit_weight(14),
                           "table_value": REBAR_UNIT_WEIGHT.get(14)},
                   generate=os.environ.get("GENERATE") == "1")
 
 
 def test_T22_rebar_phi25():
-    return record("T22", {"input": 25, "weight": rebar_unit_weight(25),
+    assert_golden("T22", {"input": 25, "weight": rebar_unit_weight(25),
                           "table_value": REBAR_UNIT_WEIGHT.get(25)},
                   generate=os.environ.get("GENERATE") == "1")
 
 
 def test_T23_rebar_phi36():
-    return record("T23", {"input": 36, "weight": rebar_unit_weight(36),
+    assert_golden("T23", {"input": 36, "weight": rebar_unit_weight(36),
                           "table_value": REBAR_UNIT_WEIGHT.get(36)},
                   generate=os.environ.get("GENERATE") == "1")
 

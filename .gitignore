@@ -39,6 +39,7 @@ splice_*
 *.xls
 !tests/**/fixtures/*.xlsx
 !examples/**/*.xlsx
+!templates/*.xlsx
 
 # ─<arg_value> سیستم‌عامل/ویرایشگر ──
 Thumbs.db
