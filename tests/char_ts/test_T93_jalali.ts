@@ -14,8 +14,8 @@ import * as XLSX from "xlsx";
 import { computeProject, defaultSettings } from "../../src/lib/engine";
 import { exportWorkbook } from "../../src/lib/exporters";
 import { OFFICIAL_1404_FEHREST } from "../../src/data/officialFehrest";
-import { g2j, jalaliToGregorian, todayJalali } from "../../src/lib/farsi";
-import { jalaliToISO } from "../../src/lib/adjustment";
+import { g2j, isValidJalaliDate, jalaliToGregorian, normalizeDigits, todayJalali } from "../../src/lib/farsi";
+import { jalaliToISO, parseJalali } from "../../src/lib/adjustment";
 import type { ProjectMeta, StatusReportRecord } from "../../src/lib/types";
 
 const BASE_META: ProjectMeta = {
@@ -155,3 +155,27 @@ describe("T93 — شیت Excel «سوابق صورت وضعیت»", () => {
     expect(iCell == null || iCell.v === "").toBe(true);
   });
 });
+
+describe("T93 — اعتبارسنجی تاریخ شمسی (کبیسه، ارقام عربی، کاراکترهای نامرئی)", () => {
+  it("اسفند ۳۰ در سال‌های کبیسه (۱۳۹۹، ۱۴۰۴، ۱۴۰۸) معتبر و در غیرکبیسه نامعتبر است", () => {
+    expect(isValidJalaliDate("۱۳۹۹/۱۲/۳۰")).toBe(true);
+    expect(isValidJalaliDate("۱۴۰۴/۱۲/۳۰")).toBe(true);
+    expect(isValidJalaliDate("1404/12/30")).toBe(true);
+    expect(isValidJalaliDate("۱۴۰۸/۱۲/۳۰")).toBe(true);
+    expect(isValidJalaliDate("۱۴۰۲/۱۲/۲۹")).toBe(true);
+    expect(isValidJalaliDate("۱۴۰۲/۱۲/۳۰")).toBe(false);
+    expect(isValidJalaliDate("۱۴۰۵/۱۲/۳۰")).toBe(false);
+    expect(isValidJalaliDate("۱۴۰۴/۱۲/۳۱")).toBe(false);
+  });
+
+  it("پشتیبانی از ارقام عربی و حذف کاراکترهای نامرئی کیبورد فارسی", () => {
+    expect(normalizeDigits("١٤٠٤/١٢/٣٠")).toBe("1404/12/30");
+    expect(isValidJalaliDate("١٤٠٤/١٢/٣٠")).toBe(true);
+    const raw = "\u200e۱۴۰۴\u200c/\u200f۰۷\u202a/۲۵\u2069";
+    expect(normalizeDigits(raw)).toBe("1404/07/25");
+    expect(isValidJalaliDate(raw)).toBe(true);
+    expect(isValidJalaliDate("۱۴۰۴٫۰۳٫۳۱")).toBe(true);
+    expect(parseJalali("١٤٠٤\u200c/١٢/٣٠")).toEqual([1404, 12, 30]);
+  });
+});
+

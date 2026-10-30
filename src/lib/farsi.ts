@@ -6,8 +6,38 @@
 // ─────────────────────────────────────────────────────────────
 
 const FA_DIGITS = "۰۱۲۳۴۵۶۷۸۹";
+const AR_DIGITS = "٠١٢٣٤٥٦٧٨٩";
+const EN_DIGITS = "0123456789";
+const INVISIBLE_CHARS_RE = /[\u200b\u200c\u200d\u200e\u200f\u202a-\u202e\u2066-\u2069\ufeff]/g;
+
 export const fa = (s: string | number): string =>
   String(s).replace(/[0-9]/g, (d) => FA_DIGITS[Number(d)]);
+
+/** نرمال‌سازی رشتهٔ عددی/تاریخی: تبدیل ارقام فارسی و عربی به انگلیسی، حذف کاراکترهای نامرئی و ممیز فارسی */
+export function normalizeDigits(input: string | number | null | undefined): string {
+  if (input == null) return "";
+  let s = String(input);
+  let out = "";
+  for (const ch of s) {
+    let i = FA_DIGITS.indexOf(ch);
+    if (i >= 0) {
+      out += EN_DIGITS[i];
+      continue;
+    }
+    i = AR_DIGITS.indexOf(ch);
+    if (i >= 0) {
+      out += EN_DIGITS[i];
+      continue;
+    }
+    out += ch;
+  }
+  return out.replace(INVISIBLE_CHARS_RE, "").replace(/\u066b/g, ".").trim();
+}
+
+/** سال کبیسهٔ شمسی (قاعدهٔ استاندارد ۲۸۲۰-ساله) */
+export function isJalaliLeap(y: number): boolean {
+  return (((y - 474) % 2820) * 682) % 2816 < 682;
+}
 
 // ── الگوریتم تبدیل میلادی به جلالی ──
 export function g2j(gy: number, gm: number, gd: number): [number, number, number] {
@@ -89,20 +119,20 @@ export function jalaliNowStr(): string {
 /** اعتبارسنجی رشتهٔ تاريخ شمسی ورودی کاربر: ۱۴۰۴/۰۱/۱۵ */
 export function isValidJalaliDate(input: string): boolean {
   if (!input) return false;
-  const en = input.replace(/[۰-۹]/g, (d) => String(FA_DIGITS.indexOf(d)));
+  const en = normalizeDigits(input);
   const m = en.match(/^(\d{4})[/.\-](\d{1,2})[/.\-](\d{1,2})$/);
   if (!m) return false;
   const y = parseInt(m[1], 10);
   const mo = parseInt(m[2], 10);
   const d = parseInt(m[3], 10);
   if (y < 1300 || y > 1500 || mo < 1 || mo > 12 || d < 1) return false;
-  const dim = mo <= 6 ? 31 : mo <= 11 ? 30 : 29;
+  const dim = mo <= 6 ? 31 : mo <= 11 ? 30 : isJalaliLeap(y) ? 30 : 29;
   return d <= dim;
 }
 
 /** نرمال‌سازی قالب تاريخ شمسی به yyyy/mm/dd با ارقام فارسی */
 export function normalizeJalaliDate(input: string): string {
-  const en = input.replace(/[۰-۹]/g, (d) => String(FA_DIGITS.indexOf(d)));
+  const en = normalizeDigits(input);
   const m = en.match(/^(\d{4})[/.\-](\d{1,2})[/.\-](\d{1,2})$/);
   if (!m) return fa(input.trim());
   const p = (n: string) => n.padStart(2, "0");
