@@ -16,6 +16,7 @@ import pytest
 sys.path.insert(0, os.path.join(os.path.dirname(__file__), "..", ".."))
 
 from app import (ExcelExporter, TechnicalOfficeEngine, _default_fehrest_db,
+                 _jalali_days_in_month, _render_jalali_calendar,
                  default_settings, gregorian_to_jalali, is_valid_jalali_date,
                  jalali_to_gregorian, jalali_to_iso, normalize_digits,
                  today_jalali)
@@ -194,4 +195,80 @@ def test_T93_normalize_digits_and_invisible_chars():
     # ممیز فارسی (٫) به نقطه تبدیل می‌شود
     assert is_valid_jalali_date("۱۴۰۴٫۰۳٫۳۱") is True
     assert TechnicalOfficeEngine._parse_jalali("١٤٠٤\u200c/١٢/٣٠") == (1404, 12, 30)
+
+
+# ── PR #4: تقویم شمسی سبک با selectbox (رفع بریدگی popover و کندی اپ) ──
+
+def test_T93_jalali_calendar_selectbox_lightweight(monkeypatch):
+    import app as app_mod
+
+    # (الف) محاسبهٔ _jalali_days_in_month برای ماه‌های ۱..۶، ۷..۱۱ و اسفند کبیسه/غیرکبیسه
+    for m in range(1, 7):
+        assert _jalali_days_in_month(1404, m) == 31
+    for m in range(7, 12):
+        assert _jalali_days_in_month(1404, m) == 30
+    assert _jalali_days_in_month(1399, 12) == 30  # ۱۳۹۹ کبیسه
+    assert _jalali_days_in_month(1404, 12) == 30  # ۱۴۰۴ کبیسه
+    assert _jalali_days_in_month(1408, 12) == 30  # ۱۴۰۸ کبیسه
+    assert _jalali_days_in_month(1402, 12) == 29  # ۱۴۰۲ غیرکبیسه
+    assert _jalali_days_in_month(1405, 12) == 29  # ۱۴۰۵ غیرکبیسه
+
+    # (ب) شبیه‌سازی سبک st برای تایید ساخت دقیقاً ۳ selectbox و ۲ button (بدون ۳۵+ ویجت)
+    class _DummyCol:
+        def __init__(self, parent):
+            self._parent = parent
+
+        def button(self, label, key=None, on_click=None, args=(), **kwargs):
+            self._parent.buttons.append({"label": label, "key": key, "on_click": on_click, "args": args, **kwargs})
+            return False
+
+    class _DummySt:
+        def __init__(self):
+            self.session_state = {"test-date": "۱۴۰۴/۱۲/۳۰"}
+            self.selectboxes = []
+            self.buttons = []
+
+        def selectbox(self, label, options, format_func=None, key=None, **kwargs):
+            self.selectboxes.append({"label": label, "options": list(options), "key": key})
+            val = self.session_state.get(key, options[0])
+            if format_func is not None:
+                _ = format_func(val)
+            return val
+
+        def columns(self, spec, **kwargs):
+            n = spec if isinstance(spec, int) else len(spec)
+            return [_DummyCol(self) for _ in range(n)]
+
+        def button(self, label, key=None, on_click=None, args=(), **kwargs):
+            self.buttons.append({"label": label, "key": key, "on_click": on_click, "args": args, **kwargs})
+            return False
+
+    dummy_st = _DummySt()
+    monkeypatch.setattr(app_mod, "st", dummy_st)
+
+    _render_jalali_calendar("test-date")
+
+    assert len(dummy_st.selectboxes) == 3
+    assert [s["label"] for s in dummy_st.selectboxes] == ["سال", "ماه", "روز"]
+    assert dummy_st.selectboxes[2]["options"] == list(range(1, 31))  # اسفند ۱۴۰۴ کبیسه = ۳۰ روز
+
+    assert len(dummy_st.buttons) == 2
+    assert [b["label"] for b in dummy_st.buttons] == ["ثبت", "امروز"]
+
+    # تغییر به سال غیرکبیسه ۱۴۰۵ و بررسی محدود شدن روز اسفند به ۲۹ و ثبت تاریخ معتبر
+    dummy_st.session_state["test-date__cal_y"] = 1405
+    dummy_st.session_state["test-date__cal_m"] = 12
+    dummy_st.selectboxes.clear()
+    dummy_st.buttons.clear()
+
+    _render_jalali_calendar("test-date")
+    assert dummy_st.selectboxes[2]["options"] == list(range(1, 30))
+    assert dummy_st.session_state["test-date__cal_d"] == 29
+
+    # اجرای callback دکمهٔ «ثبت»
+    set_btn = next(b for b in dummy_st.buttons if b["label"] == "ثبت")
+    set_btn["on_click"](*set_btn["args"])
+    assert dummy_st.session_state["test-date"] == "۱۴۰۵/۱۲/۲۹"
+    assert is_valid_jalali_date(dummy_st.session_state["test-date"]) is True
+
 
