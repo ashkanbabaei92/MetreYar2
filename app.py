@@ -9536,21 +9536,30 @@ _JALALI_MONTH_NAMES = [
     "فروردین", "اردیبهشت", "خرداد", "تیر", "مرداد", "شهریور",
     "مهر", "آبان", "آذر", "دی", "بهمن", "اسفند",
 ]
-_JALALI_WEEKDAYS = ["ش", "ی", "د", "س", "چ", "پ", "ج"]
+
+
+def _jalali_days_in_month(jy: int, jm: int) -> int:
+    """تعداد روزهای یک ماه شمسی با احتساب سال کبیسه برای اسفند."""
+    if jm <= 6:
+        return 31
+    if jm <= 11:
+        return 30
+    return 30 if TechnicalOfficeEngine._jalali_leap(jy) else 29
 
 
 def _render_jalali_calendar(target_key: str):
-    """رندر تقویم شمسی تعاملی داخل st.popover (بدون کتابخانهٔ خارجی)."""
+    """رندر انتخابگر سبک تاریخ شمسی داخل st.popover (۳ selectbox + ۲ دکمه — بدون شبکهٔ سنگین دکمه‌ای)."""
     now = datetime.now()
     ty, tm, td = gregorian_to_jalali(now.year, now.month, now.day)
     cur_val = str(st.session_state.get(target_key, "") or "")
     parsed = TechnicalOfficeEngine._parse_jalali(cur_val)
     init_y = parsed[0] if parsed and 1380 <= parsed[0] <= 1420 else (ty if 1380 <= ty <= 1420 else 1404)
     init_m = parsed[1] if parsed else tm
-    sel_day = parsed[2] if parsed else None
+    init_d = parsed[2] if parsed else td
 
     yk = f"{target_key}__cal_y"
     mk = f"{target_key}__cal_m"
+    dk = f"{target_key}__cal_d"
     if yk not in st.session_state or st.session_state[yk] not in range(1380, 1421):
         st.session_state[yk] = init_y
     if mk not in st.session_state or st.session_state[mk] not in range(1, 13):
@@ -9559,70 +9568,53 @@ def _render_jalali_calendar(target_key: str):
     years = list(range(1380, 1421))
     months = list(range(1, 13))
 
-    def _pick_date(y_val: int, m_val: int, d_val: int):
-        st.session_state[target_key] = fa(f"{y_val}/{m_val:02d}/{d_val:02d}")
-        st.session_state[yk] = y_val
-        st.session_state[mk] = m_val
-
-    hdr = st.columns([1.3, 1.5, 1.0])
-    sel_y = hdr[0].selectbox(
+    sel_y = st.selectbox(
         "سال",
         years,
         format_func=lambda y: fa(str(y)),
         key=yk,
-        label_visibility="collapsed",
     )
-    sel_m = hdr[1].selectbox(
+    sel_m = st.selectbox(
         "ماه",
         months,
         format_func=lambda m: f"{fa(m)} - {_JALALI_MONTH_NAMES[m - 1]}",
         key=mk,
-        label_visibility="collapsed",
     )
-    hdr[2].button(
+
+    dim = _jalali_days_in_month(sel_y, sel_m)
+    days = list(range(1, dim + 1))
+    if dk not in st.session_state or st.session_state[dk] not in range(1, dim + 1):
+        st.session_state[dk] = min(init_d, dim)
+
+    sel_d = st.selectbox(
+        "روز",
+        days,
+        format_func=lambda d: fa(str(d)),
+        key=dk,
+    )
+
+    def _pick_date(y_val: int, m_val: int, d_val: int):
+        st.session_state[target_key] = fa(f"{y_val}/{m_val:02d}/{d_val:02d}")
+        st.session_state[yk] = y_val
+        st.session_state[mk] = m_val
+        st.session_state[dk] = d_val
+
+    btn_cols = st.columns(2)
+    btn_cols[0].button(
+        "ثبت",
+        key=f"{target_key}__cal_set",
+        on_click=_pick_date,
+        args=(sel_y, sel_m, sel_d),
+        type="primary",
+        use_container_width=True,
+    )
+    btn_cols[1].button(
         "امروز",
         key=f"{target_key}__cal_today",
         on_click=_pick_date,
         args=(ty, tm, td),
         use_container_width=True,
     )
-
-    # هدر ۷ روز هفته (شنبه تا جمعه)
-    wh = st.columns(7)
-    for idx, wname in enumerate(_JALALI_WEEKDAYS):
-        wh[idx].markdown(
-            f"<div style='text-align:center;font-weight:700;font-size:12px;color:#ffd166'>{wname}</div>",
-            unsafe_allow_html=True,
-        )
-
-    # محاسبهٔ روز هفتهٔ اول ماه (شنبه = ۰ ... جمعه = ۶)
-    g_first = jalali_to_gregorian(sel_y, sel_m, 1)
-    start_wd = (date(*g_first).weekday() + 2) % 7 if g_first else 0
-    dim = (
-        31 if sel_m <= 6
-        else (30 if sel_m <= 11 else (30 if TechnicalOfficeEngine._jalali_leap(sel_y) else 29))
-    )
-
-    cells = [None] * start_wd + list(range(1, dim + 1))
-    while len(cells) % 7 != 0:
-        cells.append(None)
-
-    for r_idx in range(len(cells) // 7):
-        row_cols = st.columns(7)
-        for c_idx in range(7):
-            d_num = cells[r_idx * 7 + c_idx]
-            if d_num is None:
-                row_cols[c_idx].markdown("&nbsp;", unsafe_allow_html=True)
-            else:
-                is_sel = bool(parsed and parsed[0] == sel_y and parsed[1] == sel_m and sel_day == d_num)
-                row_cols[c_idx].button(
-                    fa(str(d_num)),
-                    key=f"{target_key}__cal_d_{sel_y}_{sel_m}_{d_num}",
-                    on_click=_pick_date,
-                    args=(sel_y, sel_m, d_num),
-                    type="primary" if is_sel else "secondary",
-                    use_container_width=True,
-                )
 
 
 def _jalali_input(
